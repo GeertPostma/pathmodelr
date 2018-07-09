@@ -15,18 +15,30 @@ path_pls <- function(data, connection_matrix, vars_in_block
                   #bootstrap="FALSE", bootstrap_iter=NULL
   )
 
-  ##Pre-Process
+  ##Pre-Process:
 
-  ##MAIN ALGORITHM
+  ## MAIN ALGORITHM:
+  #1# Initialisation:
+  #PLSR (use x_out and y_in as predictors for y_out. use y_scores for end node, x_scores for predictors. See [?] at step 2 for edge case handling.)
+  #Others methods are technically possible
+  
+  #2# Connection Estimation:
+  #use PLSR to estimate #LVs per block and calculate scores for each block. use precursor block scores and input to predict block output.
+  #[?] What if initial start block has only output variables -> use output as input for predicting upward connected block scores.
+  
+  #3# Recalculate Loadings:
+  #Recalculate loadings using PLSR or Ridge Regression (less sensible), to only use within block variables for predicting LVs. (Either in or out variables)
+  
+  #3.5# Convergence: (Optional)
+  # Iterate 2 and 3 until convergence.
+  
+  #4# Calculate Inner Model
+  #Statistics: Inner model regressiion (PLSR), GoF, R^2, etc.
 
-  #For each block:
-  #Regress dependent block variables on predictors from connected blocks or from predictors from the same block.
-  #Cross validate number of components per block -> use method from elements of statistical learning?
-
+  ##Comments:
   #USE SIMPLS instead of NIPALS for interpretation purposes when possible -> careful with NaNs. Still use NIPALS for NaN data?
   #Inquire with Geert P about the pros and cons of kernel-PLS.
 
-  ##OUTPUT STATISTICS
 
 
 }
