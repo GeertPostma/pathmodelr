@@ -22,7 +22,7 @@ verify_dag <- function(DAG){
   
   #attribute rownames and colnames:
   if (is.null(rownames(DAG)) || is.null(colnames(DAG))){
-    warning_list <- c(warning_list, "row and column names were not both assigned to the DAG connection matrix. Now using numerical naming scheme for the nodes.")
+    warning_list <- c(warning_list, "row and column names were not both assigned to the DAG connection matrix. ")
     rownames(DAG) <- 1:nrow((DAG))
     colnames(DAG) <- 1:nrow((DAG))
   }

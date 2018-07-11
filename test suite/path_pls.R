@@ -1,4 +1,5 @@
-path_pls <- function(data, connection_matrix, vars_in_block
+path_pls <- function(data, connection_matrix, vars_in_block,
+                     block_names,
                      #component_selection="auto", n_comps=NULL,
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                      #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -16,6 +17,45 @@ path_pls <- function(data, connection_matrix, vars_in_block
   )
 
   ##Pre-Process:
+  
+  
+  ##Construct data constructs:
+  
+  #Construct list of block_names and assign to connection_matrix
+  #TODO simplify if else structure
+  if(is.null(block_names)){
+    #get blocknames from connection matrix
+    
+    if(is.null(rownames(connection_matrix))){
+      if(is.null(colnames(connection_matrix))){
+        print("block_names weren't provided directly or contained in connection_matrix. block_names are set to numerical.")
+        rownames(connection_matrix) <- 1:nrow((connection_matrix))
+        colnames(connection_matrix) <- 1:nrow((connection_matrix))
+        block_names <- 1:nrow((connection_matrix))
+      }
+      else{
+        rownames(connection_matrix) <- colnames(connection_matrix)
+        block_names <- colnames(connection_matrix)
+      }
+    }
+    else{
+      if(is.null(colnames(connection_matrix))){
+        colnames(connection_matrix) <- rownames(connection_matrix)
+        block_names <- rownames(connection_matrix)
+      }
+    }
+  }
+  else{
+    rownames(connection_matrix) <- block_names
+    colnames(connection_matrix) <- block_names
+  }
+  
+  #make blocked data
+  blocked_data <- list()
+  
+  for(i in 1:length(block_names)){ #index block_names and vars_in_block
+    block_data
+  }
 
   ## MAIN ALGORITHM:
   #1# Initialisation:

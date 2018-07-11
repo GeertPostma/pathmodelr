@@ -1,4 +1,5 @@
-check_arguments <- function(data, connection_matrix, vars_in_block
+check_arguments <- function(data, connection_matrix, vars_in_block,
+                            block_names
                             #component_selection="auto", n_comps=NULL,
                             #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                             #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -14,6 +15,16 @@ check_arguments <- function(data, connection_matrix, vars_in_block
   warning_list <- c(warning_list, dag_results["warning_list"])
   
   #Is data numeric?
+  if(!is.numeric(data)){
+    error_list <- c(error_list, "The data matrix contains non-numerical data.")
+  }
+  
+  #Give warning if both block_names or rownames and/or colnames connection_matrix are not supplied.
+  
+  
+  #Check whether connection_matrix, vars_in_block and block_names refer to the same number of blocks.
+  
+  #NaN checking and warnings
   
   
   #Are all variables assigned? Are all named variables in the data?
