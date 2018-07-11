@@ -1,8 +1,6 @@
 check_dag <- function(DAG, node_name, visited_nodes = c()){
-  # print(node_name)
-  # print(visited_nodes)
-  # print(DAG)
-  # 
+  # helper function for verify_dag
+  
   visited_nodes <- cbind(visited_nodes, node_name)
   
   

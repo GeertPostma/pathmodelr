@@ -5,10 +5,13 @@ check_arguments <- function(data, connection_matrix, vars_in_block
                             #input_variable_type: assigns what type each different variable has
                             #bootstrap="FALSE", bootstrap_iter=NULL
 ){
-  
+  error_list <- c()
+  warning_list <- c()
   
   #Is the graph a DAG?
-  
+  dag_results <- verify_dag(connection_matrix)
+  error_list <- c(error_list, dag_results["error_list"])
+  warning_list <- c(warning_list, dag_results["warning_list"])
   
   #Is data numeric?
   
