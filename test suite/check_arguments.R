@@ -21,6 +21,7 @@ check_arguments <- function(data, connection_matrix, vars_in_block,
   
   #Give warning if both block_names or rownames and/or colnames connection_matrix are not supplied.
   
+  #Give warning when input is matrix instead of dataframe
   
   #Check whether connection_matrix, vars_in_block and block_names refer to the same number of blocks.
   

@@ -1,5 +1,8 @@
+library(dplyr)
+
 path_pls <- function(data, connection_matrix, vars_in_block,
                      block_names,
+                     use_modes = FALSE #Determines whether or not Reflective and Formative modes should be used.
                      #component_selection="auto", n_comps=NULL,
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                      #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -16,10 +19,9 @@ path_pls <- function(data, connection_matrix, vars_in_block,
                   #bootstrap="FALSE", bootstrap_iter=NULL
   )
 
-  ##Pre-Process:
-  
-  
   ##Construct data constructs:
+  
+  #TODO: Convert matrix into dataframe, but also convert vars_in_block to refer to Vn instead of n.
   
   #Construct list of block_names and assign to connection_matrix
   #TODO simplify if else structure
@@ -53,11 +55,26 @@ path_pls <- function(data, connection_matrix, vars_in_block,
   #make blocked data
   blocked_data <- list()
   
+  #TODO: Determine whether subblocking structure should be assigned
+  #Proposed subblocking structure: Block > {Xin, Xout} > subblock division
   for(i in 1:length(block_names)){ #index block_names and vars_in_block
-    block_data
+    if(use_modes){
+      ##TODO: Add splitting algorithm for reflective and formative modes
+    }
+    else{
+      #TODO: Determine whether Xin-Xout structure should be assigned, like for use_modes=TRUE. 
+      blocked_data[block_names[i]] <- select(data, vars_in_block[i])
+    }
   }
-
+  
+  
+  ##Pre-Process:
+  
+  
   ## MAIN ALGORITHM:
+  
+  #TODO: Handle edge case of multiple end-nodes with an optional different depth
+  
   #1# Initialisation:
   #PLSR (use x_out and y_in as predictors for y_out. use y_scores for end node, x_scores for predictors. See [?] at step 2 for edge case handling.)
   #Others methods are technically possible
