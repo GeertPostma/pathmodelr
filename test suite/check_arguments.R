@@ -1,5 +1,6 @@
-check_arguments <- function(data, connection_matrix, vars_in_block,
-                            block_names
+check_arguments <- function(data, connection_matrix, variables_in_block,
+                            block_names,
+                            use_modes
                             #component_selection="auto", n_comps=NULL,
                             #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                             #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -21,9 +22,13 @@ check_arguments <- function(data, connection_matrix, vars_in_block,
   
   #Give warning if both block_names or rownames and/or colnames connection_matrix are not supplied.
   
-  #Give warning when input is matrix instead of dataframe
+  #Check if data is matrix, dataframe or tidyverse equivalents
+  if(!(is.matrix(data) || is.data.frame(data))){
+    error_list <- c(error_list, "Input data must be a matrix, dataframe or a tidyverse dataframe equivalent.") 
+  }
   
-  #Check whether connection_matrix, vars_in_block and block_names refer to the same number of blocks.
+  
+  #Check whether connection_matrix, variables_in_block and block_names refer to the same number of blocks.
   
   #NaN checking and warnings
   
