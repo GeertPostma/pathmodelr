@@ -1,8 +1,8 @@
 library(dplyr)
 
 path_pls <- function(data, connection_matrix, variables_in_block,
-                     block_names,
-                     use_modes = FALSE #Determines whether or not Reflective and Formative modes should be used.
+                     block_names
+                     #use_modes = FALSE #Determines whether or not Reflective and Formative modes should be used.
                      #component_selection="auto", n_comps=NULL,
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                      #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -12,8 +12,8 @@ path_pls <- function(data, connection_matrix, variables_in_block,
 
   ##CHECK INPUT
   check_arguments(data, connection_matrix, variables_in_block,
-                  block_names,
-                  use_modes
+                  block_names
+                  #use_modes
                   #component_selection="auto", n_comps=NULL,
                   #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                   #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -64,13 +64,9 @@ path_pls <- function(data, connection_matrix, variables_in_block,
   #TODO: Determine whether subblocking structure should be assigned
   #Proposed subblocking structure: Block > {Xin, Xout} > subblock division
   for(i in 1:n_blocks){ #index block_names and variables_in_block
-    if(use_modes){
-      ##TODO: Add splitting algorithm for reflective and formative modes
-    }
-    else{
-      #TODO: Determine whether Xin-Xout structure should be assigned, like for use_modes=TRUE. 
-      blocked_data[[i]] <- select(data, variables_in_block[[i]])
-    }
+    
+    blocked_data[[i]] <- select(data, variables_in_block[[i]])
+  
   }
   names(blocked_data) <- block_names
   
@@ -82,10 +78,10 @@ path_pls <- function(data, connection_matrix, variables_in_block,
   
   
   #make node structure graph
-  make_nodes(preprocessed_blocked_data, connection_matrix)
+  nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names)
   
   ## MAIN ALGORITHM:
-  #?get_LVs(pre_processed_blocked_data, connection_matrix) #TODO: Add additional options after minimal working version
+  #get_LVs(pre_processed_blocked_data, connection_matrix) #TODO: Add additional options after minimal working version
   
   #TODO: UPDATE REQUIREMENTS BASED ON NOTES, OPTIONS, AND EDGE CASES.
   #1# Initialisation:

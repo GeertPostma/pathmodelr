@@ -1,7 +1,15 @@
-library(MASS)
+source('~/OFFON/MCPM_package/test suite/path_pls.R')
+source('~/OFFON/MCPM_package/test suite/make_nodes.R')
+source('~/OFFON/MCPM_package/test suite/check_arguments.R')
+source('~/OFFON/MCPM_package/test suite/check_dag.R')
+source('~/OFFON/MCPM_package/test suite/verify_dag.R')
+source('~/OFFON/MCPM_package/test suite/get_node_type.R')
+source('~/OFFON/MCPM_package/test suite/get_downstream_nodes.R')
+source('~/OFFON/MCPM_package/test suite/get_upstream_nodes.R')
+
 test_path_pls <- function(){
   
-  data <- data.frame(replicate(10,mvrnorm(n=1000,0,1)))
+  data <- data.frame(replicate(10,MASS::mvrnorm(n=1000,0,1)))
   
   connection_matrix <- t(matrix(c(0,0,0,0,
                                   1,0,0,0,
