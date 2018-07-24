@@ -1,15 +1,5 @@
+#' @include node.R
 make_nodes <- function(blocked_data, connection_matrix, block_names){
-  
-  setClass("node",
-           slots = list(node_type                = 'character',
-                        node_name                = 'character',
-                        downstream_node_indices  = 'integer',
-                        upstream_node_indices    = 'integer',
-                        X_data                   = 'list',
-                        n_LVs                    = 'numeric',
-                        LVs                      = 'list',
-                        X_loadings               = 'list',
-                        coefficients             = 'list'))
   
   node_list <- list()
   
