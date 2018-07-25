@@ -2,7 +2,8 @@ library(dplyr)
 
 path_pls <- function(data, connection_matrix, variables_in_block,
                      block_names
-                     #use_modes = FALSE #Determines whether or not Reflective and Formative modes should be used.
+                     #last_block_estimation = {direct, PCA, Y_loadings}
+                     #use_modes = FALSE, #Determines whether or not Reflective and Formative modes should be used.
                      #component_selection="auto", n_comps=NULL,
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                      #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -13,7 +14,8 @@ path_pls <- function(data, connection_matrix, variables_in_block,
   ##CHECK INPUT
   check_arguments(data, connection_matrix, variables_in_block,
                   block_names
-                  #use_modes
+                  #last_block_estimation,
+                  #use_modes,
                   #component_selection="auto", n_comps=NULL,
                   #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                   #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
@@ -81,7 +83,8 @@ path_pls <- function(data, connection_matrix, variables_in_block,
   nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names)
   
   ## MAIN ALGORITHM:
-  get_LVs(pre_processed_blocked_data, connection_matrix) #TODO: Add additional options after minimal working version
+  get_LVs(pre_processed_blocked_data#, connection_matrix
+          ) #TODO: Add additional options after minimal working version
   
   #TODO: UPDATE REQUIREMENTS BASED ON NOTES, OPTIONS, AND EDGE CASES.
   #1# Initialisation:
