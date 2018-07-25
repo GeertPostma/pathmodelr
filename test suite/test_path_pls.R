@@ -4,10 +4,11 @@ source('~/OFFON/MCPM_package/test suite/check_arguments.R')
 source('~/OFFON/MCPM_package/test suite/check_dag.R')
 source('~/OFFON/MCPM_package/test suite/verify_dag.R')
 source('~/OFFON/MCPM_package/test suite/get_node_type.R')
-source('~/OFFON/MCPM_package/test suite/get_downstream_nodes.R')
-source('~/OFFON/MCPM_package/test suite/get_upstream_nodes.R')
+source('~/OFFON/MCPM_package/test suite/get_next_nodes.R')
+source('~/OFFON/MCPM_package/test suite/get_previous_nodes.R')
 source('~/OFFON/MCPM_package/test suite/node_classes.R')
 
+library(MASS)
 test_path_pls <- function(){
   
   data <- data.frame(replicate(10,MASS::mvrnorm(n=1000,0,1)))

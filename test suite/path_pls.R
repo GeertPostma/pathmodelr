@@ -1,5 +1,6 @@
 library(dplyr)
-
+library(R6)
+library(listenv)
 path_pls <- function(data, connection_matrix, variables_in_block,
                      block_names
                      #last_block_estimation = {direct, PCA, Y_loadings}
@@ -83,8 +84,8 @@ path_pls <- function(data, connection_matrix, variables_in_block,
   nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names)
   
   ## MAIN ALGORITHM:
-  get_LVs(pre_processed_blocked_data#, connection_matrix
-          ) #TODO: Add additional options after minimal working version
+  #get_LVs(pre_processed_blocked_data#, connection_matrix
+  #        ) #TODO: Add additional options after minimal working version
   
   #TODO: UPDATE REQUIREMENTS BASED ON NOTES, OPTIONS, AND EDGE CASES.
   #1# Initialisation:
