@@ -2,8 +2,11 @@ library(dplyr)
 library(R6)
 library(listenv)
 path_pls <- function(data, connection_matrix, variables_in_block,
-                     block_names
-                     #last_block_estimation = {direct, PCA, Y_loadings}
+                     block_names,
+                     estimators = NULL,
+                     start_node_estimation  = "SimplePLS",
+                     middle_node_estimation = "SimplePLS",
+                     end_node_estimation    = "PCA"
                      #use_modes = FALSE, #Determines whether or not Reflective and Formative modes should be used.
                      #component_selection="auto", n_comps=NULL,
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
@@ -14,8 +17,11 @@ path_pls <- function(data, connection_matrix, variables_in_block,
 
   ##CHECK INPUT
   check_arguments(data, connection_matrix, variables_in_block,
-                  block_names
-                  #last_block_estimation,
+                  block_names,
+                  estimators
+                  #start_node_estimation,
+                  #middle_node_estimation,
+                  #end_node_estimation
                   #use_modes,
                   #component_selection="auto", n_comps=NULL,
                   #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
@@ -73,15 +79,30 @@ path_pls <- function(data, connection_matrix, variables_in_block,
   }
   names(blocked_data) <- block_names
   
-
-  
-  
   ##Pre-Process:
   preprocessed_blocked_data <- blocked_data
   
+  ##Get node types:
+  node_types <- get_all_node_types(connection_matrix)
+  
+  ##Make estimator list:
+  #Convert input strings to corresponding functions
+  if(typeof(start_node_estimation) == "character"){
+    start_node_estimation <- estimator_string_to_function(start_node_estimation)
+  }
+  if(typeof(middle_node_estimation) == "character"){
+    middle_node_estimation <- estimator_string_to_function(middle_node_estimation)
+  }
+  if(typeof(end_node_estimation) == "character"){
+    end_node_estimation <- estimator_string_to_function(end_node_estimation)
+  }
+  
+  if(is.null(estimators)){
+    estimators <- get_estimator_list(node_types, start_node_estimation, middle_node_estimation, end_node_estimation)
+  }
   
   #make node structure graph
-  nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names)
+  nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names, estimators, node_types)
   
   ## MAIN ALGORITHM:
   #get_LVs(pre_processed_blocked_data#, connection_matrix

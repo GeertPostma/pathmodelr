@@ -7,8 +7,12 @@ source('~/OFFON/MCPM_package/test suite/get_node_type.R')
 source('~/OFFON/MCPM_package/test suite/get_next_nodes.R')
 source('~/OFFON/MCPM_package/test suite/get_previous_nodes.R')
 source('~/OFFON/MCPM_package/test suite/node_classes.R')
+source('~/OFFON/MCPM_package/test suite/get_all_node_types.R')
+source('~/OFFON/MCPM_package/test suite/get_estimator_list.R')
+source('~/OFFON/MCPM_package/test suite/estimator_string_to_function.R')
+source('~/OFFON/MCPM_package/test suite/estimator_functions.R')
 
-library(MASS)
+
 test_path_pls <- function(){
   
   data <- data.frame(replicate(10,MASS::mvrnorm(n=1000,0,1)))
