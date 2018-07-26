@@ -7,12 +7,11 @@ Node <- R6Class("Node",
     n_LVs                    = NA_integer_,
     LVs                      = NULL,
     X_loadings               = NULL,
-    path_coefficients        = NULL,
+    #path_coefficients        = NULL,
     is_estimated             = FALSE,
-    
-    #Methods
     estimator = NULL,
     
+    #Methods
     initialize = function(node_name, X_data, estimator){
       self$node_name      <- node_name
       self$X_data         <- X_data
@@ -25,6 +24,11 @@ Node <- R6Class("Node",
       self$Lvs          <- LVs
       self$X_loadings   <- X_loadings
       self$coefficients <- path_coefficients
+      self$is_estimated <- TRUE
+    },
+    
+    estimate = function(){
+      self$estimator(self)
       self$is_estimated <- TRUE
     }
   )
