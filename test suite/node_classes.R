@@ -11,6 +11,15 @@ Node <- R6Class("Node",
     is_estimated             = FALSE,
     
     #Methods
+    estimator = NULL,
+    
+    initialize = function(node_name, X_data, estimator){
+      self$node_name      <- node_name
+      self$X_data         <- X_data
+      self$estimator      <- estimator
+      self$is_initialized <- TRUE      
+    },
+    
     add_estimate = function(n_LVs, LVs, X_loadings, path_coefficients){
       self$n_LVs        <- n_LVs
       self$Lvs          <- LVs
@@ -25,15 +34,12 @@ StartNode <- R6Class("StartNode",
   inherit = Node,
   public = list(
     #Fields
-    next_node_indices = NA_integer_,
+    next_nodes = NULL,
     
     
     #Methods
-    initialize = function(node_name, next_node_indices, X_data){
-      self$node_name             <- node_name
-      self$next_node_indices <- next_node_indices
-      self$X_data                <- X_data
-      self$is_initialized        <- TRUE
+    add_connected_nodes = function(next_nodes){
+      self$next_nodes <- next_nodes
     }
   )
   
@@ -43,16 +49,13 @@ MiddleNode <- R6Class("MiddleNode",
  inherit = Node,
  public = list(
     #Fields
-    previous_node_indices = NA_integer_,
-    next_node_indices = NA_integer_,
+    previous_nodes = NULL,
+    next_nodes = NULL,
                        
     #Methods
-    initialize = function(node_name, next_node_indices, previous_node_indices, X_data){
-    self$node_name               <- node_name
-    self$next_node_indices       <- next_node_indices
-    self$previous_node_indices   <- previous_node_indices
-    self$X_data                  <- X_data
-    self$is_initialized          <- TRUE
+    add_connected_nodes = function(next_nodes, previous_nodes){
+      self$next_nodes <- next_nodes
+      self$previous_nodes <- previous_nodes
     }
   )
                      
@@ -62,14 +65,11 @@ EndNode <- R6Class("EndNode",
   inherit = Node,
   public = list(
     #Fields
-    previous_node_indices = NA_integer_,
+    previous_nodes = NULL,
     
     #Methods
-    initialize = function(node_name, previous_node_indices, X_data){
-      self$node_name               <- node_name
-      self$previous_node_indices   <- previous_node_indices
-      self$X_data                  <- X_data
-      self$is_initialized          <- TRUE
+    add_connected_nodes = function(next_nodes, previous_nodes){
+      self$previous_nodes <- previous_nodes
     }
   )
 )                  
