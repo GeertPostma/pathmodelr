@@ -1,11 +1,7 @@
-#All estimators must call add_estimate!
+#All initializers must call add_estimate!
 
 
-simple_PLS_estimator <- function(node){ 
-  
-}
-
-PCA_estimator <- function(node){ #Simple PCA estimation
+PCA_initializer <- function(node){ #Simple PCA estimation
   
   rank = dim(node$X_data)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
   
@@ -18,8 +14,8 @@ PCA_estimator <- function(node){ #Simple PCA estimation
   node$add_estimate(n_LVs, LVs, X_loadings)
 }
 
-full_estimator <- function(node){ #Simple Full estimation (generally used for end-nodes)
-
+full_initializer <- function(node){ #Simple Full estimation (generally used for end-nodes)
+  
   LVs <- node$X_data
   n_LVs <- dim(node$X_data)[2]
   X_loadings <- diag(dim(node$X_data)[2])

@@ -4,32 +4,52 @@ Node <- R6Class("Node",
     node_name                = NA_character_,
     X_data                   = NULL,
     is_initialized           = FALSE,
-    n_LVs                    = NA_integer_,
-    LVs                      = NULL,
-    X_loadings               = NULL,
-    #path_coefficients        = NULL,
     is_estimated             = FALSE,
+    is_iterative             = TRUE,
+    n_LVs                    = NA_integer_,
+    previous_n_LVs           = NA_integer_,
+    LVs                      = NULL,
+    previous_LVs             = NULL,
+    X_loadings               = NULL,
+
+    initializer = NULL,
     estimator = NULL,
     
     #Methods
-    initialize = function(node_name, X_data, estimator){
+    initialize = function(node_name, X_data, estimator, initializer){
       self$node_name      <- node_name
       self$X_data         <- X_data
       self$estimator      <- estimator
+      self$initializer    <- initializer
+      self$initializer(self)
       self$is_initialized <- TRUE      
     },
     
-    add_estimate = function(n_LVs, LVs, X_loadings, path_coefficients){
+    add_estimate = function(n_LVs, LVs, X_loadings){
       self$n_LVs        <- n_LVs
-      self$Lvs          <- LVs
+      self$LVs          <- LVs
       self$X_loadings   <- X_loadings
-      self$coefficients <- path_coefficients
       self$is_estimated <- TRUE
     },
     
     estimate = function(){
-      self$estimator(self)
-      self$is_estimated <- TRUE
+      
+      if(!self$is_estimated){
+        self$estimator(self)
+      }
+    },
+    
+    prepare_next_estimation = function(){
+      
+      if(self$is_iterative){
+        self$previous_LVs <- self$LVs
+        self$LVs <- NULL
+        
+        self$previous_n_LVs <- self$n_LVs
+        self$n_LVs <- NA_integer_
+        
+        self$is_estimated <- FALSE
+      }
     }
   )
 )

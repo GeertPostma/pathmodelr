@@ -1,5 +1,5 @@
 #' @include node_classes.R
-make_nodes <- function(blocked_data, connection_matrix, block_names, estimators, node_types){
+make_nodes <- function(blocked_data, connection_matrix, block_names, estimators, initializers, node_types){
   
   node_list <- listenv()
   
@@ -10,21 +10,24 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
 
     if(node_type == "Middle"){
       
-      node <- MiddleNode$new(node_name             = block_names[[i]],
-                             X_data                = blocked_data[[i]],
-                             estimator             = estimators[[i]])
+      node <- MiddleNode$new(node_name   = block_names[[i]],
+                             X_data      = blocked_data[[i]],
+                             estimator   = estimators[[i]],
+                             initializer = initializers[[i]])
     }
     else if(node_type == "Start"){
       
-      node <- StartNode$new(node_name         = block_names[[i]],
-                            X_data            = blocked_data[[i]],
-                            estimator         = estimators[[i]])      
+      node <- StartNode$new(node_name    = block_names[[i]],
+                            X_data       = blocked_data[[i]],
+                            estimator    = estimators[[i]],
+                            initializer  = initializers[[i]])      
     }
     else if(node_type == "End"){
       
-      node <- EndNode$new(node_name             = block_names[[i]],
-                          X_data                = blocked_data[[i]],
-                          estimator             = estimators[[i]])           
+      node <- EndNode$new(node_name      = block_names[[i]],
+                          X_data         = blocked_data[[i]],
+                          estimator      = estimators[[i]],
+                          initializer    = initializers[[i]])           
     }
     else{
       stop("Node type unrecognised.")

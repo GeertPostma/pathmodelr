@@ -6,7 +6,12 @@ path_pls <- function(data, connection_matrix, variables_in_block,
                      estimators = NULL,
                      start_node_estimation  = "SimplePLS",
                      middle_node_estimation = "SimplePLS",
-                     end_node_estimation    = "PCA"
+                     end_node_estimation    = "SimplePLS",
+                     initializers = NULL,
+                     start_node_initialization  = "Full",
+                     middle_node_initialization = "Full",
+                     end_node_initialization    = "Full",
+                     max_iterations = 100
                      #use_modes = FALSE, #Determines whether or not Reflective and Formative modes should be used.
                      #component_selection="auto", n_comps=NULL,
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
@@ -101,17 +106,32 @@ path_pls <- function(data, connection_matrix, variables_in_block,
     estimators <- get_estimator_list(node_types, start_node_estimation, middle_node_estimation, end_node_estimation)
   }
   
+  ##Make initializer list:
+  #Convert input strings to corresponding functions
+  if(typeof(start_node_initialization) == "character"){
+    start_node_initialization <- initializer_string_to_function(start_node_initialization)
+  }
+  if(typeof(middle_node_initialization) == "character"){
+    middle_node_initialization <- initializer_string_to_function(middle_node_initialization)
+  }
+  if(typeof(end_node_initialization) == "character"){
+    end_node_initialization <- initializer_string_to_function(end_node_initialization)
+  }
+  
+  if(is.null(initializers)){
+    initializers <- get_initialization_list(node_types, start_node_initialization, middle_node_initialization, end_node_initialization)
+  }
+  
   #make node structure graph
-  nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names, estimators, node_types)
+  nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names, estimators, initializers, node_types)
   
   ## Estimate LVs:
-  nodes <- get_LVs(nodes)#, connection_matrix
+  nodes <- get_LVs(nodes, max_iterations)#, connection_matrix
   #        ) #TODO: Add additional options after minimal working version
   
   #4# Calculate Inner Model
   #Statistics: Inner model regressiion (PLSR), GoF, R^2, etc.
   
-  #R2_matrix <- calculate_R2(nodes, connection_matrix)
   
 
 
