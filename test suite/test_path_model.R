@@ -1,4 +1,4 @@
-source('~/OFFON/MCPM_package/test suite/path_pls.R')
+source('~/OFFON/MCPM_package/test suite/path_model.R')
 source('~/OFFON/MCPM_package/test suite/make_nodes.R')
 source('~/OFFON/MCPM_package/test suite/check_arguments.R')
 source('~/OFFON/MCPM_package/test suite/check_dag.R')
@@ -15,9 +15,10 @@ source('~/OFFON/MCPM_package/test suite/get_initialization_list.R')
 source('~/OFFON/MCPM_package/test suite/initializer_string_to_function.R')
 source('~/OFFON/MCPM_package/test suite/initializer_functions.R')
 source('~/OFFON/MCPM_package/test suite/get_LVs.R')
+source('~/OFFON/MCPM_package/test suite/loggers.R')
 
 
-test_path_pls <- function(){
+test_path_model <- function(){
   
   data <- data.frame(replicate(10,MASS::mvrnorm(n=1000,0,1)))
   
@@ -31,5 +32,5 @@ test_path_pls <- function(){
   
   block_names <- list("y1", "y2", "y3", "y4")
   
-  result <- path_pls(data, connection_matrix, variables_in_block, block_names, start_node_estimation = "PCA", middle_node_estimation = "PCA", end_node_estimation = "PCA")
+  result <- path_model(data, connection_matrix, variables_in_block, block_names, start_node_estimation = "PCA", middle_node_estimation = "PCA", end_node_estimation = "PCA", loggers=listenv(ComponentLogger$new()))
 }

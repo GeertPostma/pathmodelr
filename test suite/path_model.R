@@ -1,7 +1,7 @@
 library(dplyr)
 library(R6)
 library(listenv)
-path_pls <- function(data, connection_matrix, variables_in_block,
+path_model <- function(data, connection_matrix, variables_in_block,
                      block_names,
                      estimators = NULL,
                      start_node_estimation  = "SimplePLS",
@@ -11,9 +11,10 @@ path_pls <- function(data, connection_matrix, variables_in_block,
                      start_node_initialization  = "Full",
                      middle_node_initialization = "Full",
                      end_node_initialization    = "Full",
-                     max_iterations = 100
+                     max_iterations = 100,
+                     loggers = NULL #listenv of R6 loggers
                      #use_modes = FALSE, #Determines whether or not Reflective and Formative modes should be used.
-                     #component_selection="auto", n_comps=NULL,
+                     #component_selection="auto", n_comps=NULL, (can be list or set number per node)
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                      #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
                      #input_variable_type: assigns what type each different variable has
@@ -126,7 +127,7 @@ path_pls <- function(data, connection_matrix, variables_in_block,
   nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names, estimators, initializers, node_types)
   
   ## Estimate LVs:
-  nodes <- get_LVs(nodes, max_iterations)#, connection_matrix
+  result <- get_LVs(nodes, max_iterations, loggers)#, connection_matrix
   #        ) #TODO: Add additional options after minimal working version
   
   #4# Calculate Inner Model

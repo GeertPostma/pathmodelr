@@ -1,4 +1,4 @@
-get_LVs <- function(nodes, max_iterations){ #Add options for different methods (SO-PLS, Multicomponent regression) in addition to just 1-1
+get_LVs <- function(nodes, max_iterations, loggers){ #Add options for different methods (SO-PLS, Multicomponent regression) in addition to just 1-1
   
   
   #TODO: Add iterative loop
@@ -31,11 +31,16 @@ get_LVs <- function(nodes, max_iterations){ #Add options for different methods (
       }
       
     }
+    #log everything required by loggers
+    for(l in seq_along(loggers)){
+      logger <- loggers[[l]]
+      logger$log_status(nodes,i)
+    }
     
     #TODO: Check convergence criterion:
     converged = FALSE #placeholder
   }
 
-  return(nodes)
+  return(listenv("nodes"=nodes, "loggers"=loggers))
   
 }
