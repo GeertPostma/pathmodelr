@@ -1,4 +1,6 @@
 library(dplyr)
+library(ggplot2) #suggest for ComponentLogger
+library(reshape2) #suggest for ComponentLogger
 library(R6)
 library(listenv)
 path_model <- function(data, connection_matrix, variables_in_block,
