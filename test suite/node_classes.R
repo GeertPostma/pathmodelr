@@ -11,6 +11,10 @@ Node <- R6Class("Node",
     LVs                      = NULL,
     previous_LVs             = NULL,
     X_loadings               = NULL,
+    
+    previous_nodes = NULL,
+    next_nodes = NULL,
+    node_type = NA_character_,
 
     initializer = NULL,
     estimator = NULL,
@@ -23,6 +27,25 @@ Node <- R6Class("Node",
       self$initializer    <- initializer
       self$initializer(self)
       self$is_initialized <- TRUE      
+    },
+    
+    add_connected_nodes = function(next_nodes, previous_nodes){
+      self$next_nodes <- next_nodes
+      self$previous_nodes <- previous_nodes
+      
+      
+      if(length(self$next_nodes) != 0 && length(self$previous_nodes) != 0){#Middle
+        self$node_type <- "Middle"
+      }
+      else if(length(self$next_nodes) == 0 && length(self$previous_nodes) != 0){#End
+        self$node_type <- "End"
+      }
+      else if(length(self$next_nodes) != 0 && length(self$previous_nodes) == 0){#Start
+        self$node_type <- "Start"
+      }
+      else { #unconnected
+        stop("The node is unconnected. This should have been predetected by the input checker")
+      }
     },
     
     add_estimate = function(n_LVs, LVs, X_loadings){
@@ -53,47 +76,3 @@ Node <- R6Class("Node",
     }
   )
 )
-
-StartNode <- R6Class("StartNode", 
-  inherit = Node,
-  public = list(
-    #Fields
-    next_nodes = NULL,
-    
-    
-    #Methods
-    add_connected_nodes = function(next_nodes){
-      self$next_nodes <- next_nodes
-    }
-  )
-  
-)
-
-MiddleNode <- R6Class("MiddleNode", 
- inherit = Node,
- public = list(
-    #Fields
-    previous_nodes = NULL,
-    next_nodes = NULL,
-                       
-    #Methods
-    add_connected_nodes = function(next_nodes, previous_nodes){
-      self$next_nodes <- next_nodes
-      self$previous_nodes <- previous_nodes
-    }
-  )
-                     
-)
-
-EndNode <- R6Class("EndNode", 
-  inherit = Node,
-  public = list(
-    #Fields
-    previous_nodes = NULL,
-    
-    #Methods
-    add_connected_nodes = function(next_nodes, previous_nodes){
-      self$previous_nodes <- previous_nodes
-    }
-  )
-)                  
