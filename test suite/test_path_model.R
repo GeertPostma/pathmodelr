@@ -15,7 +15,7 @@ source('~/OFFON/MCPM_package/test suite/get_initialization_list.R')
 source('~/OFFON/MCPM_package/test suite/initializer_string_to_function.R')
 source('~/OFFON/MCPM_package/test suite/initializer_functions.R')
 source('~/OFFON/MCPM_package/test suite/get_LVs.R')
-source('~/OFFON/MCPM_package/test suite/loggers.R')
+source('~/OFFON/MCPM_package/test suite/loggers_reporters.R')
 
 
 test_path_model <- function(){
@@ -32,5 +32,5 @@ test_path_model <- function(){
   
   block_names <- list("y1", "y2", "y3", "y4")
   
-  result <- path_model(data, connection_matrix, variables_in_block, block_names, start_node_estimation = "PCA", middle_node_estimation = "PCA", end_node_estimation = "PCA", loggers=listenv(ComponentLogger$new()))
+  result <- path_model(data, connection_matrix, variables_in_block, block_names, start_node_estimation = "PCA", middle_node_estimation = "PCA", end_node_estimation = "PCA", loggers=listenv(ComponentLogger$new(), IterationReporter$new(), DurationLogger$new(report=TRUE)))
 }
