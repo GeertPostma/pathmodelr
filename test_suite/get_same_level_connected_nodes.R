@@ -37,6 +37,7 @@ get_same_level_connected_nodes <- function(node){
             unique_same_level_node_names[[k]] <- NULL #remove from list
             
             k <- k - 1#indexing only works normally when nothing is removed, so lower k for each match
+            break
           }
         }
       }
