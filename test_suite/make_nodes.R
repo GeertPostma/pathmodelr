@@ -1,5 +1,5 @@
 #' @include node_classes.R
-make_nodes <- function(blocked_data, connection_matrix, block_names, estimators, initializers, node_types){
+make_nodes <- function(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_types){
   
   node_list <- listenv()
   
@@ -12,7 +12,9 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
     node <- Node$new(node_name   = block_names[[i]],
                      X_data      = blocked_data[[i]],
                      estimator   = estimators[[i]],
-                     initializer = initializers[[i]])
+                     initializer = initializers[[i]],
+                     local_preprocessor = local_preprocessors[[i]],
+                     global_preprocessor = global_preprocessors[[i]])
       
 
     node_list[[i]] <- node

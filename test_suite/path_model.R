@@ -16,8 +16,8 @@ path_model <- function(data, connection_matrix, variables_in_block,
                        max_iterations = 100,
                        loggers = NULL, #listenv of R6 loggers
                        unique_node_preprocessing = FALSE, #If TRUE => list of list of functions should be supplied for global and local preprocessors
-                       global_preprocessors = NULL, #preprocessing methods that can be applied on the full data (such as log scaling)
-                       local_preprocessors = NULL #preprocessing methods that can only be applied locally on training and test sets seperately (such as standardizing or mean-centering)
+                       global_preprocessors = list(), #preprocessing methods that can be applied on the full data (such as log scaling)
+                       local_preprocessors = list(standardize) #preprocessing methods that can only be applied locally on training and test sets seperately (such as standardizing or mean-centering)
                      #component_selection="auto", n_comps=NULL, (can be list or set number per node)
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                                           #input_variable_type: assigns what type each different variable has
@@ -42,7 +42,6 @@ path_model <- function(data, connection_matrix, variables_in_block,
   ##Construct data constructs:
   
   #Construct list of block_names and assign to connection_matrix
-  #TODO simplify if else structure
   if(is.null(block_names)){
     #get blocknames from connection matrix
     
@@ -90,6 +89,20 @@ path_model <- function(data, connection_matrix, variables_in_block,
   ##Get node types:
   node_types <- get_all_node_types(connection_matrix)
   
+  ##Make preprocessor list:
+  if(!unique_node_preprocessing){
+    temp_local_functions <- local_preprocessors
+    temp_global_functions <- global_preprocessors
+    
+    local_preprocessors <- list() 
+    global_preprocessors <- list()
+    
+    for(i in 1:n_blocks){
+      local_preprocessors[[i]] <- temp_local_functions
+      global_preprocessors[[i]] <- temp_global_functions
+    }
+  }
+  
   ##Make estimator list:
   if(is.null(estimators)){
     estimators <- get_estimator_list(node_types, start_node_estimator, middle_node_estimator, end_node_estimator)
@@ -101,7 +114,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   }
   
   #make node structure graph
-  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, node_types)
+  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_types)
   
   ## Estimate LVs:
   result <- get_LVs(nodes, max_iterations, loggers)#, connection_matrix

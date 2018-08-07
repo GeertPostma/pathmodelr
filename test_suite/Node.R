@@ -18,13 +18,21 @@ Node <- R6Class("Node",
 
     initializer = NULL,
     estimator = NULL,
+    local_preprocessor = NULL,
+    global_preprocessor = NULL,
     
     #Methods
-    initialize = function(node_name, X_data, estimator, initializer){
-      self$node_name      <- node_name
-      self$X_data         <- X_data
-      self$estimator      <- estimator
-      self$initializer    <- initializer
+    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor){
+      self$node_name           <- node_name
+      self$estimator           <- estimator
+      self$initializer         <- initializer
+      self$local_preprocessor  <- local_preprocessor
+      self$global_preprocessor <- global_preprocessor
+      for(preprocessor in global_preprocessor){
+        X_data <- preprocessor(X_data)
+      }
+      self$X_data              <- X_data
+      
       self$initializer(self)
       self$is_initialized <- TRUE      
     },
