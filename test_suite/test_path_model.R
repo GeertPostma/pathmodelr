@@ -20,6 +20,8 @@ source('~/OFFON/MCPM_package/test_suite/get_nodes_by_level.R')
 source('~/OFFON/MCPM_package/test_suite/get_unique_nodes.R')
 source('~/OFFON/MCPM_package/test_suite/get_same_level_connected_nodes.R')
 source('~/OFFON/MCPM_package/test_suite/combine_and_mask.R')
+source('~/OFFON/MCPM_package/test_suite/local_preprocessing_functions.R')
+source('~/OFFON/MCPM_package/test_suite/regression_functions.R')
 
 
 test_path_model <- function(){
