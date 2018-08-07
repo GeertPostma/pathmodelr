@@ -37,7 +37,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
                   #input_variable_type: assigns what type each different variable has
                   #bootstrap="FALSE", bootstrap_iter=NULL
   )
-
+  
   ##Construct data constructs:
   
   #Construct list of block_names and assign to connection_matrix
