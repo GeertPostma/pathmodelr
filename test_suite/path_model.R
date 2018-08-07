@@ -6,15 +6,16 @@ library(listenv)
 path_model <- function(data, connection_matrix, variables_in_block,
                        block_names,
                        estimators = NULL,
-                       start_node_estimation  = "PLS",
-                       middle_node_estimation = "PLS",
-                       end_node_estimation    = "PLS",
+                       start_node_estimator  = "PLS",
+                       middle_node_estimator = "PLS",
+                       end_node_estimator    = "PLS",
                        initializers = NULL,
                        start_node_initialization  = "Full",
                        middle_node_initialization = "Full",
                        end_node_initialization    = "Full",
                        max_iterations = 100,
                        loggers = NULL, #listenv of R6 loggers
+                       unique_node_preprocessing = FALSE, #If TRUE => list of list of functions should be supplied for global and local preprocessors
                        global_preprocessors = NULL, #preprocessing methods that can be applied on the full data (such as log scaling)
                        local_preprocessors = NULL #preprocessing methods that can only be applied locally on training and test sets seperately (such as standardizing or mean-centering)
                      #component_selection="auto", n_comps=NULL, (can be list or set number per node)
@@ -27,9 +28,9 @@ path_model <- function(data, connection_matrix, variables_in_block,
   check_arguments(data, connection_matrix, variables_in_block,
                   block_names,
                   estimators
-                  #start_node_estimation,
-                  #middle_node_estimation,
-                  #end_node_estimation
+                  #start_node_estimator,
+                  #middle_node_estimator,
+                  #end_node_estimator
                   #use_modes,
                   #component_selection="auto", n_comps=NULL,
                   #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
@@ -83,7 +84,6 @@ path_model <- function(data, connection_matrix, variables_in_block,
   for(i in 1:n_blocks){ #index block_names and variables_in_block
     
     blocked_data[[i]] <- select(data, variables_in_block[[i]])
-  
   }
   names(blocked_data) <- block_names
   
@@ -91,33 +91,11 @@ path_model <- function(data, connection_matrix, variables_in_block,
   node_types <- get_all_node_types(connection_matrix)
   
   ##Make estimator list:
-  #Convert input strings to corresponding functions
-  if(typeof(start_node_estimation) == "character"){
-    start_node_estimation <- estimator_string_to_function(start_node_estimation)
-  }
-  if(typeof(middle_node_estimation) == "character"){
-    middle_node_estimation <- estimator_string_to_function(middle_node_estimation)
-  }
-  if(typeof(end_node_estimation) == "character"){
-    end_node_estimation <- estimator_string_to_function(end_node_estimation)
-  }
-  
   if(is.null(estimators)){
-    estimators <- get_estimator_list(node_types, start_node_estimation, middle_node_estimation, end_node_estimation)
+    estimators <- get_estimator_list(node_types, start_node_estimator, middle_node_estimator, end_node_estimator)
   }
   
   ##Make initializer list:
-  #Convert input strings to corresponding functions
-  if(typeof(start_node_initialization) == "character"){
-    start_node_initialization <- initializer_string_to_function(start_node_initialization)
-  }
-  if(typeof(middle_node_initialization) == "character"){
-    middle_node_initialization <- initializer_string_to_function(middle_node_initialization)
-  }
-  if(typeof(end_node_initialization) == "character"){
-    end_node_initialization <- initializer_string_to_function(end_node_initialization)
-  }
-  
   if(is.null(initializers)){
     initializers <- get_initialization_list(node_types, start_node_initialization, middle_node_initialization, end_node_initialization)
   }

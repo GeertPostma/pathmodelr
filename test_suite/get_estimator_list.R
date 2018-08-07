@@ -1,4 +1,16 @@
 get_estimator_list <- function(node_types, start_node_estimator, middle_node_estimator, end_node_estimator){
+  
+  #Convert input strings to corresponding functions
+  if(typeof(start_node_estimator) == "character"){
+    start_node_estimator <- estimator_string_to_function(start_node_estimator)
+  }
+  if(typeof(middle_node_estimator) == "character"){
+    middle_node_estimator <- estimator_string_to_function(middle_node_estimator)
+  }
+  if(typeof(end_node_estimator) == "character"){
+    end_node_estimator <- estimator_string_to_function(end_node_estimator)
+  }
+  
   estimators <- list()
   
   for(i in 1:length(node_types)){

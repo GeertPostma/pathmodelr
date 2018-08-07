@@ -38,5 +38,5 @@ test_path_model <- function(){
   
   block_names <- list("y1", "y2", "y3", "y4")
   
-  result <- path_model(data, connection_matrix, variables_in_block, block_names, start_node_estimation = "PCA", middle_node_estimation = "PCA", end_node_estimation = "PCA", loggers=listenv(ComponentLogger$new(), IterationReporter$new(), DurationLogger$new(report=TRUE)))
+  result <- path_model(data, connection_matrix, variables_in_block, block_names, start_node_estimator = "PCA", middle_node_estimator = "PCA", end_node_estimator = "PCA", loggers=listenv(ComponentLogger$new(), IterationReporter$new(), DurationLogger$new(report=TRUE)))
 }
