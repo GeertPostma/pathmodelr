@@ -4,22 +4,22 @@ library(reshape2) #suggest for ComponentLogger
 library(R6)
 library(listenv)
 path_model <- function(data, connection_matrix, variables_in_block,
-                     block_names,
-                     estimators = NULL,
-                     start_node_estimation  = "SimplePLS",
-                     middle_node_estimation = "SimplePLS",
-                     end_node_estimation    = "SimplePLS",
-                     initializers = NULL,
-                     start_node_initialization  = "Full",
-                     middle_node_initialization = "Full",
-                     end_node_initialization    = "Full",
-                     max_iterations = 100,
-                     loggers = NULL #listenv of R6 loggers
-                     #use_modes = FALSE, #Determines whether or not Reflective and Formative modes should be used.
+                       block_names,
+                       estimators = NULL,
+                       start_node_estimation  = "SimplePLS",
+                       middle_node_estimation = "SimplePLS",
+                       end_node_estimation    = "SimplePLS",
+                       initializers = NULL,
+                       start_node_initialization  = "Full",
+                       middle_node_initialization = "Full",
+                       end_node_initialization    = "Full",
+                       max_iterations = 100,
+                       loggers = NULL, #listenv of R6 loggers
+                       global_preprocessors = NULL, #preprocessing methods that can be applied on the full data (such as log scaling)
+                       local_preprocessors = NULL #preprocessing methods that can only be applied locally on training and test sets seperately (such as standardizing or mean-centering)
                      #component_selection="auto", n_comps=NULL, (can be list or set number per node)
                      #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
-                     #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
-                     #input_variable_type: assigns what type each different variable has
+                                          #input_variable_type: assigns what type each different variable has
                      #bootstrap="FALSE", bootstrap_iter=NULL
                      ){
 
@@ -86,9 +86,6 @@ path_model <- function(data, connection_matrix, variables_in_block,
   
   }
   names(blocked_data) <- block_names
-  
-  ##Pre-Process:
-  preprocessed_blocked_data <- blocked_data
   
   ##Get node types:
   node_types <- get_all_node_types(connection_matrix)

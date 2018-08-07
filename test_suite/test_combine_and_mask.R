@@ -9,7 +9,7 @@ test_combine_and_mask <- function(){
                                   0,0,1,0,0),
                                 nrow=5, ncol=5))
   
-  variables_in_block <- list(1:2, 3:5, 6:8, 9:10, 11, 12)
+  variables_in_block <- list(1:2, 3:5, 6:8, 9:10, 11:12)
   
   block_names <- list("y1", "y2", "y3", "y4", "y5")
   
@@ -18,4 +18,4 @@ test_combine_and_mask <- function(){
   nodes <- model[[1]]
   
   result <- combine_and_mask(nodes[[2]])
-  }
+}
