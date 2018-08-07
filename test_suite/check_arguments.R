@@ -1,6 +1,6 @@
 check_arguments <- function(data, connection_matrix, variables_in_block,
                             block_names,
-                            use_modes
+                            estimators
                             #component_selection="auto", n_comps=NULL,
                             #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
                             #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}

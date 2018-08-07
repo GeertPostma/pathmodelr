@@ -1,7 +1,6 @@
 #All estimators must call add_estimate!
 
-
-simple_PLS_estimator <- function(node){ 
+PLS_estimator <- function(node){ 
   
 }
 

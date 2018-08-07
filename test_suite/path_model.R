@@ -6,9 +6,9 @@ library(listenv)
 path_model <- function(data, connection_matrix, variables_in_block,
                        block_names,
                        estimators = NULL,
-                       start_node_estimation  = "SimplePLS",
-                       middle_node_estimation = "SimplePLS",
-                       end_node_estimation    = "SimplePLS",
+                       start_node_estimation  = "PLS",
+                       middle_node_estimation = "PLS",
+                       end_node_estimation    = "PLS",
                        initializers = NULL,
                        start_node_initialization  = "Full",
                        middle_node_initialization = "Full",
@@ -78,7 +78,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   #make blocked data
   blocked_data <- list()
   
-  #TODO: Determine whether subblocking structure should be assigned
+  #TODO: Determine whether sfubblocking structure should be assigned
   #Proposed subblocking structure: Block > {Xin, Xout} > subblock division
   for(i in 1:n_blocks){ #index block_names and variables_in_block
     
@@ -123,7 +123,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   }
   
   #make node structure graph
-  nodes <- make_nodes(preprocessed_blocked_data, connection_matrix, block_names, estimators, initializers, node_types)
+  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, node_types)
   
   ## Estimate LVs:
   result <- get_LVs(nodes, max_iterations, loggers)#, connection_matrix
