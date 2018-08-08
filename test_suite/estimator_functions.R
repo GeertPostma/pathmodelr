@@ -6,9 +6,9 @@ PLS_estimator <- function(node){
 
 PCA_estimator <- function(node){ #Simple PCA estimation
   
-  rank = dim(node$X_data)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
+  rank = dim(node$preprocessed_X)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
   
-  PCA_object <- prcomp(node$X_data, scale. = FALSE, center = FALSE, rank = rank)
+  PCA_object <- prcomp(node$preprocessed_X, scale. = FALSE, center = FALSE, rank = rank)
   
   LVs <- PCA_object$x
   n_LVs <- rank
@@ -20,8 +20,8 @@ PCA_estimator <- function(node){ #Simple PCA estimation
 full_estimator <- function(node){ #Simple Full estimation (generally used for end-nodes)
 
   LVs <- node$X_data
-  n_LVs <- dim(node$X_data)[2]
-  X_loadings <- diag(dim(node$X_data)[2])
+  n_LVs <- dim(node$preprocessed_X)[2]
+  X_loadings <- diag(dim(node$preprocessed_X)[2])
   
   node$add_estimate(n_LVs, LVs, X_loadings)
 }

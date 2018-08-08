@@ -11,6 +11,7 @@ Node <- R6Class("Node",
     LVs                      = NULL,
     previous_LVs             = NULL,
     X_loadings               = NULL,
+    preprocessed_X           = NULL,
     
     previous_nodes = NULL,
     next_nodes = NULL,
@@ -24,14 +25,17 @@ Node <- R6Class("Node",
     #Methods
     initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor){
       self$node_name           <- node_name
-      self$estimator           <- estimator
-      self$initializer         <- initializer
-      self$local_preprocessor  <- local_preprocessor
-      self$global_preprocessor <- global_preprocessor
+      
       for(preprocessor in global_preprocessor){
         X_data <- preprocessor(X_data)
       }
       self$X_data              <- X_data
+      self$estimator           <- estimator
+      self$initializer         <- initializer
+      self$local_preprocessor  <- local_preprocessor
+      self$global_preprocessor <- global_preprocessor
+      
+      self$preprocess_X()
       
       self$initializer(self)
       self$is_initialized <- TRUE      
@@ -80,6 +84,35 @@ Node <- R6Class("Node",
         self$n_LVs <- NA_integer_
         
         self$is_estimated <- FALSE
+      }
+    },
+    
+    preprocess_train_test = function(train_indices, test_indices){
+      
+      train_data <- X_data[train_indices, ]
+      test_data <- X_data[test_indices, ]
+      
+      for(preprocessor in self$local_preprocessor){
+        
+        preprocessed_train <- preprocessor(train_data)
+        train_data <- preprocessed_train$preprocessed_data
+        settings <- preprocessed_train$settings
+        
+        preprocessed_test <- preprocessor(test_data, settings=settings)
+        test_data <- preprocessed_test$preprocessed_data
+      }
+      
+      
+      return(list("train_data"=train_data, "test_data"=test_data))
+    },
+    
+    preprocess_X = function(){
+      
+      self$preprocessed_X <- self$X_data
+      
+      for(preprocessor in self$local_preprocessor){
+        
+        self$preprocessed_X <- preprocessor(self$preprocessed_X)$preprocessed_data
       }
     }
   )
