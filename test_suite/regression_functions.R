@@ -7,16 +7,16 @@ SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE, covariance_mask=NULL)
   X <- as.matrix(X)
   Y <- as.matrix(Y)
   
-  V <- matrix(0, nrow=ncol(X), ncol=max_n_comp)
+  V <- R<- matrix(0, nrow=ncol(X), ncol=max_n_comp)
   B <- array(0 , dim=c(ncol(X), ncol(Y), max_n_comp))
   Q <- matrix(0, nrow=ncol(Y), ncol=max_n_comp)
   Y_pred <- array(0, dim=c(nrow(X), ncol(Y), max_n_comp))
   
   if(!minimal){
     TT <- U <- matrix(0, nrow=nrow(X), ncol=max_n_comp)
-    P <- R <- V
+    P <- V
   }
-
+  
   S <- crossprod(X,Y)     #Cross product
   
   if(!is.null(covariance_mask)){
