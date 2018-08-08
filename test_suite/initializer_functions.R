@@ -1,6 +1,5 @@
 #All initializers must call add_estimate!
 
-
 PCA_initializer <- function(node){ #Simple PCA estimation
   
   rank = dim(node$preprocessed_X)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
