@@ -12,6 +12,7 @@ Node <- R6Class("Node",
     previous_LVs             = NULL,
     X_loadings               = NULL,
     preprocessed_X           = NULL,
+    error                    = NA_real_, #SSE between iterations
     
     previous_nodes = NULL,
     next_nodes = NULL,
@@ -34,6 +35,8 @@ Node <- R6Class("Node",
       self$initializer         <- initializer
       self$local_preprocessor  <- local_preprocessor
       self$global_preprocessor <- global_preprocessor
+      
+      self$error <- 0
       
       self$preprocess_X()
       
@@ -64,6 +67,14 @@ Node <- R6Class("Node",
       self$n_LVs        <- n_LVs
       self$LVs          <- LVs
       self$X_loadings   <- X_loadings
+      
+      if(!is.null(self$previous_LVs)){
+        self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
+      }
+      else{
+        self$error <- 0
+      }
+      
       self$is_estimated <- TRUE
     },
     
