@@ -1,3 +1,4 @@
+#Made for iterative procedure: uses previous_LVs
 combine_and_mask <- function(node){
   
   layered_nodes <- get_nodes_by_level(node)
@@ -18,8 +19,8 @@ combine_and_mask <- function(node){
   }
   
   for(i in seq_along(next_level_nodes)){
-    cols_per_Y_node[[i]] <- (total_Y_cols + 1):(total_Y_cols+ncol(next_level_nodes[[i]]$LVs))
-    total_Y_cols <- total_Y_cols + ncol(next_level_nodes[[i]]$LVs)
+    cols_per_Y_node[[i]] <- (total_Y_cols + 1):(total_Y_cols+ncol(next_level_nodes[[i]]$previous_LVs))
+    total_Y_cols <- total_Y_cols + ncol(next_level_nodes[[i]]$previous_LVs)
   }
   X <- matrix(0, nrow=n_samples, ncol=total_X_cols)
   Y <- matrix(0, nrow=n_samples, ncol=total_Y_cols)
@@ -29,7 +30,7 @@ combine_and_mask <- function(node){
   }
   
   for(i in seq_along(next_level_nodes)){
-    Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$LVs)
+    Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$previous_LVs)
   }
   
   covariance_mask <- matrix(0, nrow=ncol(X), ncol=ncol(Y))
@@ -53,5 +54,11 @@ combine_and_mask <- function(node){
       }
     }
   }
-  return(list("X"=X, "Y"=Y, "covariance_mask"=covariance_mask, "cols_per_X_node"=cols_per_X_node, "cols_per_y_node"=cols_per_Y_node))
+  return(list("X"=X, 
+              "Y"=Y, 
+              "covariance_mask"=covariance_mask, 
+              "cols_per_X_node"=cols_per_X_node, 
+              "cols_per_y_node"=cols_per_Y_node,
+              "same_level_nodes"=same_level_nodes,
+              "next_level_nodes"=next_level_nodes))
 }
