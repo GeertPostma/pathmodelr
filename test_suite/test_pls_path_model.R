@@ -13,6 +13,6 @@ test_pls_path_model <- function(){
   
   block_names <- list("y1", "y2", "y3", "y4", "y5")
   
-  model <- path_model(data, connection_matrix, variables_in_block, block_names, start_node_estimator = "PLS", middle_node_estimator = "PLS", end_node_estimator = "PCA", loggers=listenv(ComponentLogger$new(), IterationReporter$new(), DurationLogger$new(report=TRUE)))
+  model <- path_model(data, connection_matrix, variables_in_block, block_names, start_node_estimator = "PLS", middle_node_estimator = "PLS", end_node_estimator = "PCA", loggers=listenv(ComponentLogger$new(), IterationReporter$new(), DurationLogger$new(report=TRUE), ConvergenceLogger$new()))
   
 }

@@ -4,7 +4,9 @@ get_LVs <- function(nodes, max_iterations, loggers){ #Add options for different 
   #TODO: Add iterative loop
   i <- 0
   converged <- FALSE
-  while(i < max_iterations && converged == FALSE){
+  threshold <- 0.0001
+  
+  while(i < max_iterations && !converged){
     i <- i + 1
     
     #Reset state loop:
@@ -38,7 +40,14 @@ get_LVs <- function(nodes, max_iterations, loggers){ #Add options for different 
     }
     
     #TODO: Check convergence criterion:
-    converged = FALSE #placeholder
+    total_error <- 0
+    for(ii in seq_along(nodes)){
+      total_error <- total_error + nodes[[ii]]$error
+    }
+    
+    if(total_error < threshold){
+      converged <- TRUE
+    }
   }
 
   return(listenv("nodes"=nodes, "loggers"=loggers))
