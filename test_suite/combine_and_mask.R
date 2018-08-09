@@ -26,7 +26,7 @@ combine_and_mask <- function(node){
   Y <- matrix(0, nrow=n_samples, ncol=total_Y_cols)
   
   for(i in seq_along(same_level_nodes)){
-    X[,cols_per_X_node[[i]]] <- as.matrix(same_level_nodes[[i]]$X_data)
+    X[,cols_per_X_node[[i]]] <- as.matrix(same_level_nodes[[i]]$preprocessed_X)
   }
   
   for(i in seq_along(next_level_nodes)){
