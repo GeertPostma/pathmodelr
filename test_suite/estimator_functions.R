@@ -2,9 +2,11 @@
 
 #Also updates same level and next level nodes
 PLS_estimator <- function(node){ 
-  #TODO: Add cross-validation n_LVs selection
   
-  n_LVs <- 2
+  test_errors <- cross_validate_node_PLS(node, node$previous_n_LVs, k_folds=10, error_function=MSE)$test_errors
+  
+  #TODO: implement more intricate methods of n_LVs selection
+  n_LVs <- which.min(colSums(test_errors))
   
   #final result step:
   combined_and_masked <- combine_and_mask(node)

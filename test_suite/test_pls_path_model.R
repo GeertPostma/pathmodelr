@@ -1,6 +1,6 @@
 test_pls_path_model <- function(){
   
-  data <- data.frame(replicate(12,MASS::mvrnorm(n=1000,0,1)))
+  data <- data.frame(replicate(12,MASS::mvrnorm(n=10000,0,1)))
   
   connection_matrix <- t(matrix(c(0,0,0,0,0,
                                   1,0,0,0,0,

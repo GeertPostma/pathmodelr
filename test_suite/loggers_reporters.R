@@ -31,7 +31,7 @@ ComponentLogger <- R6Class("ComponentLogger",
       d <- melt(self$n_LVs_per_node, id.vars = "iteration")
       colnames(d)[colnames(d) == "variable"] <- "Node"
       colnames(d)[colnames(d) == "value"] <- "n_LVs"
-      p = ggplot(d, aes(x = iteration, y=n_LVs, group = Node)) + 
+      p <- ggplot(d, aes(x = iteration, y=n_LVs, group = Node)) + 
         geom_line(aes(color=Node)) 
       p
         
@@ -84,7 +84,7 @@ DurationLogger <- R6Class("DurationLogger",
    },
    
    show = function(){
-     p = ggplot(d, aes(x = iteration, y="elapsed time", group = Node)) + 
+     p <- ggplot(d, aes(x = iteration, y="elapsed time", group = Node)) + 
        geom_line(aes(color=Node)) 
      p
    }

@@ -1,12 +1,10 @@
 #Made for iterative procedure: uses previous_LVs
-combine_and_mask <- function(node){
+combine_and_mask <- function(node, test_indices=NULL){
   
   layered_nodes <- get_nodes_by_level(node)
   
   same_level_nodes <- layered_nodes[[1]]
   next_level_nodes <- layered_nodes[[2]]
-  
-  n_samples <- nrow(node$X_data)
   
   cols_per_X_node <- list()
   cols_per_Y_node <- list()
@@ -22,20 +20,10 @@ combine_and_mask <- function(node){
     cols_per_Y_node[[i]] <- (total_Y_cols + 1):(total_Y_cols+ncol(next_level_nodes[[i]]$previous_LVs))
     total_Y_cols <- total_Y_cols + ncol(next_level_nodes[[i]]$previous_LVs)
   }
-  X <- matrix(0, nrow=n_samples, ncol=total_X_cols)
-  Y <- matrix(0, nrow=n_samples, ncol=total_Y_cols)
-  
-  for(i in seq_along(same_level_nodes)){
-    X[,cols_per_X_node[[i]]] <- as.matrix(same_level_nodes[[i]]$preprocessed_X)
-  }
-  
-  for(i in seq_along(next_level_nodes)){
-    Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$previous_LVs)
-  }
-  
-  covariance_mask <- matrix(0, nrow=ncol(X), ncol=ncol(Y))
   
   #Fill in covariance mask
+  covariance_mask <- matrix(0, nrow=total_X_cols, ncol=total_Y_cols)
+  
   for(i in seq_along(same_level_nodes)){
     
     X_node <- same_level_nodes[[i]]
@@ -54,11 +42,61 @@ combine_and_mask <- function(node){
       }
     }
   }
-  return(list("X"=X, 
-              "Y"=Y, 
-              "covariance_mask"=covariance_mask, 
-              "cols_per_X_node"=cols_per_X_node, 
-              "cols_per_y_node"=cols_per_Y_node,
-              "same_level_nodes"=same_level_nodes,
-              "next_level_nodes"=next_level_nodes))
+  
+  if(is.null(test_indices)){
+    n_samples <- nrow(node$X_data)
+    
+    X <- matrix(0, nrow=n_samples, ncol=total_X_cols)
+    Y <- matrix(0, nrow=n_samples, ncol=total_Y_cols)
+    
+    for(i in seq_along(same_level_nodes)){
+      X[,cols_per_X_node[[i]]] <- as.matrix(same_level_nodes[[i]]$preprocessed_X)
+    }
+    
+    for(i in seq_along(next_level_nodes)){
+      Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$previous_LVs)
+    }
+    
+    return(list("X"=X, 
+                "Y"=Y, 
+                "covariance_mask"=covariance_mask, 
+                "cols_per_X_node"=cols_per_X_node, 
+                "cols_per_y_node"=cols_per_Y_node,
+                "same_level_nodes"=same_level_nodes,
+                "next_level_nodes"=next_level_nodes))
+    
+  }
+  else{
+    n_samples_train <- nrow(node$X_data[-test_indices,])
+    n_samples_test  <- nrow(node$X_data[test_indices,])
+    
+    X_train <- matrix(0, nrow=n_samples_train, ncol=total_X_cols)
+    X_test  <- matrix(0, nrow=n_samples_test,  ncol=total_X_cols)
+    Y_train <- matrix(0, nrow=n_samples_train, ncol=total_Y_cols)
+    Y_test  <- matrix(0, nrow=n_samples_test,  ncol=total_Y_cols)    
+    
+    for(i in seq_along(same_level_nodes)){
+      preprocessed_X_sets <- same_level_nodes[[i]]$preprocess_train_test(test_indices)
+      
+      X_train[,cols_per_X_node[[i]]] <- as.matrix(preprocessed_X_sets$train_data)
+      X_test[,cols_per_X_node[[i]]]  <- as.matrix(preprocessed_X_sets$test_data)
+    }
+    
+    for(i in seq_along(next_level_nodes)){
+      Y <- next_level_nodes[[i]]$previous_LVs
+      
+      Y_train[,cols_per_Y_node[[i]]] <- as.matrix(Y[-test_indices,])
+      Y_test[,cols_per_Y_node[[i]]]  <- as.matrix(Y[test_indices,])
+    }
+    
+    return(list("X_train"=X_train, 
+                "X_test"=X_test, 
+                "Y_train"=Y_train,
+                "Y_test"=Y_test, 
+                "covariance_mask"=covariance_mask, 
+                "cols_per_X_node"=cols_per_X_node, 
+                "cols_per_y_node"=cols_per_Y_node,
+                "same_level_nodes"=same_level_nodes,
+                "next_level_nodes"=next_level_nodes))
+  }
 }

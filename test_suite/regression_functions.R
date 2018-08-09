@@ -63,7 +63,6 @@ SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE, covariance_mask=NULL)
       P[, a] <- p
       U[, a] <- u
       
-      Y_pred <- X %*% B[, ,a]
     }
 
   }
@@ -80,7 +79,6 @@ SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE, covariance_mask=NULL)
                 "X_scores"=TT,
                 "Y_scores"=U,
                 "X_loadings_unorthogonalized"=P,
-                "X_weights"=R
-                ))
+                "X_weights"=R))
   }
 }

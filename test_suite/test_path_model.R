@@ -23,7 +23,8 @@ source('~/OFFON/MCPM_package/test_suite/combine_and_mask.R')
 source('~/OFFON/MCPM_package/test_suite/local_preprocessing_functions.R')
 source('~/OFFON/MCPM_package/test_suite/regression_functions.R')
 source('~/OFFON/MCPM_package/test_suite/calculate_SSE_for_matrices.R')
-
+source('~/OFFON/MCPM_package/test_suite/MSE.R')
+source('~/OFFON/MCPM_package/test_suite/cross_validate_node_PLS.R')
 
 test_path_model <- function(){
   

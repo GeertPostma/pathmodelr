@@ -100,8 +100,8 @@ Node <- R6Class("Node",
     
     preprocess_train_test = function(test_indices){
       
-      train_data <- as.matrix(X_data[-test_indices, ])
-      test_data <- as.matrix(X_data[test_indices, ])
+      train_data <- as.matrix(self$X_data[-test_indices, ])
+      test_data <- as.matrix(self$X_data[test_indices, ])
       
       for(preprocessor in self$local_preprocessor){
         
