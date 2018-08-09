@@ -39,7 +39,7 @@ get_LVs <- function(nodes, max_iterations, loggers){ #Add options for different 
       logger$log_status(nodes,i)
     }
     
-    #TODO: Check convergence criterion:
+    #Check convergence criterion:
     total_error <- 0
     for(ii in seq_along(nodes)){
       total_error <- total_error + nodes[[ii]]$error
