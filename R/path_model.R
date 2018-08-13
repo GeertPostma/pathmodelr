@@ -1,10 +1,3 @@
-library(dplyr)
-library(ggplot2) #suggest for ComponentLogger
-library(reshape2) #suggest for ComponentLogger
-library(R6)
-library(listenv)
-library(caret)
-
 path_model <- function(data, connection_matrix, variables_in_block,
                        block_names,
                        estimators = NULL,
@@ -40,13 +33,13 @@ path_model <- function(data, connection_matrix, variables_in_block,
                   #input_variable_type: assigns what type each different variable has
                   #bootstrap="FALSE", bootstrap_iter=NULL
   )
-  
+
   ##Construct data constructs:
-  
+
   #Construct list of block_names and assign to connection_matrix
   if(is.null(block_names)){
     #get blocknames from connection matrix
-    
+
     if(is.null(rownames(connection_matrix))){
       if(is.null(colnames(connection_matrix))){
         print("block_names weren't provided directly or contained in connection_matrix. block_names are set to numerical.")
@@ -70,62 +63,62 @@ path_model <- function(data, connection_matrix, variables_in_block,
     rownames(connection_matrix) <- block_names
     colnames(connection_matrix) <- block_names
   }
-  
+
   #Convert possible matrices to dataframes
   data <- as.data.frame(data)
-  
+
   #Calculate number of blocks
   n_blocks <- length(block_names)
-  
+
   #make blocked data
   blocked_data <- list()
-  
+
   #TODO: Determine whether sfubblocking structure should be assigned
   #Proposed subblocking structure: Block > {Xin, Xout} > subblock division
   for(i in 1:n_blocks){ #index block_names and variables_in_block
-    
-    blocked_data[[i]] <- select(data, variables_in_block[[i]])
+
+    blocked_data[[i]] <- dplyr::select(data, variables_in_block[[i]])
   }
   names(blocked_data) <- block_names
-  
+
   ##Get node types:
   node_types <- get_all_node_types(connection_matrix)
-  
+
   ##Make preprocessor list:
   if(!unique_node_preprocessing){
     temp_local_functions <- local_preprocessors
     temp_global_functions <- global_preprocessors
-    
-    local_preprocessors <- list() 
+
+    local_preprocessors <- list()
     global_preprocessors <- list()
-    
+
     for(i in 1:n_blocks){
       local_preprocessors[[i]] <- temp_local_functions
       global_preprocessors[[i]] <- temp_global_functions
     }
   }
-  
+
   ##Make estimator list:
   if(is.null(estimators)){
     estimators <- get_estimator_list(node_types, start_node_estimator, middle_node_estimator, end_node_estimator)
   }
-  
+
   ##Make initializer list:
   if(is.null(initializers)){
     initializers <- get_initialization_list(node_types, start_node_initialization, middle_node_initialization, end_node_initialization)
   }
-  
+
   #make node structure graph
   nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_types)
-  
+
   ## Estimate LVs:
   result <- get_LVs(nodes, max_iterations, loggers)#, connection_matrix
   #        ) #TODO: Add additional options after minimal working version
-  
+
   #4# Calculate Inner Model
   #Statistics: Inner model regressiion (PLSR), GoF, R^2, etc.
-  
-  
+
+
 
 
 }

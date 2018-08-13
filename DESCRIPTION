@@ -1,0 +1,20 @@
+Package: pathmodelr
+Type: Package
+Title: Generalised Path Modeling Package for R
+Version: 0.1.0
+Authors@R: person("Roel", "Bouman", email = "roelbouman@gmail.com", role = c("aut", "cre"))
+Maintainer: Roel Bouman <roelbouman@gmail.com>
+Description: pathmodelr is a package implementing a general framework for Path Modeling in R.
+    It contains a bunch of handy functions with which to implement your own path modeling algorithms in addition to having wrappers for a few common methods.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports:
+    caret,
+    dplyr,
+	ggplot2,
+	listenv,
+	reshape2,
+	R6
+RoxygenNote: 6.1.0
+
