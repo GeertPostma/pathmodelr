@@ -2,16 +2,18 @@
 % Please edit documentation in R/verify_dag.R
 \name{verify_dag}
 \alias{verify_dag}
-\title{Verifies whether a given connection matrix is a Directed Acyclic Graph.
-verify_dag wraps check_dag for a recursive Depth First Search for acyclicity.}
+\title{Verify a Directed Acyclic Graph}
 \usage{
 verify_dag(DAG)
 }
 \arguments{
-\item{DAG}{A matrix where the non zero elements what connections exist. The rows indicate the node where the edge is going to, and the columns indicates the node where the edge is coming from.}
+\item{DAG}{A matrix where the non zero elements what connections exist. The
+rows indicate the node where the edge is going to, and the columns
+indicates the node where the edge is coming from.}
 }
 \value{
-A list of errors and warnings indicating what conditions of the DAG requirements are not met.
+A list of lists of errors and warnings repsectively that indicate
+  what conditions of the DAG requirements are not met.
 }
 \description{
 Verifies whether a given connection matrix is a Directed Acyclic Graph.

@@ -1,8 +1,13 @@
+#' Verify a Directed Acyclic Graph
+#'
 #' Verifies whether a given connection matrix is a Directed Acyclic Graph.
 #' verify_dag wraps check_dag for a recursive Depth First Search for acyclicity.
 #'
-#' @param DAG A matrix where the non zero elements what connections exist. The rows indicate the node where the edge is going to, and the columns indicates the node where the edge is coming from.
-#' @return A list of errors and warnings indicating what conditions of the DAG requirements are not met.
+#' @param DAG A matrix where the non zero elements what connections exist. The
+#'   rows indicate the node where the edge is going to, and the columns
+#'   indicates the node where the edge is coming from.
+#' @return A list of lists of errors and warnings repsectively that indicate
+#'   what conditions of the DAG requirements are not met.
 #' @examples
 #' verify_dag(t(matrix(c(0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0),nrow=4, ncol=4)))
 #' @export

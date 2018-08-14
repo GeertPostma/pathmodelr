@@ -1,5 +1,5 @@
 #' @import R6
-Node <- R6::R6Class("Node",
+Node <- R6Class("Node",
   public =list(
     #Fields
     node_name                = NA_character_,

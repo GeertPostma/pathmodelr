@@ -9,36 +9,35 @@ check_arguments <- function(data, connection_matrix, variables_in_block,
 ){
   error_list <- c()
   warning_list <- c()
-  
+
   #Is the graph a DAG?
   dag_results <- verify_dag(connection_matrix)
   error_list <- c(error_list, dag_results["error_list"])
   warning_list <- c(warning_list, dag_results["warning_list"])
-  
+
   #Is data numeric?
   if(!is.numeric(data)){
     error_list <- c(error_list, "The data matrix contains non-numerical data.")
   }
-  
+
   #Give warning if both block_names or rownames and/or colnames connection_matrix are not supplied.
-  
+
   #Check if data is matrix, dataframe or tidyverse equivalents
   if(!(is.matrix(data) || is.data.frame(data))){
-    error_list <- c(error_list, "Input data must be a matrix, dataframe or a tidyverse dataframe equivalent.") 
+    error_list <- c(error_list, "Input data must be a matrix, dataframe or a tidyverse dataframe equivalent.")
   }
-  
-  
+
+
   #Check whether connection_matrix, variables_in_block and block_names refer to the same number of blocks.
-  
+
   #NaN checking and warnings
-  
-  
+
+
   #Are all variables assigned? Are all named variables in the data?
-  
-  
+
+
   #Are all paired optional parameters set if one is set?
-  
-  
+
+
   are_valid = TRUE
 }
-  
