@@ -12,25 +12,43 @@ combine_and_mask(node, test_indices = NULL)
 \item{test_indices}{a vector of indices indicating the row indices of the samples that belong to the test set. The training set is assumed to be the complementary set of data.}
 }
 \value{
-list("X"=X,
-             "Y"=Y,
-             "covariance_mask"=covariance_mask,
-             "cols_per_X_node"=cols_per_X_node,
-             "cols_per_y_node"=cols_per_Y_node,
-             "same_level_nodes"=same_level_nodes,
-             "next_level_nodes"=next_level_nodes))
+\code{list("X"=X,} (of type matrix)
+
+             \code{"Y"=Y,} (of type matrix)
+
+             \code{"covariance_mask"=covariance_mask,} (of type matrix)
+
+             \code{"cols_per_X_node"=cols_per_X_node,} (list of integer vectors)
+
+             \code{"cols_per_y_node"=cols_per_Y_node,} (list of integer vectors)
+
+             \code{"same_level_nodes"=same_level_nodes,} (listenv of Nodes)
+
+             \code{"next_level_nodes"=next_level_nodes} (listenv of Nodes)
+
+             \code{))}
 
 Or, when test_indices is supplied:
 
-        list("X_train"=X_train,
-             "X_test"=X_test,
-             "Y_train"=Y_train,
-             "Y_test"=Y_test,
-             "covariance_mask"=covariance_mask,
-             "cols_per_X_node"=cols_per_X_node,
-             "cols_per_y_node"=cols_per_Y_node,
-             "same_level_nodes"=same_level_nodes,
-             "next_level_nodes"=next_level_nodes))
+        \code{list("X_train"=X_train,} (of type matrix)
+
+             \code{"X_test"=X_test,} (of type matrix)
+
+             \code{"Y_train"=Y_train,} (of type matrix)
+
+             \code{"Y_test"=Y_test,} (of type matrix)
+
+             \code{"covariance_mask"=covariance_mask,} (of type matrix)
+
+             \code{"cols_per_X_node"=cols_per_X_node,} (list of integer vectors)
+
+             \code{"cols_per_y_node"=cols_per_Y_node,} (list of integer vectors)
+
+             \code{"same_level_nodes"=same_level_nodes,} (listenv of Nodes)
+
+             \code{"next_level_nodes"=next_level_nodes} (listenv of Nodes)
+
+             \code{))}
 
 This is named list containing X, Y, the covariance mask, all nodes on the same level (predictors), all nodes on the next level (targets), and which columns of X and Y belong to which node originally. When test_indices is supplied, X and Y are split into X_train, X_test, Y_train, and Y_test
 }
