@@ -4,7 +4,7 @@
 \alias{check_dag}
 \title{Check Cyclicity in a Directed Acyclic Graph}
 \usage{
-check_dag(DAG, node_name, visited_nodes = c())
+check_dag(DAG, node_name, visited_nodes = list())
 }
 \arguments{
 \item{DAG}{A matrix where the non zero elements what connections exist. The
@@ -24,4 +24,7 @@ A boolean indicating whether a cycle is detected (TRUE), or not
 \description{
 Checks whether a given connection matrix is acyclic. The function is
 recursive and shrinks the search space until a solution is found.
+}
+\details{
+This is an internal function called by verify_dag()
 }

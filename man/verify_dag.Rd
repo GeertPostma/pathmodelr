@@ -12,7 +12,7 @@ rows indicate the node where the edge is going to, and the columns
 indicates the node where the edge is coming from.}
 }
 \value{
-A list of lists of errors and warnings repsectively that indicate
+A list of lists of errors and warnings respectively that indicate
   what conditions of the DAG requirements are not met.
 }
 \description{

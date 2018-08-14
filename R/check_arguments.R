@@ -1,3 +1,16 @@
+#' Checks the input arguments of the path_model() function
+#'
+#' Checks each input argument in sequence, whilst suppressing errors, to allow for one-step checking of arguments.
+#'
+#'
+#' @param data
+#' @param connection_matrix
+#' @param variables_in_block
+#' @param block_names
+#' @param estimators
+#' @return A list of lists of errors and warnings respectively that indicate
+#'   what is wrong with the arguments that are entered into the path_model function.
+
 check_arguments <- function(data, connection_matrix, variables_in_block,
                             block_names,
                             estimators
