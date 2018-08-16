@@ -4,7 +4,7 @@
 #' This is an internal function used for the iterative estimation of the Latent
 #' Variables.
 #'
-#' A convergence threshold of 0.0001 differnece between the Sum of Squared
+#' A convergence threshold of a differnece of 0.0001 between the Sum of Squared
 #' Errors of two subsequent iterations is used.
 #'
 #' @param nodes A listenv of objects of the R6Class Node which are initialised.
