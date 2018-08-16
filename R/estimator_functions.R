@@ -1,7 +1,3 @@
-#All estimators must call add_estimate!
-
-#Also updates same level and next level nodes
-
 #' Estimate a node using PLS regression
 #'
 #' Estimates the LVs of the given node, and all nodes on the same level, using
@@ -54,9 +50,11 @@ PLS_estimator <- function(node){
 #'
 #' Estimates the LVs of the given node using PCA estimation.
 #'
-#' The number of LVs or the \code{rank} can be set explicitly, or it will be automatically determined.
+#' The number of LVs or the \code{rank} can be set explicitly, or it will be
+#' automatically determined.
 #'
-#' The function has no explicit return value, instead the R6Class node object is updated.
+#' The function has no explicit return value, instead the R6Class node object is
+#' updated.
 #'
 #' @param node An object of the R6Class Node which is initialised.
 #' @export
@@ -80,9 +78,11 @@ PCA_estimator <- function(node, rank=NULL){
 
 #' Estimate a node using its full data matrix
 #'
-#' Estimates the LVs of the given node by setting it to be equal to the full data matrix.
+#' Estimates the LVs of the given node by setting it to be equal to the full
+#' data matrix.
 #'
-#' The function has no explicit return value, instead the R6Class node object is updated.
+#' The function has no explicit return value, instead the R6Class node object is
+#' updated.
 #'
 #' @param node An object of the R6Class Node which is initialised.
 #'
