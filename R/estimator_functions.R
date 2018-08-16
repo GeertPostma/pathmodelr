@@ -2,7 +2,22 @@
 
 #Also updates same level and next level nodes
 
-
+#' Estimate a node using PLS regression
+#'
+#' Estimates the LVs of the given node, and all nodes on the same level, using
+#' PLS regression with all next level nodes as targets.
+#'
+#' The cross product matrix used in SIMPLS regression is set to zero at the
+#' connections between the target and predictor variables which are not defined
+#' as being connected in the path model specification.
+#'
+#' The function has no explicit return value, instead the R6Class node object,
+#' and all same level connected nodes, are updated.
+#'
+#' @param node An object of the R6Class Node which is initialised and estimated
+#'   at least once. The node needs to be connected to at least one target node
+#'   for the Y matrices to exist.
+#' @export
 PLS_estimator <- function(node){
 
   max_n_LVs <- node$previous_n_LVs
@@ -35,10 +50,24 @@ PLS_estimator <- function(node){
 
 }
 
+#' Estimate a node using PCA
+#'
+#' Estimates the LVs of the given node using PCA estimation.
+#'
+#' The number of LVs or the \code{rank} can be set explicitly, or it will be automatically determined.
+#'
+#' The function has no explicit return value, instead the R6Class node object is updated.
+#'
+#' @param node An object of the R6Class Node which is initialised.
+#' @export
 #' @import stats
-PCA_estimator <- function(node){ #Simple PCA estimation
+PCA_estimator <- function(node, rank=NULL){
 
-  rank = dim(node$preprocessed_X)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
+
+  if(is.null(rank)){
+    rank = dim(node$preprocessed_X)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
+  }
+
 
   PCA_object <- prcomp(node$preprocessed_X, scale. = FALSE, center = FALSE, rank = rank)
 
@@ -49,6 +78,15 @@ PCA_estimator <- function(node){ #Simple PCA estimation
   node$add_estimate(n_LVs, LVs, X_loadings)
 }
 
+#' Estimate a node using its full data matrix
+#'
+#' Estimates the LVs of the given node by setting it to be equal to the full data matrix.
+#'
+#' The function has no explicit return value, instead the R6Class node object is updated.
+#'
+#' @param node An object of the R6Class Node which is initialised.
+#'
+#' @export
 full_estimator <- function(node){ #Simple Full estimation (generally used for end-nodes)
 
   LVs <- node$X_data
