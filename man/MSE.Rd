@@ -15,8 +15,10 @@ MSE(target, predicted)
 A Double indicating the Mean Squared Error
 }
 \description{
-Calculates the Mean of the squared errors, or the difference between the two input vectors or matrices.
+Calculates the Mean of the squared errors, or the difference between the two
+input vectors or matrices.
 }
 \details{
-When the number is higher than the number of variables in the internal X matrix, the function might display unwanted behaviour.
+When the number is higher than the number of variables in the internal X
+matrix, the function might display unwanted behaviour.
 }

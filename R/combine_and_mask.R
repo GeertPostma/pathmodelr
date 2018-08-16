@@ -50,6 +50,8 @@
 #'
 #' This is named list containing X, Y, the covariance mask, all nodes on the same level (predictors), all nodes on the next level (targets), and which columns of X and Y belong to which node originally. When test_indices is supplied, X and Y are split into X_train, X_test, Y_train, and Y_test
 #'
+#' @export
+#'
 combine_and_mask <- function(node, test_indices=NULL){
 
   layered_nodes <- get_nodes_by_level(node)

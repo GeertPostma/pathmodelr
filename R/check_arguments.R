@@ -10,7 +10,7 @@
 #' @param estimators
 #' @return A list of lists of errors and warnings respectively that indicate
 #'   what is wrong with the arguments that are entered into the path_model function.
-
+#' @export
 check_arguments <- function(data, connection_matrix, variables_in_block,
                             block_names,
                             estimators

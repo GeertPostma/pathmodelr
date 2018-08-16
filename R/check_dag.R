@@ -14,7 +14,7 @@
 #'   been visited in the recursive loop.
 #' @return A boolean indicating whether a cycle is detected (TRUE), or not
 #'   (FALSE)
-#'
+#' @export
 check_dag <- function(DAG, node_name, visited_nodes = list()){
   visited_nodes <- cbind(visited_nodes, node_name)
 

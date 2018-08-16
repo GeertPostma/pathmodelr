@@ -8,20 +8,29 @@ cross_validate_node_PLS(node, max_n_LVs, k_folds = 10,
   error_function = MSE)
 }
 \arguments{
-\item{node}{An object of the R6Class Node which is initialised and estimated at least once. The node needs to be connected to at least one target node for the Y matrices to exist.}
+\item{node}{An object of the R6Class Node which is initialised and estimated
+at least once. The node needs to be connected to at least one target node
+for the Y matrices to exist.}
 
-\item{max_n_LVs}{An integer indicating the max number of LVs that are to be evaluated.}
+\item{max_n_LVs}{An integer indicating the max number of LVs that are to be
+evaluated.}
 
-\item{k_folds}{An integer indicating the number of folds that are to be evaluated for the k-fold cross validation. It can not be higher than the number of samples.}
+\item{k_folds}{An integer indicating the number of folds that are to be
+evaluated for the k-fold cross validation. It can not be higher than the
+number of samples.}
 
-\item{error_function}{A function handle for an error function which takes two equal size matrices and returns a single double.}
+\item{error_function}{A function handle for an error function which takes two
+equal size matrices and returns a single double.}
 }
 \value{
-A Matrix of errors for each fold and each number of LVs. The rows indicate the fold, the columns indicate the max number of LVs.
+A Matrix of errors for each fold and each number of LVs. The rows
+  indicate the fold, the columns indicate the max number of LVs.
 }
 \description{
-This functions calculates errors given a function for k-fold cross validation for each number of LVs up to a maximum number of LVs.
+This functions calculates errors given a function for k-fold cross validation
+for each number of LVs up to a maximum number of LVs.
 }
 \details{
-When the number is higher than the number of variables in the internal X matrix, the function might display unwanted behaviour.
+When the number is higher than the number of variables in the internal X
+matrix, the function might display unwanted behaviour.
 }
