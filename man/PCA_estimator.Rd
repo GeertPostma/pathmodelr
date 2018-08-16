@@ -13,7 +13,9 @@ PCA_estimator(node, rank = NULL)
 Estimates the LVs of the given node using PCA estimation.
 }
 \details{
-The number of LVs or the \code{rank} can be set explicitly, or it will be automatically determined.
+The number of LVs or the \code{rank} can be set explicitly, or it will be
+automatically determined.
 
-The function has no explicit return value, instead the R6Class node object is updated.
+The function has no explicit return value, instead the R6Class node object is
+updated.
 }

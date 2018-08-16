@@ -10,8 +10,10 @@ full_estimator(node)
 \item{node}{An object of the R6Class Node which is initialised.}
 }
 \description{
-Estimates the LVs of the given node by setting it to be equal to the full data matrix.
+Estimates the LVs of the given node by setting it to be equal to the full
+data matrix.
 }
 \details{
-The function has no explicit return value, instead the R6Class node object is updated.
+The function has no explicit return value, instead the R6Class node object is
+updated.
 }

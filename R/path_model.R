@@ -1,3 +1,4 @@
+#' @import listenv
 path_model <- function(data, connection_matrix, variables_in_block,
                        block_names,
                        estimators = NULL,
