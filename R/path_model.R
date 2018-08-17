@@ -1,14 +1,35 @@
+#' Performs Latent Variable estimation given data and path model specifications
+#'
+#' @param data
+#' @param connection_matrix
+#' @param variables_in_block
+#' @param block_names
+#' @param estimators
+#' @param start_node_estimator
+#' @param middle_node_estimator
+#' @param end_node_estimator
+#' @param initializers
+#' @param start_node_initializer
+#' @param middle_node_initializer
+#' @param end_node_initializer
+#' @param max_iterations
+#' @param loggers
+#' @param unique_node_preprocessing
+#' @param global_preprocessors
+#' @param local_preprocessors
+#' @return
+#' @export
 #' @import listenv
 path_model <- function(data, connection_matrix, variables_in_block,
-                       block_names,
+                       block_names = NULL,
                        estimators = NULL,
                        start_node_estimator  = "PLS",
                        middle_node_estimator = "PLS",
                        end_node_estimator    = "PLS",
                        initializers = NULL,
-                       start_node_initialization  = "Full",
-                       middle_node_initialization = "Full",
-                       end_node_initialization    = "Full",
+                       start_node_initializer  = "Full",
+                       middle_node_initializer = "Full",
+                       end_node_initializer    = "Full",
                        max_iterations = 100,
                        loggers = NULL, #listenv of R6 loggers
                        unique_node_preprocessing = FALSE, #If TRUE => list of list of functions should be supplied for global and local preprocessors
@@ -106,7 +127,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
 
   ##Make initializer list:
   if(is.null(initializers)){
-    initializers <- get_initialization_list(node_types, start_node_initialization, middle_node_initialization, end_node_initialization)
+    initializers <- get_initializer_list(node_types, start_node_initializer, middle_node_initializer, end_node_initializer)
   }
 
   #make node structure graph
