@@ -7,7 +7,7 @@
 verify_dag(DAG)
 }
 \arguments{
-\item{DAG}{A matrix where the non zero elements what connections exist. The
+\item{DAG}{A lower triangular matrix where the non zero elements what connections exist. The
 rows indicate the node where the edge is going to, and the columns
 indicates the node where the edge is coming from.}
 }

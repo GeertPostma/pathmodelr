@@ -57,6 +57,7 @@ PLS_estimator <- function(node){
 #' updated.
 #'
 #' @param node An object of the R6Class Node which is initialised.
+#' @param rank An integer indicating the rank, or maximum number of LVs/PCs. If left as \code{NULL}, the rank is automatically estimated.
 #' @export
 #' @import stats
 PCA_estimator <- function(node, rank=NULL){

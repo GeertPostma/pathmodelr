@@ -8,6 +8,8 @@ PCA_estimator(node, rank = NULL)
 }
 \arguments{
 \item{node}{An object of the R6Class Node which is initialised.}
+
+\item{rank}{An integer indicating the rank, or maximum number of LVs/PCs. If left as \code{NULL}, the rank is automatically estimated.}
 }
 \description{
 Estimates the LVs of the given node using PCA estimation.

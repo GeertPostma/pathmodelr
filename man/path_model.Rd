@@ -14,6 +14,125 @@ path_model(data, connection_matrix, variables_in_block,
   global_preprocessors = list(),
   local_preprocessors = list(standardize))
 }
+\arguments{
+\item{data}{A dataframe or matrix containing the data belonging to the
+process that is being modelled. The rows contain the samples, the columns
+contain the variables.}
+
+\item{connection_matrix}{A lower triangular matrix where the non zero
+elements what connections exist. The rows indicate the node where the edge
+is going to, and the columns indicates the node where the edge is coming
+from.}
+
+\item{variables_in_block}{A list of lists indicating the variables
+corresponding to each block. The ordering of the upper list should be the
+same as that of the \code{connection_matrix}. The inner list values can be
+integers indicating the column number, or the name when column names are
+set in \code{data}.}
+
+\item{block_names}{An ordered list containing the names that should be
+assigned to each block. The ordering of the list should be the same as that
+of the \code{connection_matrix}. When the argument is not set, names are
+extracted from \code{data}, or set to dummy names based on ordering when
+\code{data} contains no names.}
+
+\item{estimators}{A list of functions indicating which estimator should be
+used for which node. The ordering of the list should be the same as that of
+the \code{connection_matrix}. It is advised to only use this option when
+you want different estimators within a level of estimation (Start, Middle,
+End). All estimators must implement a common interface, taking only a
+R6Class Node object as input, and returning nothing. Instead, this function
+should update the node directly.}
+
+\item{start_node_estimator}{An estimator function which estimates a R6Class
+Node object, or a string indicating the estimation method ("PCA", "PLS", or
+"Full" ) meant for estimation of a start type Node. All estimators must
+implement a common interface, taking only a R6Class Node object as input,
+and returning nothing. Instead, this function should update the node
+directly.}
+
+\item{middle_node_estimator}{An estimator function which estimates a R6Class
+Node object, or a string indicating the estimation method ("PCA", "PLS", or
+"Full" ) meant for estimation of a middle type Node. All estimators must
+implement a common interface, taking only a R6Class Node object as input,
+and returning nothing. Instead, this function should update the node
+directly.}
+
+\item{end_node_estimator}{An estimator function which estimates a R6Class
+Node object, or a string indicating the estimation method ("PCA", "PLS", or
+"Full" ) meant for estimation of an end type Node. All estimators must
+implement a common interface, taking only a R6Class Node object as input,
+and returning nothing. Instead, this function should update the node
+directly.}
+
+\item{initializers}{A list of functions indicating which initializer should be
+used for which node. The ordering of the list should be the same as that of
+the \code{connection_matrix}. It is advised to only use this option when
+you want different initializers within a level of nodes (Start, Middle,
+End). All initializers must implement a common interface, taking only a
+R6Class Node object as input, and returning nothing. Instead, this function
+should update the node directly.}
+
+\item{start_node_initializer}{An initializer function which estimates a R6Class
+Node object, or a string indicating the estimation method ("PCA", or
+"Full" ) meant for initializing a start type Node. All initializers must
+implement a common interface, taking only a R6Class Node object as input,
+and returning nothing. Instead, this function should update the node
+directly.}
+
+\item{middle_node_initializer}{An initializer function which estimates a R6Class
+Node object, or a string indicating the estimation method ("PCA", or
+"Full" ) meant for initializing a middle type Node. All initializers must
+implement a common interface, taking only a R6Class Node object as input,
+and returning nothing. Instead, this function should update the node
+directly.}
+
+\item{end_node_initializer}{An initializer function which estimates a R6Class
+Node object, or a string indicating the estimation method ("PCA", or
+"Full" ) meant for initializing an end type Node. All initializers must
+implement a common interface, taking only a R6Class Node object as input,
+and returning nothing. Instead, this function should update the node
+directly.}
+
+\item{max_iterations}{An integer indicating the maximum number of iterations
+before execution of LV estimation is halted when the convergence criterion
+is not met beforehand.}
+
+\item{loggers}{A listenv of R6Class based loggers and/or reporters. All
+loggers or reports must implement a \code{log_status()} method. Implemented
+loggers or reporters are ComponentLogger, IterationReporter, DurationLogger,
+and ConvergenceLogger.}
+
+\item{unique_node_preprocessing}{A Boolean indicating whether different nodes
+should be preprocesed differently. If \code{TRUE}, the global_preprocessors
+and local_preprocessors lists should be entered as a list of list of
+preprocessing functions.}
+
+\item{global_preprocessors}{A list of preprocessing functions when
+unique_node_preprocessing is \code{FALSE}, a list of lists of preprocessing
+functions when unique_node_preprocessing is \code{TRUE}. The ordering of
+the outer list should be the same as that of the \code{connection_matrix}.
+The order of the inner list is only important when the function results
+differ when their order of application is changed. The funtions will be
+applied from beginning to end. The supplied function must be invariant to
+subsampling. User-implemented functions must take a Matrix as input, and
+return the preprocessed matrix.}
+
+\item{local_preprocessors}{A list of preprocessing functions when
+unique_node_preprocessing is \code{FALSE}, a list of lists of preprocessing
+functions when unique_node_preprocessing is \code{TRUE}. The ordering of
+the outer list should be the same as that of the \code{connection_matrix}.
+The order of the inner list is only important when the function results
+differ when their order of application is changed. The funtions will be
+applied from beginning to end. The supplied functionis assumed to be
+influenced by subsampling, and therefore can be applied on subsets when
+(cross-)validating. User-implemented functions must take a Matrix as input,
+and return the preprocessed matrix. Implemented functions are: (block_scale,
+standardize, and mean_center)}
+}
+\value{
+A listenv of connected, initialized, and estimated nodes
+}
 \description{
 Performs Latent Variable estimation given data and path model specifications
 }

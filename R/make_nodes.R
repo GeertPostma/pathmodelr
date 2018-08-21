@@ -25,8 +25,8 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
 
     node <- node_list[[i]]
 
-    next_node_indices     <- get_next_nodes(connection_matrix, i)
-    previous_node_indices <- get_previous_nodes(connection_matrix, i)
+    next_node_indices     <- get_next_node_indices(connection_matrix, i)
+    previous_node_indices <- get_previous_node_indices(connection_matrix, i)
 
     next_nodes <- node_list[next_node_indices]
     previous_nodes <- node_list[previous_node_indices]

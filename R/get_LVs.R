@@ -10,8 +10,12 @@
 #' @param nodes A listenv of objects of the R6Class Node which are initialised.
 #'   The nodes also need to be connected.
 #' @param max_iterations An integer indicating the maximum number of iterations
-#'   before execution is halted
-#' @param loggers A listenv of R6Class based loggers and/or reporters
+#'   before execution of LV estimation is halted when the convergence criterion
+#'   is not met beforehand.
+#' @param loggers A listenv of R6Class based loggers and/or reporters. All
+#'   loggers or reports must implement a \code{log_status()} method. Implemented
+#'   loggers or reporters are ComponentLogger, IterationReporter,
+#'   DurationLogger, and ConvergenceLogger.
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @import listenv
 get_LVs <- function(nodes, max_iterations, loggers){ #Add options for different methods (SO-PLS, Multicomponent regression) in addition to just 1-1

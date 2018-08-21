@@ -12,9 +12,13 @@ get_LVs(nodes, max_iterations, loggers)
 The nodes also need to be connected.}
 
 \item{max_iterations}{An integer indicating the maximum number of iterations
-before execution is halted}
+before execution of LV estimation is halted when the convergence criterion
+is not met beforehand.}
 
-\item{loggers}{A listenv of R6Class based loggers and/or reporters}
+\item{loggers}{A listenv of R6Class based loggers and/or reporters. All
+loggers or reports must implement a \code{log_status()} method. Implemented
+loggers or reporters are ComponentLogger, IterationReporter,
+DurationLogger, and ConvergenceLogger.}
 }
 \value{
 A listenv of connected, initialized, and estimated nodes
