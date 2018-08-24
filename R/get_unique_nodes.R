@@ -1,3 +1,12 @@
+#' Create a listenv of all unique nodes given a listenv of nodes
+#'
+#' constructs a list of all unique nodes in the input, which may contain
+#' duplicates.
+#'
+#' @param all_nodes A listenv of nodes
+#' @return A listenv of nodes. It contains a single reference to each unique
+#'   node in all_nodes.
+#' @export
 #' @import listenv
 get_unique_nodes <- function(all_nodes){
 

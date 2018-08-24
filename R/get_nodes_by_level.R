@@ -1,3 +1,12 @@
+#' Gets a listenv of listenvs of same level, and next level nodes
+#'
+#' Constructs a listenv with length 2 which contains a listenv of all nodes on
+#' the same level, and a listenv of all nodes on the next level.
+#'
+#' @param node An object of the R6Class Node which is initialised.
+#' @return A listenv with two listenvs of nodes on the same level, and nodes on
+#'   the next level.
+#' @export
 #' @import listenv
 get_nodes_by_level <- function(node){
 
