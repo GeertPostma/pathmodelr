@@ -88,7 +88,7 @@ PCA_estimator <- function(node, rank=NULL){
 #' @param node An object of the R6Class Node which is initialised.
 #'
 #' @export
-full_estimator <- function(node){ #Simple Full estimation (generally used for end-nodes)
+full_estimator <- function(node){
 
   LVs <- node$X_data
   n_LVs <- dim(node$preprocessed_X)[2]

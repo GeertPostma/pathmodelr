@@ -1,3 +1,11 @@
+#' Gets a listenv same level nodes
+#'
+#' Constructs a listenv which contains  all nodes on
+#' the same level
+#'
+#' @param node An object of the R6Class Node which is initialised.
+#' @return A listenv of nodes on the same level.
+#' @export
 #' @import listenv
 get_same_level_connected_nodes <- function(node){
   #Code is highly verbose and unoptimized, consider replacing when performance issues are observed.
