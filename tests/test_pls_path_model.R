@@ -1,4 +1,5 @@
 library(MASS)
+library(pathmodelr)
 
 test_pls_path_model <- function(){
 
