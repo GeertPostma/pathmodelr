@@ -9,7 +9,7 @@
 #'   and "settings", which is equal to the settings input parameter when set,
 #'   and otherwise contains the calculated and used block_std.
 #' @export
-#' @import stats
+#' @importFrom stats sd
 block_scale <- function(input_data, settings=list("block_std"=NULL)){
   block_std <- settings$block_std
 
@@ -40,7 +40,7 @@ block_scale <- function(input_data, settings=list("block_std"=NULL)){
 #'   and otherwise contains the calculated and used column_stds and
 #'   column_means.
 #' @export
-#' @import stats
+#' @importFrom stats sd
 standardize <- function(input_data, settings=list("column_means"=NULL, "column_stds"=NULL)){
   column_means <- settings$column_means
   column_stds <- settings$column_stds
