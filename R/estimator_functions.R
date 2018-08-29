@@ -14,6 +14,7 @@
 #'   at least once. The node needs to be connected to at least one target node
 #'   for the Y matrices to exist.
 #' @export
+#' @import ggplot2
 PLS_estimator <- function(node){
 
   max_n_LVs <- node$previous_n_LVs
@@ -33,6 +34,13 @@ PLS_estimator <- function(node){
   same_level_nodes <- combined_and_masked$same_level_nodes
 
   X_loadings <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=TRUE, covariance_mask=covariance_mask)$X_loadings
+
+  bla <- reshape2::melt(X_loadings)
+
+  p <- ggplot2::ggplot(data = bla, ggplot2::aes(x=Var1, y=Var2, fill=value)) +
+         ggplot2::geom_tile()
+  methods::show(p)
+
 
   for(i in seq_along(same_level_nodes)){
     update_node <- same_level_nodes[[i]]
