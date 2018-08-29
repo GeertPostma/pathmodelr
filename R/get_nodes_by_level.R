@@ -12,9 +12,6 @@ get_nodes_by_level <- function(node){
 
   unique_next_level_nodes <- listenv()
   unique_same_level_nodes <- listenv(node)
-
-  #TODO: add regress backwards option when used on end node
-
   n_same <- 0
   temp <- -1
 

@@ -36,7 +36,6 @@ get_unique_nodes <- function(all_nodes){
 
           unique_node_names[[k]] <- NULL #remove from list
 
-          #k <- k - 1#indexing only works normally when nothing is removed, so lower k for each match
           break
         }
       }
