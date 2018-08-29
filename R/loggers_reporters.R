@@ -3,6 +3,7 @@
 #Logs the number of components per node per iteration
 #' @importFrom reshape2 melt
 #' @import ggplot2
+#' @export
 ComponentLogger <- R6Class("ComponentLogger",
   public = list(
     #Fields
@@ -54,6 +55,7 @@ IterationReporter <- R6Class("IterationLogger",
 
 #' @importFrom reshape2 melt
 #' @import ggplot2
+#' @export
 DurationLogger <- R6Class("DurationLogger",
   public = list(
    #Fields
@@ -98,6 +100,7 @@ DurationLogger <- R6Class("DurationLogger",
 #Logs the number of components per node per iteration
 #' @importFrom reshape2 melt
 #' @import ggplot2
+#' @export
 ConvergenceLogger <- R6Class("ConvergenceLogger",
   public = list(
    #Fields
