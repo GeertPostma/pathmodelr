@@ -42,6 +42,7 @@ ComponentLogger <- R6Class("ComponentLogger",
   )
 )
 
+#' @export
 IterationReporter <- R6Class("IterationLogger",
   public = list(
     #Fields
