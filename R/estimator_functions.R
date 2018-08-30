@@ -24,6 +24,8 @@ PLS_estimator <- function(node){
   #TODO: implement more intricate methods of n_LVs selection
   n_LVs <- which.min(colSums(test_errors))
 
+  #plot(ggplot2::ggplot(data=data.frame(errors=colSums(test_errors), n_LVs=1:length(colSums(test_errors))), ggplot2::aes(y=errors,x=n_LVs)) + ggplot2::geom_line())
+
   #final result step:
   combined_and_masked <- combine_and_mask(node)
 
@@ -33,23 +35,26 @@ PLS_estimator <- function(node){
   cols_per_X_node <- combined_and_masked$cols_per_X_node
   same_level_nodes <- combined_and_masked$same_level_nodes
 
-  X_loadings <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=TRUE, covariance_mask=covariance_mask)$X_loadings
+  X_weights <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=TRUE, covariance_mask=covariance_mask)$X_weights
 
-  bla <- reshape2::melt(X_loadings)
-
-  p <- ggplot2::ggplot(data = bla, ggplot2::aes(x=Var1, y=Var2, fill=value)) +
-         ggplot2::geom_tile()
-  methods::show(p)
+  # bla <- reshape2::melt(X_loadings)
+  #
+  # p <- ggplot2::ggplot(data = bla, ggplot2::aes(x=Var1, y=Var2)) +
+  #        ggplot2::geom_tile(aes(fill = value)) +
+  #        ggplot2::geom_text(aes(label = round(value, 1))) +
+  #        ggplot2::scale_fill_gradient(low = "white", high = "red")
+  #        ggplot2::ggtitle(node$node_name)
+  # methods::show(p)
 
 
   for(i in seq_along(same_level_nodes)){
     update_node <- same_level_nodes[[i]]
     node_cols <- cols_per_X_node[[i]]
 
-    node_loadings <- X_loadings[node_cols,]
-    node_LVs <- update_node$preprocessed_X %*% node_loadings
+    node_weights <- X_weights[node_cols,]
+    node_LVs <- update_node$preprocessed_X %*% node_weights
 
-    update_node$add_estimate(n_LVs, node_LVs, node_loadings)
+    update_node$add_estimate(n_LVs, node_LVs, node_weights)
   }
 
 }

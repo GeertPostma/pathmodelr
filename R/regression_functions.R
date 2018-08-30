@@ -7,7 +7,7 @@ SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE, covariance_mask=NULL)
   X <- as.matrix(X)
   Y <- as.matrix(Y)
 
-  V <- R<- matrix(0, nrow=ncol(X), ncol=max_n_comp)
+  V <- R <- matrix(0, nrow=ncol(X), ncol=max_n_comp)
   B <- array(0 , dim=c(ncol(X), ncol(Y), max_n_comp))
   Q <- matrix(0, nrow=ncol(Y), ncol=max_n_comp)
   Y_pred <- array(0, dim=c(nrow(X), ncol(Y), max_n_comp))
@@ -70,7 +70,8 @@ SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE, covariance_mask=NULL)
   if(minimal){
     return(list("X_loadings"=V,
                 "Y_loadings"=Q,
-                "coefficients"=B))
+                "coefficients"=B,
+                "X_weights"=R))
   }
   else{
     return(list("X_loadings"=V,
