@@ -98,7 +98,7 @@ directly.}
 before execution of LV estimation is halted when the convergence criterion
 is not met beforehand.}
 
-\item{loggers}{A listenv of R6Class based loggers and/or reporters. All
+\item{loggers}{A listenv of R6Class based logger and/or reporter objects. All
 loggers or reports must implement a \code{log_status()} method. Implemented
 loggers or reporters are ComponentLogger, IterationReporter, DurationLogger,
 and ConvergenceLogger.}
