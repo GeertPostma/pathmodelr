@@ -12,6 +12,7 @@ Node <- R6Class("Node",
     LVs                      = NULL,
     previous_LVs             = NULL,
     X_loadings               = NULL,
+    Y_loadings               = NULL, #Follows same orders as next_nodes
     preprocessed_X           = NULL,
     error                    = NA_real_, #SSE between iterations
 
@@ -64,10 +65,11 @@ Node <- R6Class("Node",
       }
     },
 
-    add_estimate = function(n_LVs, LVs, X_loadings){
+    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL){
       self$n_LVs        <- n_LVs
       self$LVs          <- LVs
       self$X_loadings   <- X_loadings
+      self$Y_loadings   <- Y_loadings
 
       if(!is.null(self$previous_LVs)){
         self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
