@@ -70,7 +70,7 @@
 #' @param max_iterations An integer indicating the maximum number of iterations
 #'   before execution of LV estimation is halted when the convergence criterion
 #'   is not met beforehand.
-#' @param loggers A listenv of R6Class based loggers and/or reporters. All
+#' @param loggers A listenv of R6Class based logger and/or reporter objects. All
 #'   loggers or reports must implement a \code{log_status()} method. Implemented
 #'   loggers or reporters are ComponentLogger, IterationReporter, DurationLogger,
 #'   and ConvergenceLogger.
@@ -93,7 +93,7 @@
 #'   the outer list should be the same as that of the \code{connection_matrix}.
 #'   The order of the inner list is only important when the function results
 #'   differ when their order of application is changed. The funtions will be
-#'   applied from beginning to end. The supplied functionis assumed to be
+#'   applied from beginning to end. The supplied function is assumed to be
 #'   influenced by subsampling, and therefore can be applied on subsets when
 #'   (cross-)validating. User-implemented functions must take a Matrix as input,
 #'   and return the preprocessed matrix. Implemented functions are: (block_scale,
@@ -101,6 +101,7 @@
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @export
 #' @import listenv
+#' @importFrom dplyr select
 path_model <- function(data, connection_matrix, variables_in_block,
                        block_names = NULL,
                        estimators = NULL,
@@ -180,7 +181,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   #Proposed subblocking structure: Block > {Xin, Xout} > subblock division
   for(i in 1:n_blocks){ #index block_names and variables_in_block
 
-    blocked_data[[i]] <- dplyr::select(data, variables_in_block[[i]])
+    blocked_data[[i]] <- select(data, variables_in_block[[i]])
   }
   names(blocked_data) <- block_names
 

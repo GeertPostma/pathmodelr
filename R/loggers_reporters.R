@@ -1,6 +1,6 @@
 #Each logger must implement a log_status method
 
-#Logs the number of components per node per iteration
+#' Logs the number of components per node per iteration
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
@@ -41,7 +41,7 @@ ComponentLogger <- R6Class("ComponentLogger",
     }
   )
 )
-
+#' Reports the number of each iteration.
 #' @export
 IterationReporter <- R6Class("IterationLogger",
   public = list(
@@ -54,6 +54,10 @@ IterationReporter <- R6Class("IterationLogger",
   )
 )
 
+#' Logs the duration of each iteration
+#'
+#' When \code{report} is set to \code{TRUE} the duration is also reported each
+#' iteration.
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
@@ -98,7 +102,7 @@ DurationLogger <- R6Class("DurationLogger",
   )
 )
 
-#Logs the number of components per node per iteration
+#' Logs the number of components per node per iteration
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
