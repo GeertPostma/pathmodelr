@@ -17,7 +17,6 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
                      local_preprocessor = local_preprocessors[[i]],
                      global_preprocessor = global_preprocessors[[i]])
 
-
     node_list[[i]] <- node
   }
   #Node connecting pass
@@ -32,7 +31,6 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
     previous_nodes <- node_list[previous_node_indices]
 
     node$add_connected_nodes(next_nodes=next_nodes, previous_nodes=previous_nodes)
-
   }
 
    return(node_list)

@@ -113,7 +113,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
                        estimators = NULL,
                        start_node_estimator  = "PLS",
                        middle_node_estimator = "PLS",
-                       end_node_estimator    = "PLS",
+                       end_node_estimator    = "PCA",
                        initializers = NULL,
                        start_node_initializer  = "Full",
                        middle_node_initializer = "Full",
@@ -180,8 +180,6 @@ path_model <- function(data, connection_matrix, variables_in_block,
   #make blocked data
   blocked_data <- list()
 
-  #TODO: Determine whether subblocking structure should be assigned
-  #Proposed subblocking structure: Block > {Xin, Xout} > subblock division
   for(i in 1:n_blocks){ #index block_names and variables_in_block
 
     blocked_data[[i]] <- select(data, variables_in_block[[i]])

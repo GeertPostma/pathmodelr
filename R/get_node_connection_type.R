@@ -9,7 +9,7 @@
 #'   determined.
 #' @return A string indicating the type of node using "Start", "End", or
 #'   "Middle"
-get_node_type <- function(connection_matrix, node_index){
+get_node_connection_type <- function(connection_matrix, node_index){
 
   in_sum  <- sum(connection_matrix[node_index,])
   out_sum <- sum(connection_matrix[,node_index])
