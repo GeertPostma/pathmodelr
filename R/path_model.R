@@ -187,7 +187,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   names(blocked_data) <- block_names
 
   ##Get node types:
-  node_types <- get_all_node_types(connection_matrix)
+  node_connection_types <- get_all_node_connection_types(connection_matrix)
 
   ##Make preprocessor list:
   if(!unique_node_preprocessing){
@@ -205,16 +205,16 @@ path_model <- function(data, connection_matrix, variables_in_block,
 
   ##Make estimator list:
   if(is.null(estimators)){
-    estimators <- get_estimator_list(node_types, start_node_estimator, middle_node_estimator, end_node_estimator)
+    estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator)
   }
 
   ##Make initializer list:
   if(is.null(initializers)){
-    initializers <- get_initializer_list(node_types, start_node_initializer, middle_node_initializer, end_node_initializer)
+    initializers <- get_initializer_list(node_connection_types, start_node_initializer, middle_node_initializer, end_node_initializer)
   }
 
   #make node structure graph
-  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_types)
+  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_connection_types)
 
   ## Estimate LVs:
   result <- get_LVs(nodes, max_iterations, loggers, convergence_threshold=convergence_threshold)
