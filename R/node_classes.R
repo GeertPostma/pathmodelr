@@ -114,7 +114,6 @@ Node <- R6Class("Node",
         test_data <- preprocessed_test$preprocessed_data
       }
 
-
       return(list("train_data"=train_data, "test_data"=test_data))
     },
 
