@@ -4,7 +4,7 @@
 #' This is an internal function used to make a list of estimators for each type
 #' of node.
 #'
-#' @param node_types A list of strings indicating the type of the node
+#' @param node_connection_types A list of strings indicating the type of the node
 #' @param start_node_estimator A handle to a function which takes a node as an
 #'   argument and is able to estimate a Start type node
 #' @param middle_node_estimator A handle to a function which takes a node as an
@@ -13,7 +13,7 @@
 #'   argument and is able to estimate an End type node
 #' @return A list of function handles to an estimator function which takes a
 #'   node as an argument.
-get_estimator_list <- function(node_types, start_node_estimator, middle_node_estimator, end_node_estimator){
+get_estimator_list <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator){
 
   #Convert input strings to corresponding functions
   if(typeof(start_node_estimator) == "character"){
@@ -28,14 +28,14 @@ get_estimator_list <- function(node_types, start_node_estimator, middle_node_est
 
   estimators <- list()
 
-  for(i in 1:length(node_types)){
-    if(node_types[[i]] == "Middle"){
+  for(i in 1:length(node_connection_types)){
+    if(node_connection_types[[i]] == "Middle"){
       estimators[[i]] <- middle_node_estimator
     }
-    else if(node_types[[i]] == "Start"){
+    else if(node_connection_types[[i]] == "Start"){
       estimators[[i]] <- start_node_estimator
     }
-    else if(node_types[[i]] == "End"){
+    else if(node_connection_types[[i]] == "End"){
       estimators[[i]] <- end_node_estimator
     }
     else{

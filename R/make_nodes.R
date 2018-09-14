@@ -1,4 +1,4 @@
-# @include Node.R
+# @include node_classes.R
 #' @import listenv
 make_nodes <- function(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_types){
 

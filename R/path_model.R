@@ -104,26 +104,31 @@
 #'   difference is less, the algorithm is considered to have converged. A
 #'   convergence threshold of a difference of 0.0001 between the Sum of Squared
 #'   Errors of two subsequent iterations is used as a default.
+#' @param node_class_types A listenv of R6Class Node classes, or R6Classes which
+#'   inherit the Node class. This option should only be set when the estimators
+#'   argument is provided and other Node types are needed, or when custom
+#'   path_modeling methods require new Node inheriting types.
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @export
 #' @import listenv
 #' @importFrom dplyr select
 path_model <- function(data, connection_matrix, variables_in_block,
-                       block_names = NULL,
-                       estimators = NULL,
-                       start_node_estimator  = "PLS",
-                       middle_node_estimator = "PLS",
-                       end_node_estimator    = "PCA",
-                       initializers = NULL,
-                       start_node_initializer  = "Full",
-                       middle_node_initializer = "Full",
-                       end_node_initializer    = "Full",
-                       max_iterations = 100,
-                       loggers = NULL,
+                       block_names               = NULL,
+                       estimators                = NULL,
+                       start_node_estimator      = "PLS",
+                       middle_node_estimator     = "PLS",
+                       end_node_estimator        = "PCA",
+                       initializers              = NULL,
+                       start_node_initializer    = "Full",
+                       middle_node_initializer   = "Full",
+                       end_node_initializer      = "Full",
+                       max_iterations            = 100,
+                       loggers                   = NULL,
                        unique_node_preprocessing = FALSE,
-                       global_preprocessors = list(),
-                       local_preprocessors = list(standardize),
-                       convergence_threshold=0.0001
+                       global_preprocessors      = list(),
+                       local_preprocessors       = list(standardize),
+                       convergence_threshold     = 0.0001,
+                       node_class_types          = NULL
                      ){
 
   ##CHECK INPUT
@@ -206,6 +211,11 @@ path_model <- function(data, connection_matrix, variables_in_block,
   ##Make estimator list:
   if(is.null(estimators)){
     estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator)
+  }
+
+  ##Make listenv of node class types based on estimators:
+  if(is.null(node_class_types)){
+    node_class_types <- get_node_class_types(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator)
   }
 
   ##Make initializer list:

@@ -16,6 +16,37 @@ Imports:
 	listenv,
 	reshape2,
 	R6
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.0.9000
 Suggests: 
     testthat
+Collate: 
+    'calculate_SSE_for_matrices.R'
+    'check_arguments.R'
+    'check_dag.R'
+    'combine_and_mask.R'
+    'cross_validate_node_PLS.R'
+    'error_functions.R'
+    'estimator_functions.R'
+    'estimator_string_to_function.R'
+    'node_classes.R'
+    'estimator_string_to_node_class_type.R'
+    'get_LVs.R'
+    'get_all_node_connection_types.R'
+    'get_estimator_list.R'
+    'get_initializer_list.R'
+    'get_next_node_indices.R'
+    'get_node_class_types.R'
+    'get_node_connection_type.R'
+    'get_nodes_by_level.R'
+    'get_previous_node_indices.R'
+    'get_same_level_connected_nodes.R'
+    'get_unique_nodes.R'
+    'initializer_functions.R'
+    'initializer_string_to_function.R'
+    'local_preprocessing_functions.R'
+    'loggers_reporters.R'
+    'make_nodes.R'
+    'path_model.R'
+    'regression_functions.R'
+    'verify_dag.R'
+    'wrappers.R'

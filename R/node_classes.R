@@ -130,7 +130,7 @@ Node <- R6Class("Node",
 )
 
 #' @import R6
-Node <- R6Class("PLSNode",
+PLSNode <- R6Class("PLSNode",
   inherit = Node,
   public = list(
     #Fields
@@ -151,7 +151,7 @@ Node <- R6Class("PLSNode",
       }
 
       self$is_estimated <- TRUE
-    }
+    },
 
     calculate_effects = function(){
       #TODO: devise method of effect calculation.
