@@ -26,14 +26,14 @@ get_node_class_types <- function(node_connection_types, start_node_estimator, mi
 
   node_class_types <- listenv()
 
-  for(i in 1:length(node_class_types)){
-    if(node_class_types[[i]] == "Middle"){
+  for(i in 1:length(node_connection_types)){
+    if(node_connection_types[[i]] == "Middle"){
       node_class_types[[i]] <- middle_node_class_type
     }
-    else if(node_class_types[[i]] == "Start"){
+    else if(node_connection_types[[i]] == "Start"){
       node_class_types[[i]] <- start_node_class_type
     }
-    else if(node_class_types[[i]] == "End"){
+    else if(node_connection_types[[i]] == "End"){
       node_class_types[[i]] <- end_node_class_type
     }
     else{
