@@ -4,8 +4,8 @@
 #' This is an internal function used for the iterative estimation of the Latent
 #' Variables.
 #'
-#' A convergence threshold of a differnece of 0.0001 between the Sum of Squared
-#' Errors of two subsequent iterations is used.
+#' A convergence threshold of a difference of 0.0001 between the Sum of Squared
+#' Errors of two subsequent iterations is used as a default.
 #'
 #' @param nodes A listenv of objects of the R6Class Node which are initialised.
 #'   The nodes also need to be connected.
@@ -16,13 +16,18 @@
 #'   loggers or reports must implement a \code{log_status()} method. Implemented
 #'   loggers or reporters are ComponentLogger, IterationReporter,
 #'   DurationLogger, and ConvergenceLogger.
+#' @param convergence_threshold A double indicating the maximum error before the
+#'   iterations are assumed to have converged. It is compared to the difference
+#'   between the latent variables of the current and previous iteration. If this
+#'   difference is less, the algorithm is considered to have converged. A
+#'   convergence threshold of a difference of 0.0001 between the Sum of Squared
+#'   Errors of two subsequent iterations is used as a default.
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @import listenv
-get_LVs <- function(nodes, max_iterations, loggers){ #Add options for different methods (SO-PLS, Multicomponent regression) in addition to just 1-1
+get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001){ #Add options for different methods (SO-PLS, Multicomponent regression) in addition to just 1-1
 
   i <- 0
   converged <- FALSE
-  threshold <- 0.0001
 
   while(i < max_iterations && !converged){
     i <- i + 1
@@ -62,7 +67,7 @@ get_LVs <- function(nodes, max_iterations, loggers){ #Add options for different 
       total_error <- total_error + nodes[[ii]]$error
     }
 
-    if(total_error < threshold){
+    if(total_error < convergence_threshold){
       converged <- TRUE
     }
   }

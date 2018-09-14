@@ -98,6 +98,12 @@
 #'   (cross-)validating. User-implemented functions must take a Matrix as input,
 #'   and return the preprocessed matrix. Implemented functions are: (block_scale,
 #'   standardize, and mean_center)
+#' @param convergence_threshold A double indicating the maximum error before the
+#'   iterations are assumed to have converged. It is compared to the difference
+#'   between the latent variables of the current and previous iteration. If this
+#'   difference is less, the algorithm is considered to have converged. A
+#'   convergence threshold of a difference of 0.0001 between the Sum of Squared
+#'   Errors of two subsequent iterations is used as a default.
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @export
 #' @import listenv
@@ -113,14 +119,11 @@ path_model <- function(data, connection_matrix, variables_in_block,
                        middle_node_initializer = "Full",
                        end_node_initializer    = "Full",
                        max_iterations = 100,
-                       loggers = NULL, #listenv of R6 loggers
-                       unique_node_preprocessing = FALSE, #If TRUE => list of list of functions should be supplied for global and local preprocessors
-                       global_preprocessors = list(), #preprocessing methods that can be applied on the full data (such as log scaling)
-                       local_preprocessors = list(standardize) #preprocessing methods that can only be applied locally on training and test sets seperately (such as standardizing or mean-centering)
-                     #component_selection="auto", n_comps=NULL, (can be list or set number per node)
-                     #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
-                                          #input_variable_type: assigns what type each different variable has
-                     #bootstrap="FALSE", bootstrap_iter=NULL
+                       loggers = NULL,
+                       unique_node_preprocessing = FALSE,
+                       global_preprocessors = list(),
+                       local_preprocessors = list(standardize),
+                       convergence_threshold=0.0001
                      ){
 
   ##CHECK INPUT
@@ -216,5 +219,5 @@ path_model <- function(data, connection_matrix, variables_in_block,
   nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_types)
 
   ## Estimate LVs:
-  result <- get_LVs(nodes, max_iterations, loggers)
+  result <- get_LVs(nodes, max_iterations, loggers, convergence_threshold=convergence_threshold)
 }

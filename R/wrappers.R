@@ -44,6 +44,12 @@
 #'   (cross-)validating. User-implemented functions must take a Matrix as input,
 #'   and return the preprocessed matrix. Implemented functions are: (block_scale,
 #'   standardize, and mean_center)
+#' @param convergence_threshold A double indicating the maximum error before the
+#'   iterations are assumed to have converged. It is compared to the difference
+#'   between the latent variables of the current and previous iteration. If this
+#'   difference is less, the algorithm is considered to have converged. A
+#'   convergence threshold of a difference of 0.0001 between the Sum of Squared
+#'   Errors of two subsequent iterations is used as a default.
 #' @export
 #' @import listenv
 process_PLS <- function(data,
@@ -53,7 +59,8 @@ process_PLS <- function(data,
                         loggers=listenv(IterationReporter$new(), DurationLogger$new(report=TRUE)),
                         max_iterations=100,
                         global_preprocessors=list(),
-                        local_preprocessors=list(standardize)){
+                        local_preprocessors=list(standardize),
+                        convergence_threshold=0.0001){
 
   model <- path_model(data,
                       connection_matrix,
@@ -64,9 +71,11 @@ process_PLS <- function(data,
                       end_node_estimator="PCA",
                       loggers=loggers,
                       max_iterations=max_iterations,
-                      global_preprocessors,
-                      local_preprocessors)
+                      global_preprocessors=global_preprocessors,
+                      local_preprocessors=local_preprocessors,
+                      convergence_threshold=convergence_threshold
+                      )
 
- model$effects <- calculate__effects(model)
+ model$effects <- calculate_all_effects(model)
 }
 

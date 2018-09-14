@@ -12,7 +12,8 @@ path_model(data, connection_matrix, variables_in_block,
   end_node_initializer = "Full", max_iterations = 100,
   loggers = NULL, unique_node_preprocessing = FALSE,
   global_preprocessors = list(),
-  local_preprocessors = list(standardize))
+  local_preprocessors = list(standardize),
+  convergence_threshold = 1e-04)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the
@@ -124,11 +125,18 @@ functions when unique_node_preprocessing is \code{TRUE}. The ordering of
 the outer list should be the same as that of the \code{connection_matrix}.
 The order of the inner list is only important when the function results
 differ when their order of application is changed. The funtions will be
-applied from beginning to end. The supplied functionis assumed to be
+applied from beginning to end. The supplied function is assumed to be
 influenced by subsampling, and therefore can be applied on subsets when
 (cross-)validating. User-implemented functions must take a Matrix as input,
 and return the preprocessed matrix. Implemented functions are: (block_scale,
 standardize, and mean_center)}
+
+\item{convergence_threshold}{A double indicating the maximum error before the
+iterations are assumed to have converged. It is compared to the difference
+between the latent variables of the current and previous iteration. If this
+difference is less, the algorithm is considered to have converged. A
+convergence threshold of a difference of 0.0001 between the Sum of Squared
+Errors of two subsequent iterations is used as a default.}
 }
 \value{
 A listenv of connected, initialized, and estimated nodes

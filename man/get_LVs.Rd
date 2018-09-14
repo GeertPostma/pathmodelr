@@ -5,7 +5,7 @@
 \title{Calculates the latent variables using the estimators for each node in an
 iterative manner.}
 \usage{
-get_LVs(nodes, max_iterations, loggers)
+get_LVs(nodes, max_iterations, loggers, convergence_threshold = 1e-04)
 }
 \arguments{
 \item{nodes}{A listenv of objects of the R6Class Node which are initialised.
@@ -19,6 +19,13 @@ is not met beforehand.}
 loggers or reports must implement a \code{log_status()} method. Implemented
 loggers or reporters are ComponentLogger, IterationReporter,
 DurationLogger, and ConvergenceLogger.}
+
+\item{convergence_threshold}{A double indicating the maximum error before the
+iterations are assumed to have converged. It is compared to the difference
+between the latent variables of the current and previous iteration. If this
+difference is less, the algorithm is considered to have converged. A
+convergence threshold of a difference of 0.0001 between the Sum of Squared
+Errors of two subsequent iterations is used as a default.}
 }
 \value{
 A listenv of connected, initialized, and estimated nodes
@@ -28,6 +35,6 @@ This is an internal function used for the iterative estimation of the Latent
 Variables.
 }
 \details{
-A convergence threshold of a differnece of 0.0001 between the Sum of Squared
-Errors of two subsequent iterations is used.
+A convergence threshold of a difference of 0.0001 between the Sum of Squared
+Errors of two subsequent iterations is used as a default.
 }
