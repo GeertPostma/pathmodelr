@@ -134,17 +134,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   ##CHECK INPUT
   check_arguments(data, connection_matrix, variables_in_block,
                   block_names,
-                  estimators
-                  #start_node_estimator,
-                  #middle_node_estimator,
-                  #end_node_estimator
-                  #use_modes,
-                  #component_selection="auto", n_comps=NULL,
-                  #sub_blocks=FALSE, sub_block_assignment=NULL, sub_block_scaling_method=NULL
-                  #preprocessing settings: standardizing, mean-centering, {Assign per block, include scaling for categorical variables and spectra}
-                  #input_variable_type: assigns what type each different variable has
-                  #bootstrap="FALSE", bootstrap_iter=NULL
-  )
+                  estimators)
 
   ##Construct data constructs:
 
