@@ -1,28 +1,27 @@
 #' @import R6
 Node <- R6Class("Node",
-  public =list(
+  public = list(
     #Fields
-    node_name                = NA_character_,
-    X_data                   = NULL,
-    is_initialized           = FALSE,
-    is_estimated             = FALSE,
-    is_iterative             = TRUE,
-    n_LVs                    = NA_integer_,
-    previous_n_LVs           = NA_integer_,
-    LVs                      = NULL,
-    previous_LVs             = NULL,
-    X_loadings               = NULL,
-    Y_loadings               = NULL, #Follows same orders as next_nodes
-    preprocessed_X           = NULL,
-    error                    = NA_real_, #SSE between iterations
+    node_name           = NA_character_,
+    X_data              = NULL,
+    is_initialized      = FALSE,
+    is_estimated        = FALSE,
+    is_iterative        = TRUE,
+    n_LVs               = NA_integer_,
+    previous_n_LVs      = NA_integer_,
+    LVs                 = NULL,
+    previous_LVs        = NULL,
+    X_loadings          = NULL,
+    preprocessed_X      = NULL,
+    error               = NA_real_, #SSE between iterations
 
-    previous_nodes = NULL,
-    next_nodes = NULL,
-    node_type = NA_character_,
+    previous_nodes      = NULL,
+    next_nodes          = NULL,
+    node_type           = NA_character_,
 
-    initializer = NULL,
-    estimator = NULL,
-    local_preprocessor = NULL,
+    initializer         = NULL,
+    estimator           = NULL,
+    local_preprocessor  = NULL,
     global_preprocessor = NULL,
 
     #Methods
@@ -65,11 +64,10 @@ Node <- R6Class("Node",
       }
     },
 
-    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL){
+    add_estimate = function(n_LVs, LVs, X_loadings){
       self$n_LVs        <- n_LVs
       self$LVs          <- LVs
       self$X_loadings   <- X_loadings
-      self$Y_loadings   <- Y_loadings
 
       if(!is.null(self$previous_LVs)){
         self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
@@ -116,7 +114,6 @@ Node <- R6Class("Node",
         test_data <- preprocessed_test$preprocessed_data
       }
 
-
       return(list("train_data"=train_data, "test_data"=test_data))
     },
 
@@ -128,6 +125,36 @@ Node <- R6Class("Node",
 
         self$preprocessed_X <- preprocessor(self$preprocessed_X)$preprocessed_data
       }
+    }
+  )
+)
+
+#' @import R6
+PLSNode <- R6Class("PLSNode",
+  inherit = Node,
+  public = list(
+    #Fields
+    Y_loadings = NULL, #Follows same orders as next_nodes
+
+    #Methods
+    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL){
+      self$n_LVs        <- n_LVs
+      self$LVs          <- LVs
+      self$X_loadings   <- X_loadings
+      self$Y_loadings   <- Y_loadings
+
+      if(!is.null(self$previous_LVs)){
+        self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
+      }
+      else{
+        self$error <- 0
+      }
+
+      self$is_estimated <- TRUE
+    },
+
+    calculate_effects = function(){
+      #TODO: devise method of effect calculation.
     }
   )
 )
