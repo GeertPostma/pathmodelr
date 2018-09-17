@@ -36,7 +36,7 @@ PLS_estimator <- function(node){
 
   SIMPLS_result <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=TRUE, covariance_mask=covariance_mask)
   X_weights <- SIMPLS_result$X_weights
-  transposed_Y_loadings <- t(SIMPLS_result$Y_loadings)
+  Y_loadings <- SIMPLS_result$Y_loadings
 
   for(i in seq_along(same_level_nodes)){
     update_node <- same_level_nodes[[i]]
@@ -52,11 +52,11 @@ PLS_estimator <- function(node){
 
       next_node_name <- update_node$next_nodes[[j]]$node_name
 
-      node_Y_loadings[[j]] <- transposed_Y_loadings[, cols_per_Y_node[[next_node_name]], drop = FALSE]
+      node_Y_loadings[[j]] <- Y_loadings[cols_per_Y_node[[next_node_name]], , drop = FALSE]
 
     }
 
-    update_node$add_estimate(n_LVs, node_LVs, node_weights, transposed_node_Y_loadings)
+    update_node$add_estimate(n_LVs, node_LVs, node_weights, node_Y_loadings)
   }
 
 }
