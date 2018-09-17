@@ -40,4 +40,6 @@ get_node_class_types <- function(node_connection_types, start_node_estimator, mi
       stop("Node type unrecognised.")
     }
   }
+
+  return(node_class_types)
 }

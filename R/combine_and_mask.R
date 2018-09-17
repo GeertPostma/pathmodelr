@@ -69,10 +69,17 @@ combine_and_mask <- function(node, test_indices=NULL){
     total_X_cols <- total_X_cols + ncol(same_level_nodes[[i]]$X_data)
   }
 
+  cols_per_Y_node_names <- list()
+
   for(i in seq_along(next_level_nodes)){
     cols_per_Y_node[[i]] <- (total_Y_cols + 1):(total_Y_cols+ncol(next_level_nodes[[i]]$previous_LVs))
+
+    cols_per_Y_node_names[[i]] <- next_level_nodes[[i]]$node_name
+
     total_Y_cols <- total_Y_cols + ncol(next_level_nodes[[i]]$previous_LVs)
   }
+
+  names(cols_per_Y_node) <- cols_per_Y_node_names
 
   #Fill in covariance mask
   covariance_mask <- matrix(0, nrow=total_X_cols, ncol=total_Y_cols)
@@ -114,7 +121,7 @@ combine_and_mask <- function(node, test_indices=NULL){
                 "Y"=Y,
                 "covariance_mask"=covariance_mask,
                 "cols_per_X_node"=cols_per_X_node,
-                "cols_per_y_node"=cols_per_Y_node,
+                "cols_per_Y_node"=cols_per_Y_node,
                 "same_level_nodes"=same_level_nodes,
                 "next_level_nodes"=next_level_nodes))
 

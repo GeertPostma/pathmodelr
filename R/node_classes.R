@@ -134,14 +134,14 @@ PLSNode <- R6Class("PLSNode",
   inherit = Node,
   public = list(
     #Fields
-    Y_loadings = NULL, #Follows same orders as next_nodes
+    transposed_Y_loadings = NULL, #Follows same orders as next_nodes
 
     #Methods
-    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL){
+    add_estimate = function(n_LVs, LVs, X_loadings, transposed_Y_loadings=NULL){
       self$n_LVs        <- n_LVs
       self$LVs          <- LVs
       self$X_loadings   <- X_loadings
-      self$Y_loadings   <- Y_loadings
+      self$transposed_Y_loadings   <- transposed_Y_loadings
 
       if(!is.null(self$previous_LVs)){
         self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
