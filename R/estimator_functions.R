@@ -35,24 +35,26 @@ PLS_estimator <- function(node){
   same_level_nodes <- combined_and_masked$same_level_nodes
 
   SIMPLS_result <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=TRUE, covariance_mask=covariance_mask)
-  X_weights <- SIMPLS_result$X_weights
+  X_weights  <- SIMPLS_result$X_weights
   Y_loadings <- SIMPLS_result$Y_loadings
+  B          <- SIMPLS_result$coefficients[, , n_LVs]
 
   for(i in seq_along(same_level_nodes)){
     update_node <- same_level_nodes[[i]]
     node_cols <- cols_per_X_node[[i]]
 
-    node_weights <- X_weights[node_cols,]
+    node_weights <- X_weights[node_cols, , drop = FALSE]
     node_LVs <- update_node$preprocessed_X %*% node_weights
 
-    ##TODO: Add extra loop over cols_per_Y_node to generate the list of split Y_loadings
     node_Y_loadings <- list()
 
     for(j in seq_along(update_node$next_nodes)){
 
       next_node_name <- update_node$next_nodes[[j]]$node_name
 
-      node_Y_loadings[[j]] <- Y_loadings[cols_per_Y_node[[next_node_name]], , drop = FALSE]
+      node_B <- B[node_cols, cols_per_Y_node[[next_node_name]], drop = FALSE]
+
+      node_Y_loadings[[next_node_name]] <-  t(node_B) %*% node_weights
 
     }
 

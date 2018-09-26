@@ -216,6 +216,8 @@ path_model <- function(data, connection_matrix, variables_in_block,
   #make node structure graph
   nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_class_types)
 
+  names(nodes) <- block_names
+
   ## Estimate LVs:
   result <- get_LVs(nodes, max_iterations, loggers, convergence_threshold=convergence_threshold)
 }

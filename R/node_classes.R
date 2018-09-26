@@ -125,13 +125,66 @@ Node <- R6Class("Node",
 
         self$preprocessed_X <- preprocessor(self$preprocessed_X)$preprocessed_data
       }
+    },
+
+    get_paths_to_self = function(){
+
+      paths_to_self <- list()
+
+      for(i in seq_along(self$previous_nodes)){
+        node <- self$previous_nodes[[i]]
+
+        paths_to_self[[i]] <- node$get_paths_through_self_to_node(self)
+
+      }
+
+      paths_to_self <- unlist(paths_to_self, recursive=FALSE)
+
+      return(paths_to_self)
+    },
+
+    get_outgoing_path = function(node){
+
+      return(0)
     }
+  )
+)
+
+#' PathNode is a template Node class for nodes which propagate effects, such as
+#' the PLSNode. Path nodes should implement the get_outgoing_path method
+#' @import R6
+PathNode <- R6Class("PathNode",
+  inherit = Node,
+  public = list(
+
+    #Methods
+    get_paths_through_self_to_node = function(node){
+
+      outgoing_coefficients <- self$get_outgoing_path(node)
+
+      paths <- list()
+      paths[[1]] <- outgoing_coefficients
+
+      for(i in seq_along(self$previous_nodes)){
+
+        incoming_paths <- self$previous_nodes[[i]]$get_paths_through_self_to_node(self)
+
+        for(j in seq_along(incoming_paths)){
+
+          paths[[length(paths)+1]] <- incoming_paths[[j]] %*% outgoing_coefficients
+        }
+
+      }
+
+      return(paths)
+    }
+
   )
 )
 
 #' @import R6
 PLSNode <- R6Class("PLSNode",
-  inherit = Node,
+  inherit = PathNode,
   public = list(
     #Fields
     Y_loadings = NULL, #Follows same orders as next_nodes
@@ -153,8 +206,15 @@ PLSNode <- R6Class("PLSNode",
       self$is_estimated <- TRUE
     },
 
-    calculate_effects = function(){
-      #TODO: devise method of effect calculation.
+    get_outgoing_path = function(node){
+
+      for(i in seq_along(self$next_nodes)){
+
+        if(self$next_nodes[[i]]$node_name == node$node_name){
+
+          return(t(self$Y_loadings[[i]]))
+        }
+      }
     }
   )
 )

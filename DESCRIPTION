@@ -20,7 +20,9 @@ RoxygenNote: 6.1.0.9000
 Suggests: 
     testthat
 Collate: 
+    'calculate_LV_effects.R'
     'calculate_SSE_for_matrices.R'
+    'calculate_effect_per_node.R'
     'check_arguments.R'
     'check_dag.R'
     'combine_and_mask.R'
@@ -30,6 +32,7 @@ Collate:
     'estimator_string_to_function.R'
     'node_classes.R'
     'estimator_string_to_node_class_type.R'
+    'find_paths_to_node.R'
     'get_LVs.R'
     'get_all_node_connection_types.R'
     'get_estimator_list.R'
