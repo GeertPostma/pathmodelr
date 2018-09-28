@@ -60,6 +60,7 @@ process_PLS <- function(data,
                         max_iterations=100,
                         global_preprocessors=list(),
                         local_preprocessors=list(standardize),
+                        postprocessor=standardize_LVs,
                         convergence_threshold=0.0001){
 
   #Calculate standard PLS path model
@@ -81,7 +82,6 @@ process_PLS <- function(data,
   #rescale_LVs_and_weights(model)
 
   #Calculate all path effects, direct effects, and indirect effects
-  calculate_all_effects(model)
 
   #return S3 class of model with nice summary function (including option for detailed printing)
 }

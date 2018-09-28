@@ -98,6 +98,11 @@
 #'   (cross-)validating. User-implemented functions must take a Matrix as input,
 #'   and return the preprocessed matrix. Implemented functions are: (block_scale,
 #'   standardize, and mean_center)
+#' @param unique_node_postprocessing A Boolean indicating whether different
+#'   nodes should be postprocesed differently. If \code{TRUE}, postprocessor
+#'   should be a list of postprocessing functions.
+#' @param post_processor A postprocessing function which takes a node as an input
+#'   and returns a scaling setting vector.
 #' @param convergence_threshold A double indicating the maximum error before the
 #'   iterations are assumed to have converged. It is compared to the difference
 #'   between the latent variables of the current and previous iteration. If this
@@ -113,22 +118,24 @@
 #' @import listenv
 #' @importFrom dplyr select
 path_model <- function(data, connection_matrix, variables_in_block,
-                       block_names               = NULL,
-                       estimators                = NULL,
-                       start_node_estimator      = "PLS",
-                       middle_node_estimator     = "PLS",
-                       end_node_estimator        = "PCA",
-                       initializers              = NULL,
-                       start_node_initializer    = "Full",
-                       middle_node_initializer   = "Full",
-                       end_node_initializer      = "Full",
-                       max_iterations            = 100,
-                       loggers                   = NULL,
-                       unique_node_preprocessing = FALSE,
-                       global_preprocessors      = list(),
-                       local_preprocessors       = list(standardize),
-                       convergence_threshold     = 0.0001,
-                       node_class_types          = NULL
+                       block_names                = NULL,
+                       estimators                 = NULL,
+                       start_node_estimator       = "PLS",
+                       middle_node_estimator      = "PLS",
+                       end_node_estimator         = "PCA",
+                       initializers               = NULL,
+                       start_node_initializer     = "Full",
+                       middle_node_initializer    = "Full",
+                       end_node_initializer       = "Full",
+                       max_iterations             = 100,
+                       loggers                    = NULL,
+                       unique_node_preprocessing  = FALSE,
+                       global_preprocessors       = list(),
+                       local_preprocessors        = list(standardize),
+                       unique_node_postprocessing = FALSE,
+                       post_processor             = standardize_LVs,
+                       convergence_threshold      = 0.0001,
+                       node_class_types           = NULL
                      ){
 
   ##CHECK INPUT
@@ -198,6 +205,15 @@ path_model <- function(data, connection_matrix, variables_in_block,
     }
   }
 
+  ##Make postprocessor list:
+  if(!unique_node_postprocessing){
+    post_processors <- list()
+
+    for(i in 1:n_blocks){
+      post_processors[[i]] <- post_processor
+    }
+  }
+
   ##Make estimator list:
   if(is.null(estimators)){
     estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator)
@@ -214,7 +230,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   }
 
   #make node structure graph
-  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_class_types)
+  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_class_types, post_processors)
 
   names(nodes) <- block_names
 

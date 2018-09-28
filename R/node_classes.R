@@ -2,30 +2,34 @@
 Node <- R6Class("Node",
   public = list(
     #Fields
-    node_name           = NA_character_,
-    X_data              = NULL,
-    is_initialized      = FALSE,
-    is_estimated        = FALSE,
-    is_iterative        = TRUE,
-    n_LVs               = NA_integer_,
-    previous_n_LVs      = NA_integer_,
-    LVs                 = NULL,
-    previous_LVs        = NULL,
-    X_loadings          = NULL,
-    preprocessed_X      = NULL,
-    error               = NA_real_, #SSE between iterations
+    node_name                = NA_character_,
+    X_data                   = NULL,
+    is_initialized           = FALSE,
+    is_estimated             = FALSE,
+    is_iterative             = TRUE,
+    is_finalized             = FALSE,
+    n_LVs                    = NA_integer_,
+    previous_n_LVs           = NA_integer_,
+    LVs                      = NULL,
+    previous_LVs             = NULL,
+    X_loadings               = NULL,
+    preprocessed_X           = NULL,
+    error                    = NA_real_, #SSE between iterations
 
-    previous_nodes      = NULL,
-    next_nodes          = NULL,
-    node_type           = NA_character_,
+    previous_nodes           = NULL,
+    next_nodes               = NULL,
+    node_type                = NA_character_,
 
-    initializer         = NULL,
-    estimator           = NULL,
-    local_preprocessor  = NULL,
-    global_preprocessor = NULL,
+    initializer              = NULL,
+    estimator                = NULL,
+    local_preprocessor       = NULL,
+    global_preprocessor      = NULL,
+
+    post_processor           = NULL,
+    post_processing_settings = NULL,
 
     #Methods
-    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor){
+    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor, post_processor){
       self$node_name           <- node_name
 
       for(preprocessor in global_preprocessor){
@@ -36,6 +40,7 @@ Node <- R6Class("Node",
       self$initializer         <- initializer
       self$local_preprocessor  <- local_preprocessor
       self$global_preprocessor <- global_preprocessor
+      self$post_processor      <- post_processor
 
       self$error <- 0
 
@@ -150,8 +155,26 @@ Node <- R6Class("Node",
       return(0)
     },
 
+
     finalize = function(){
 
+      if(!self$is_finalized){
+
+        if(!is.null(self$post_processor)){
+
+          self$post_processing_settings <- self$post_processor(self)
+
+          self$prepare_next_estimation()
+
+          LVs_scaled=self$previous_LVs/self$post_processing_settings
+          X_loadings_scaled=self$X_loadings/self$post_processing_settings
+
+          self$add_estimate(n_LVs=self$previous_n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled)
+
+          self$is_finalized <- TRUE
+
+        }
+      }
     }
   )
 )
@@ -221,11 +244,42 @@ PLSNode <- R6Class("PLSNode",
           return(t(self$Y_loadings[[i]]))
         }
       }
-    }
+    },
 
     finalize = function(){
 
-    }
+      if(!self$is_finalized){
 
+        if(!is.null(self$post_processor)){
+
+          self$post_processing_settings <- self$post_processor(self)
+
+          self$prepare_next_estimation()
+
+          LVs_scaled=self$previous_LVs/self$post_processing_settings
+          X_loadings_scaled=self$X_loadings/self$post_processing_settings
+          Y_loadings_unscaled <- self$Y_loadings
+
+          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled)
+
+          self$is_finalized <- TRUE
+
+          scaled_Y_loadings <- list()
+          for(i in seq_along(self$next_nodes)){
+            next_node <- self$next_nodes[[i]]
+
+            if(!next_node$is_finalized){
+              next_node$finalize()
+            }
+
+            #Divide Y_loading columns by scaling of self, divide Y_loading rows by scaling of next_node
+            scaled_Y_loadings[[next_node$node_name]] <- t(t(Y_loadings_unscaled[[next_node$node_name]] / self$post_processing_settings) / next_node$post_processing_settings)
+          }
+          #self$prepare_next_estimation is not called again to keep the original LVs in the object
+          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, Y_loadings=scaled_Y_loadings)
+
+        }
+      }
+    }
   )
 )

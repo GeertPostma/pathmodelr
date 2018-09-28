@@ -13,6 +13,7 @@ path_model(data, connection_matrix, variables_in_block,
   loggers = NULL, unique_node_preprocessing = FALSE,
   global_preprocessors = list(),
   local_preprocessors = list(standardize),
+  unique_node_postprocessing = FALSE, post_processor = standardize_LVs,
   convergence_threshold = 1e-04, node_class_types = NULL)
 }
 \arguments{
@@ -130,6 +131,13 @@ influenced by subsampling, and therefore can be applied on subsets when
 (cross-)validating. User-implemented functions must take a Matrix as input,
 and return the preprocessed matrix. Implemented functions are: (block_scale,
 standardize, and mean_center)}
+
+\item{unique_node_postprocessing}{A Boolean indicating whether different
+nodes should be postprocesed differently. If \code{TRUE}, postprocessor
+should be a list of postprocessing functions.}
+
+\item{post_processor}{A postprocessing function which takes a node as an input
+and returns a scaling setting vector.}
 
 \item{convergence_threshold}{A double indicating the maximum error before the
 iterations are assumed to have converged. It is compared to the difference
