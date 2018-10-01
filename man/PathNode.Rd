@@ -4,13 +4,13 @@
 \name{PathNode}
 \alias{PathNode}
 \title{PathNode is a template Node class for nodes which propagate effects, such as
-the PLSNode. Path nodes should implement the get_outgoing_path method}
+the PLSNode. Path nodes should implement the get_paths_through_self_to_node method}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 PathNode
 }
 \description{
 PathNode is a template Node class for nodes which propagate effects, such as
-the PLSNode. Path nodes should implement the get_outgoing_path method
+the PLSNode. Path nodes should implement the get_paths_through_self_to_node method
 }
 \keyword{datasets}

@@ -134,18 +134,25 @@ Node <- R6Class("Node",
 
     get_paths_to_self = function(){
 
-      paths_to_self <- list()
+      path_coefficients_to_self <- list()
+      path_names_to_self <- list()
 
       for(i in seq_along(self$previous_nodes)){
         node <- self$previous_nodes[[i]]
 
-        paths_to_self[[i]] <- node$get_paths_through_self_to_node(self)
+
+        paths_to_self <- node$get_paths_through_self_to_node(self)
+        path_coefficients_to_self[[i]] <- paths_to_self$path_coefficients
+        path_names_to_self[[i]] <- paths_to_self$path_names
 
       }
 
-      paths_to_self <- unlist(paths_to_self, recursive=FALSE)
+      path_coefficients_to_self <- unlist(path_coefficients_to_self, recursive=FALSE)
+      path_names_to_self <- unlist(path_names_to_self, recursive=FALSE)
 
-      return(paths_to_self)
+      names(path_coefficients_to_self) <- lapply(lapply(path_names_to_self, c, self$node_name), paste, collapse=" -> ")
+
+      return(list("path_names"=path_names_to_self, "path_coefficients"=path_coefficients_to_self))
     },
 
 
@@ -180,7 +187,7 @@ Node <- R6Class("Node",
 )
 
 #' PathNode is a template Node class for nodes which propagate effects, such as
-#' the PLSNode. Path nodes should implement the get_outgoing_path method
+#' the PLSNode. Path nodes should implement the get_paths_through_self_to_node method
 #' @import R6
 PathNode <- R6Class("PathNode",
   inherit = Node,
@@ -191,20 +198,25 @@ PathNode <- R6Class("PathNode",
 
       outgoing_coefficients <- self$get_outgoing_path(node)
 
-      paths <- list()
-      paths[[1]] <- outgoing_coefficients
+      path_coefficients <- list()
+      path_names <- list()
+      path_coefficients[[1]] <- outgoing_coefficients
+      path_names[[1]] <- self$node_name
 
       for(i in seq_along(self$previous_nodes)){
 
         incoming_paths <- self$previous_nodes[[i]]$get_paths_through_self_to_node(self)
+        incoming_path_coefficients <- incoming_paths[["path_coefficients"]]
+        incoming_path_names <- incoming_paths[["path_names"]]
 
-        for(j in seq_along(incoming_paths)){
+        for(j in seq_along(incoming_path_coefficients)){
 
-          paths[[length(paths)+1]] <- incoming_paths[[j]] %*% outgoing_coefficients
+          path_coefficients[[length(path_coefficients)+1]] <- incoming_path_coefficients[[j]] %*% outgoing_coefficients
+          path_names[[length(path_names)+1]] <- c(incoming_path_names[[j]], self$node_name)
         }
 
       }
-
+      paths <- list("path_coefficients"=path_coefficients, "path_names"=path_names)
       return(paths)
     }
 
