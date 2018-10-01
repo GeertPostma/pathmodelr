@@ -32,6 +32,7 @@ Collate:
     'estimator_string_to_node_class_type.R'
     'get_LVs.R'
     'get_all_node_connection_types.R'
+    'get_all_path_effects.R'
     'get_estimator_list.R'
     'get_initializer_list.R'
     'get_next_node_indices.R'

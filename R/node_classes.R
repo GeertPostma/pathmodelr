@@ -150,9 +150,40 @@ Node <- R6Class("Node",
       path_coefficients_to_self <- unlist(path_coefficients_to_self, recursive=FALSE)
       path_names_to_self <- unlist(path_names_to_self, recursive=FALSE)
 
-      names(path_coefficients_to_self) <- lapply(lapply(path_names_to_self, c, self$node_name), paste, collapse=" -> ")
+      if(!is.null(path_coefficients_to_self)){
+        names(path_coefficients_to_self) <- lapply(lapply(path_names_to_self, c, self$node_name), paste, collapse=" -> ")
+      }
 
       return(list("path_names"=path_names_to_self, "path_coefficients"=path_coefficients_to_self))
+    },
+
+    get_node_path_effects = function(){
+
+      individual_effects <- self$get_paths_to_self()
+      direct_effects <- list()
+      indirect_effects <- list()
+      total_effects <- list()
+
+      direct_effects <- individual_effects$path_coefficients[lapply(individual_effects$path_names, length)==1]
+      names(direct_effects) <- individual_effects$path_names[lapply(individual_effects$path_names, length)==1]
+
+      for(preceding_block_name in unique(unlist(individual_effects$path_names))){
+
+        total_effect <- Reduce('+', individual_effects$path_coefficients[lapply(individual_effects$path_names, "[[", 1) == preceding_block_name])
+
+        total_effects[[preceding_block_name]] <- total_effect
+
+        if(is.null(direct_effects[[preceding_block_name]])){
+          indirect_effects[[preceding_block_name]] <- total_effect
+        }
+        else{
+          indirect_effects[[preceding_block_name]] <- total_effect - direct_effects[[preceding_block_name]]
+        }
+
+      }
+
+      return(list("individual_effects"=individual_effects, "direct_effects"=direct_effects, "indirect_effects"=indirect_effects, "total_effects"=total_effects))
+
     },
 
 
