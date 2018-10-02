@@ -2,11 +2,9 @@
 standardize_LVs <- function(node){
 
 
-  if(dim(node$LVs)[2] > 1){
-    scaling_settings <- apply(node$LVs, 2, sd)
-  }
-  else{
-    scaling_settings <- sd(node$LVs)
-  }
+  scaling_settings <- apply(node$LVs, 2, sd)
+
+
+
   return(scaling_settings)
 }
