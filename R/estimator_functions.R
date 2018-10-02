@@ -17,6 +17,7 @@
 #' @import ggplot2
 PLS_estimator <- function(node){
 
+  #TODO: Fix selection of max_n_LVs, this selection method may underestimate.
   max_n_LVs <- node$previous_n_LVs
 
   test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE)$test_errors

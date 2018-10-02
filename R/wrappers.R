@@ -78,15 +78,11 @@ process_PLS <- function(data,
                       convergence_threshold=convergence_threshold
                       )
 
+  #Calculate all path effects, direct effects, and indirect effects
   model$effects <- get_all_path_effects(model)
 
-  #Standardize LVs and adjust weights without changing net effect size
-  #rescale_LVs_and_weights(model)
 
-  #Calculate all path effects, direct effects, and indirect effects
-
-  #return S3 class of model with nice summary function (including option for detailed printing)
-
+  #TODO: return S3 class of model with nice summary function (including option for detailed printing)
   return(model)
 }
 
