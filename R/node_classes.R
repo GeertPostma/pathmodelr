@@ -264,7 +264,7 @@ PLSNode <- R6Class("PLSNode",
 
 
     #Methods
-    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings, original_variance_explained){
+    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL, original_variance_explained=NULL){
       self$n_LVs                       <- n_LVs
       self$LVs                         <- LVs
       self$X_loadings                  <- X_loadings
