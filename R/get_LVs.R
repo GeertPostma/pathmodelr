@@ -72,9 +72,9 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
     }
   }
 
-  #finalization loop:
+  #Post processing loop:
   for(i in seq_along(nodes)){
-    nodes[[i]]$finalize()
+   nodes[[i]]$post_process()
   }
 
   return(listenv("nodes"=nodes, "loggers"=loggers))

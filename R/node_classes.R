@@ -7,7 +7,7 @@ Node <- R6Class("Node",
     is_initialized           = FALSE,
     is_estimated             = FALSE,
     is_iterative             = TRUE,
-    is_finalized             = FALSE,
+    is_post_processed        = FALSE,
     n_LVs                    = NA_integer_,
     previous_n_LVs           = NA_integer_,
     LVs                      = NULL,
@@ -194,9 +194,9 @@ Node <- R6Class("Node",
     },
 
 
-    finalize = function(){
+    post_process = function(){
 
-      if(!self$is_finalized){
+      if(!self$is_post_processed){
 
         if(!is.null(self$post_processor)){
 
@@ -209,7 +209,7 @@ Node <- R6Class("Node",
 
           self$add_estimate(n_LVs=self$previous_n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled)
 
-          self$is_finalized <- TRUE
+          self$is_post_processed <- TRUE
 
         }
       }
@@ -259,14 +259,17 @@ PLSNode <- R6Class("PLSNode",
   inherit = PathNode,
   public = list(
     #Fields
-    Y_loadings = NULL, #Follows same orders as next_nodes
+    Y_loadings                  = NULL,
+    original_variance_explained = NA_real_,
+
 
     #Methods
-    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL){
-      self$n_LVs        <- n_LVs
-      self$LVs          <- LVs
-      self$X_loadings   <- X_loadings
-      self$Y_loadings   <- Y_loadings
+    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings, original_variance_explained){
+      self$n_LVs                       <- n_LVs
+      self$LVs                         <- LVs
+      self$X_loadings                  <- X_loadings
+      self$Y_loadings                  <- Y_loadings
+      self$original_variance_explained <- original_variance_explained
 
       if(!is.null(self$previous_LVs)){
         self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
@@ -289,9 +292,9 @@ PLSNode <- R6Class("PLSNode",
       }
     },
 
-    finalize = function(){
+    post_process = function(){
 
-      if(!self$is_finalized){
+      if(!self$is_post_processed){
 
         if(!is.null(self$post_processor)){
 
@@ -305,14 +308,14 @@ PLSNode <- R6Class("PLSNode",
 
           self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled)
 
-          self$is_finalized <- TRUE
+          self$is_post_processed <- TRUE
 
           scaled_Y_loadings <- list()
           for(i in seq_along(self$next_nodes)){
             next_node <- self$next_nodes[[i]]
 
-            if(!next_node$is_finalized){
-              next_node$finalize()
+            if(!next_node$is_post_processed){
+              next_node$post_process()
             }
 
             #Divide Y_loading columns by scaling of self, divide Y_loading rows by scaling of next_node

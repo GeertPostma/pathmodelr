@@ -235,5 +235,6 @@ path_model <- function(data, connection_matrix, variables_in_block,
   names(nodes) <- block_names
 
   ## Estimate LVs:
+
   result <- get_LVs(nodes, max_iterations, loggers, convergence_threshold=convergence_threshold)
 }
