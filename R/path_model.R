@@ -200,8 +200,8 @@ path_model <- function(data, connection_matrix, variables_in_block,
     global_preprocessors <- list()
 
     for(i in 1:n_blocks){
-      local_preprocessors[[i]] <- temp_local_functions
-      global_preprocessors[[i]] <- temp_global_functions
+      local_preprocessors[[block_names[[i]]]] <- temp_local_functions
+      global_preprocessors[[block_names[[i]]]] <- temp_global_functions
     }
   }
 
@@ -210,7 +210,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
     post_processors <- list()
 
     for(i in 1:n_blocks){
-      post_processors[[i]] <- post_processor
+      post_processors[[block_names[[i]]]] <- post_processor
     }
   }
 

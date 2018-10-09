@@ -14,9 +14,9 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
                                 X_data              = blocked_data[[i]],
                                 estimator           = estimators[[i]],
                                 initializer         = initializers[[i]],
-                                local_preprocessor  = local_preprocessors[[i]],
-                                global_preprocessor = global_preprocessors[[i]],
-                                post_processor      = post_processors[[i]])
+                                local_preprocessor  = local_preprocessors[[block_names[[i]]]],
+                                global_preprocessor = global_preprocessors[[block_names[[i]]]],
+                                post_processor      = post_processors[[block_names[[i]]]])
 
     node_list[[i]] <- node
   }
