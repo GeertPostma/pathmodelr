@@ -259,17 +259,17 @@ PLSNode <- R6Class("PLSNode",
   inherit = PathNode,
   public = list(
     #Fields
-    Y_loadings                  = NULL,
-    original_variance_explained = NA_real_,
+    Y_loadings         = NULL,
+    variance_explained = NA_real_,
 
 
     #Methods
-    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL, original_variance_explained=NULL){
+    add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL, variance_explained=NULL){
       self$n_LVs                       <- n_LVs
       self$LVs                         <- LVs
       self$X_loadings                  <- X_loadings
       self$Y_loadings                  <- Y_loadings
-      self$original_variance_explained <- original_variance_explained
+      self$variance_explained          <- variance_explained
 
       if(!is.null(self$previous_LVs)){
         self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
@@ -322,7 +322,7 @@ PLSNode <- R6Class("PLSNode",
             scaled_Y_loadings[[next_node$node_name]] <- t(t(Y_loadings_unscaled[[next_node$node_name]] / self$post_processing_settings) / next_node$post_processing_settings)
           }
           #self$prepare_next_estimation is not called again to keep the original LVs in the object
-          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, Y_loadings=scaled_Y_loadings)
+          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, Y_loadings=scaled_Y_loadings, variance_explained = self$variance_explained)
 
         }
       }

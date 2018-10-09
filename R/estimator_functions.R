@@ -35,10 +35,11 @@ PLS_estimator <- function(node){
   cols_per_Y_node <- combined_and_masked$cols_per_Y_node
   same_level_nodes <- combined_and_masked$same_level_nodes
 
-  SIMPLS_result <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=TRUE, covariance_mask=covariance_mask)
+  SIMPLS_result <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=FALSE, covariance_mask=covariance_mask)
   X_weights  <- SIMPLS_result$X_weights
   Y_loadings <- SIMPLS_result$Y_loadings
   B          <- SIMPLS_result$coefficients[, , n_LVs]
+  P          <- SIMPLS_result$X_loadings_unorthogonalized
 
   for(i in seq_along(same_level_nodes)){
     update_node <- same_level_nodes[[i]]
@@ -49,17 +50,29 @@ PLS_estimator <- function(node){
 
     node_Y_loadings <- list()
 
+    #Calculate variance explained per node
+    variance_explained <- vector(mode="numeric", length=n_LVs)
+
+    for(k in 1:n_LVs){
+      node_P <- P[node_cols, , drop=FALSE]
+
+      variance_explained[k] <- diag(t(node_P[,k, drop=FALSE]) %*% node_P[,k, drop=FALSE]) / (dim(X)[1]-1)
+    }
+    #correct for total variance in block
+    variance_explained <- variance_explained / length(node_cols)
+
     for(j in seq_along(update_node$next_nodes)){
 
       next_node_name <- update_node$next_nodes[[j]]$node_name
 
-      node_B <- B[node_cols, cols_per_Y_node[[next_node_name]], drop = FALSE]
+      #node_B <- B[node_cols, cols_per_Y_node[[next_node_name]], drop = FALSE]
 
-      node_Y_loadings[[next_node_name]] <-  t(node_B) %*% node_weights
+      #node_Y_loadings[[next_node_name]] <-  t(node_B) %*% node_weights
 
+      node_Y_loadings[[next_node_name]] <- Y_loadings[cols_per_Y_node[[next_node_name]], , drop = FALSE]
     }
 
-    update_node$add_estimate(n_LVs, node_LVs, node_weights, node_Y_loadings)
+    update_node$add_estimate(n_LVs, node_LVs, node_weights, Y_loadings=node_Y_loadings, variance_explained=variance_explained)
   }
 
 }

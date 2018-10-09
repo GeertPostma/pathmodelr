@@ -72,7 +72,7 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
     }
   }
 
-  #Post processing loop:
+  # Post processing loop:
   for(i in seq_along(nodes)){
    nodes[[i]]$post_process()
   }

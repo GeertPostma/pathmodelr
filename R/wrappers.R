@@ -60,7 +60,7 @@ process_PLS <- function(data,
                         max_iterations=100,
                         global_preprocessors=list(),
                         local_preprocessors=list(standardize),
-                        postprocessor=standardize_LVs,
+                        postprocessor=NULL,
                         convergence_threshold=0.0001){
 
   #Calculate standard PLS path model
