@@ -81,6 +81,7 @@ process_PLS <- function(data,
   #Calculate all path effects, direct effects, and indirect effects
   model$effects <- get_all_path_effects(model)
 
+  model$variances_explained <- get_PLS_variances_explained(model)
 
   #TODO: return S3 class of model with nice summary function (including option for detailed printing)
   return(model)
