@@ -65,10 +65,6 @@ PLS_estimator <- function(node){
 
       next_node_name <- update_node$next_nodes[[j]]$node_name
 
-      #node_B <- B[node_cols, cols_per_Y_node[[next_node_name]], drop = FALSE]
-
-      #node_Y_loadings[[next_node_name]] <-  t(node_B) %*% node_weights
-
       node_Y_loadings[[next_node_name]] <- Y_loadings[cols_per_Y_node[[next_node_name]], , drop = FALSE]
     }
 
