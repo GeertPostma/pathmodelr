@@ -15,7 +15,10 @@ Imports:
 	ggplot2,
 	listenv,
 	reshape2,
-	R6
+	R6,
+	network,
+	GGally,
+	sna
 RoxygenNote: 6.1.0.9000
 Suggests: 
     testthat
@@ -31,6 +34,7 @@ Collate:
     'node_classes.R'
     'estimator_string_to_node_class_type.R'
     'get_LVs.R'
+    'get_PLS_variances_explained.R'
     'get_all_node_connection_types.R'
     'get_all_path_effects.R'
     'get_estimator_list.R'
@@ -48,6 +52,7 @@ Collate:
     'loggers_reporters.R'
     'make_nodes.R'
     'path_model.R'
+    'plot_functions.R'
     'post_processing_functions.R'
     'regression_functions.R'
     'verify_dag.R'

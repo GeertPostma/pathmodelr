@@ -13,7 +13,7 @@ path_model(data, connection_matrix, variables_in_block,
   loggers = NULL, unique_node_preprocessing = FALSE,
   global_preprocessors = list(),
   local_preprocessors = list(standardize),
-  unique_node_postprocessing = FALSE, post_processor = standardize_LVs,
+  unique_node_postprocessing = FALSE, post_processor = NULL,
   convergence_threshold = 1e-04, node_class_types = NULL)
 }
 \arguments{
