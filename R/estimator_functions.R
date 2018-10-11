@@ -17,17 +17,8 @@
 #' @import ggplot2
 PLS_estimator <- function(node){
 
-  #TODO: Fix selection of max_n_LVs, this selection method may underestimate.
-  max_n_LVs <- node$previous_n_LVs
-
-  test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE)$test_errors
-
-  #TODO: implement more intricate methods of n_LVs selection
-  n_LVs <- which.min(colSums(test_errors))
-
-  #final result step:
+  #Combine the data from the nodes and mask the covariance matrix accordingly
   combined_and_masked <- combine_and_mask(node)
-
   X <- combined_and_masked$X
   Y <- combined_and_masked$Y
   covariance_mask <- combined_and_masked$covariance_mask
@@ -35,6 +26,22 @@ PLS_estimator <- function(node){
   cols_per_Y_node <- combined_and_masked$cols_per_Y_node
   same_level_nodes <- combined_and_masked$same_level_nodes
 
+  #determine max_n_LVs: after first selection, only allow shrinking
+  max_n_LVs <- ifelse(node$iteration > 1, dim(node$previous_LVs)[2], dim(X)[2])
+
+  test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE)$test_errors
+
+  #n_LV selection: take lowest complexity model within 1 std of the lowest error
+  avg_test_error <- colSums(test_errors)
+  std_test_error <- apply(test_errors, 2, sd)
+
+  min_error_index <- which.min(avg_test_error)
+
+  ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
+
+  n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
+
+  #final result step:
   SIMPLS_result <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=FALSE, covariance_mask=covariance_mask)
   X_weights  <- SIMPLS_result$X_weights
   Y_loadings <- SIMPLS_result$Y_loadings

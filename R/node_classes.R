@@ -7,6 +7,7 @@ Node <- R6Class("Node",
     is_initialized           = FALSE,
     is_estimated             = FALSE,
     is_iterative             = TRUE,
+    iteration                = 0,
     is_post_processed        = FALSE,
     n_LVs                    = NA_integer_,
     previous_n_LVs           = NA_integer_,
@@ -99,6 +100,8 @@ Node <- R6Class("Node",
 
         self$previous_n_LVs <- self$n_LVs
         self$n_LVs <- NA_integer_
+
+        self$iteration <- self$iteration + 1
 
         self$is_estimated <- FALSE
       }

@@ -1,7 +1,8 @@
 #' @import ggplot2
 #' @import GGally
 #' @import sna
-#' @import network
+#' @importFrom network as.network
+#' @export
 plot_variances <- function(model,
                            mode="circle"){
 
