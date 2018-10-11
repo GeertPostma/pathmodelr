@@ -14,7 +14,8 @@ plot_variances <- function(model,
   ggnet2(net,
          label = TRUE,
          edge.label = "weights",
-         arrow.size = 12,
-         arrow.gap = 0.025,
+         arrow.size = 10,
+         arrow.gap = 0.04,
+         size = 20,
          mode="circle")
 }
