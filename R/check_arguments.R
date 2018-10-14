@@ -2,7 +2,6 @@
 #'
 #' Checks each input argument in sequence, whilst suppressing errors, to allow for one-step checking of arguments.
 #'
-#'
 #' @param data
 #' @param connection_matrix
 #' @param variables_in_block

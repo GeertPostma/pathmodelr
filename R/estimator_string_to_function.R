@@ -1,7 +1,7 @@
 #' Converts estimator string names to function handle
 #'
 #' This is an internal function used to convert each implemented estimator name
-#' to its corresponding function handle.
+#' to its corresponding function/closure.
 #'
 #' Supported options are: PLS, PCA, and Full. The conversion renders the name
 #' case-insensitive.

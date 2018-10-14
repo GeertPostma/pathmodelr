@@ -16,15 +16,17 @@
 #'   number of samples.
 #' @param error_function A function handle for an error function which takes two
 #'   equal size matrices and returns a single double.
-#' @return A Matrix of errors for each fold and each number of LVs. The rows
-#'   indicate the fold, the columns indicate the max number of LVs.
+#' @return A list containing the test error and training error, both a Matrix of
+#'   errors for each fold and each number of LVs. The rows indicate the fold,
+#'   the columns indicate the max number of LVs.
+#' @importFrom caret createFolds
 #' @export
 cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE){
 
   train_errors <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
   test_errors  <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
 
-  test_indices <- caret::createFolds(1:nrow(node$X_data), k = k_folds) #indices of test set
+  test_indices <- createFolds(1:nrow(node$X_data), k = k_folds) #indices of test set
 
   for(i in 1:k_folds){
     combined_and_masked <- combine_and_mask(node, test_indices[[i]])

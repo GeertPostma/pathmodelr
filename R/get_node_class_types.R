@@ -10,8 +10,7 @@
 #'   argument and is able to estimate a Middle type node
 #' @param end_node_estimator A handle to a function which takes a node as an
 #'   argument and is able to estimate an End type node
-#' @return A list of function handles to an estimator function which takes a
-#'   node as an argument.
+#' @return A list of node class types
 #' @import listenv
 get_node_class_types <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator){
   if(typeof(start_node_estimator) == "character"){

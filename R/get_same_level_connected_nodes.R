@@ -17,7 +17,6 @@ get_same_level_connected_nodes <- function(node){
   n_same_level_nodes <- 0
 
 
-
   for(i in seq_along(next_nodes)){
     temp_same_level_nodes <- next_nodes[[i]]$previous_nodes
 

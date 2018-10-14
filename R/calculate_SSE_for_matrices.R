@@ -2,7 +2,8 @@
 #'
 #' Calculates the Sum of Squared Errors of the two given matrices. If the
 #' matrices do not have the same number of columns, the larger one is subsetted
-#' from the first row onward to yield a matrix of equal dimensions.
+#' from the first column onward to yield a matrix of equal dimensions. This
+#' means that not all columns may be incorporated in the calculation.
 #'
 #' @param X1 A matrix of m-by-n
 #' @param X2 A matrix of m-by-p

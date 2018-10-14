@@ -102,7 +102,7 @@ combine_and_mask <- function(node, test_indices=NULL){
       }
     }
   }
-
+  #If else: return different output based on whether we are cross validating or not.
   if(is.null(test_indices)){
     n_samples <- nrow(node$X_data)
 

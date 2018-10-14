@@ -1,6 +1,9 @@
 #Each logger must implement a log_status method
 
-#' Logs the number of components per node per iteration
+#' Logs the number of components, or LVs, per node per iteration.
+#'
+#' The logger show() method produces a plot of the iterations, on the X-axis, vs
+#' the number of components, or LVs, on the Y-axis.
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
@@ -48,6 +51,8 @@ IterationReporter <- R6Class("IterationLogger",
     #Fields
 
     #Methods
+    initialize = function(){},
+
     log_status = function(nodes, iteration){
       cat("iteration:", iteration, "\n")
     }
@@ -55,6 +60,9 @@ IterationReporter <- R6Class("IterationLogger",
 )
 
 #' Logs the duration of each iteration
+#'
+#' The logger show() method produces a plot of the iterations, on the X-axis, vs
+#' the duration of each iteration, on the Y-axis.
 #'
 #' When \code{report} is set to \code{TRUE} the duration is also reported each
 #' iteration.
@@ -95,14 +103,20 @@ DurationLogger <- R6Class("DurationLogger",
    },
 
    show = function(){
-     p <- ggplot(d, aes(x = iteration, y="elapsed time", group = Node)) +
+     d <- melt(self$durations, id.vars = "iteration")
+     colnames(d)[colnames(d) == "value"] <- "elapsed time"
+     p <- ggplot(d, aes(x = iteration, y="elapsed time")) +
        geom_line(aes(color=Node))
      p
    }
   )
 )
 
-#' Logs the number of components per node per iteration
+#' Logs the error per node per iteration
+#'
+#' The logger show() method produces a plot of the iterations, on the X-axis, vs
+#' the error of each iteration, on the Y-axis.
+#'
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
