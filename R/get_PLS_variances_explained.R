@@ -8,7 +8,7 @@
 #' possible if more variance is introduced by prediction. This indicates that a
 #' certain effect is not predictive, and one should consider to remove the
 #' connection in the model definition.
-#'
+#' @param model A path_model model estimated using the process_pls wrapper.
 #' @return a matrix, the same shape as the connection matrix, where the non zero
 #'   elements indicate the explained variance from one node to another. The
 #'   matrix is lower triangular.

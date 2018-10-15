@@ -3,12 +3,13 @@
 \docType{data}
 \name{ConvergenceLogger}
 \alias{ConvergenceLogger}
-\title{Logs the number of components per node per iteration}
+\title{Logs the error per node per iteration}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 ConvergenceLogger
 }
 \description{
-Logs the number of components per node per iteration
+The logger show() method produces a plot of the iterations, on the X-axis, vs
+the error of each iteration, on the Y-axis.
 }
 \keyword{datasets}

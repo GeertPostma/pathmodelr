@@ -12,14 +12,30 @@ at least once. The node needs to be connected to at least one target node
 for the Y matrices to exist.}
 }
 \description{
-Estimates the LVs of the given node, and all nodes on the same level, using
-PLS regression with all next level nodes as targets.
+Estimates the LVs of the given node, and all nodes on the same level, those
+used as predictors, using PLS regression with all next level nodes as
+targets.
 }
 \details{
+The algorithm determines which nodes should be used as predictors, and which
+as targets given the connection matrix of the path model. The data of these
+nodes is concatenated into a single X data block, and a single Y data block.
+
 The cross product matrix used in SIMPLS regression is set to zero at the
 connections between the target and predictor variables which are not defined
 as being connected in the path model specification.
 
 The function has no explicit return value, instead the R6Class node object,
 and all same level connected nodes, are updated.
+
+The X_loadings which are assigned to the node are equal to the part of the R
+matrix, the X_weights resulting from the SIMPLS algorithm, and are subsetted
+to only use that part which corresponds to the manifest variables
+corresponding to that block. The estimated LVs are then defined as the
+projection of the data in the to be estimated node projected onto the partial
+X_weights.
+
+The scaling in the original SIMPLS algorithm normalizes each LV, meaning that
+the LV is scaled to have a length of 1. Because the R matrix is subsetted,
+the resulting LVs per node are of shorter length than 1.
 }

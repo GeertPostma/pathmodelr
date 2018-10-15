@@ -9,6 +9,10 @@
 DurationLogger
 }
 \description{
+The logger show() method produces a plot of the iterations, on the X-axis, vs
+the duration of each iteration, on the Y-axis.
+}
+\details{
 When \code{report} is set to \code{TRUE} the duration is also reported each
 iteration.
 }

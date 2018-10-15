@@ -23,8 +23,9 @@ number of samples.}
 equal size matrices and returns a single double.}
 }
 \value{
-A Matrix of errors for each fold and each number of LVs. The rows
-  indicate the fold, the columns indicate the max number of LVs.
+A list containing the test error and training error, both a Matrix of
+  errors for each fold and each number of LVs. The rows indicate the fold,
+  the columns indicate the max number of LVs.
 }
 \description{
 This functions calculates errors given a function for k-fold cross validation

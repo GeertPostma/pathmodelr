@@ -15,7 +15,7 @@ A function handle to an estimator function which takes a node as an
 }
 \description{
 This is an internal function used to convert each implemented estimator name
-to its corresponding function handle.
+to its corresponding function/closure.
 }
 \details{
 Supported options are: PLS, PCA, and Full. The conversion renders the name

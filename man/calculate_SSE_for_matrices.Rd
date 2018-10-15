@@ -17,7 +17,8 @@ The sum of squared errors (the difference) of the two matrices.
 \description{
 Calculates the Sum of Squared Errors of the two given matrices. If the
 matrices do not have the same number of columns, the larger one is subsetted
-from the first row onward to yield a matrix of equal dimensions.
+from the first column onward to yield a matrix of equal dimensions. This
+means that not all columns may be incorporated in the calculation.
 }
 \examples{
 calculate_SSE_for_matrices(matrix(1, nrow=2, ncol=2), matrix(-1, nrow=2, ncol=2))

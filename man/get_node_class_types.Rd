@@ -20,8 +20,7 @@ argument and is able to estimate a Middle type node}
 argument and is able to estimate an End type node}
 }
 \value{
-A list of function handles to an estimator function which takes a
-  node as an argument.
+A list of node class types
 }
 \description{
 This is an internal function used to make a list of class types for each
