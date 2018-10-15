@@ -6,7 +6,7 @@
 plot_variances <- function(model,
                            mode="circle"){
 
-  net <- as.network(as.data.frame(t(round(as.matrix(model$variances_explained), digits=3))),
+  net <- as.network(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
                     ignore.eval = FALSE,
                     names.eval = "weights",
                     directed = TRUE,

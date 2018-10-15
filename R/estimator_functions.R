@@ -59,6 +59,7 @@ PLS_estimator <- function(node){
   #final result step:
   SIMPLS_result <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=FALSE, covariance_mask=covariance_mask)
   X_weights  <- SIMPLS_result$X_weights
+  rownames(X_weights) <- colnames(X)
   Y_loadings <- SIMPLS_result$Y_loadings
   B          <- SIMPLS_result$coefficients[, , n_LVs]
   P          <- SIMPLS_result$X_loadings_unorthogonalized

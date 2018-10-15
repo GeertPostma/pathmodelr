@@ -13,7 +13,7 @@
 #'   elements indicate the explained variance from one node to another. The
 #'   matrix is lower triangular.
 #' @export
-get_PLS_variances_explained <- function(model){
+calculate_PLS_variances_explained <- function(model){
   variances_explained <- model$connection_matrix
 
   for(i in seq_along(model$effects$direct)){

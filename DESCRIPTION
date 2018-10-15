@@ -23,7 +23,9 @@ RoxygenNote: 6.1.0.9000
 Suggests: 
     testthat
 Collate: 
+    'calculate_PLS_variances_explained.R'
     'calculate_SSE_for_matrices.R'
+    'calculate_variable_effects.R'
     'check_arguments.R'
     'check_dag.R'
     'combine_and_mask.R'
@@ -34,7 +36,6 @@ Collate:
     'node_classes.R'
     'estimator_string_to_node_class_type.R'
     'get_LVs.R'
-    'get_PLS_variances_explained.R'
     'get_all_node_connection_types.R'
     'get_all_path_effects.R'
     'get_estimator_list.R'

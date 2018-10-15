@@ -109,13 +109,18 @@ combine_and_mask <- function(node, test_indices=NULL){
     X <- matrix(0, nrow=n_samples, ncol=total_X_cols)
     Y <- matrix(0, nrow=n_samples, ncol=total_Y_cols)
 
+    X_names <- c()
+
     for(i in seq_along(same_level_nodes)){
       X[,cols_per_X_node[[i]]] <- as.matrix(same_level_nodes[[i]]$preprocessed_X)
+      X_names[cols_per_X_node[[i]]] <- colnames(same_level_nodes[[i]]$preprocessed_X)
     }
 
     for(i in seq_along(next_level_nodes)){
       Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$previous_LVs)
     }
+
+    colnames(X) <- X_names
 
     return(list("X"=X,
                 "Y"=Y,
