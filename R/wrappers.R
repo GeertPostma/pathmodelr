@@ -85,9 +85,7 @@ process_PLS <- function(data,
 
   variable_effects <- calculate_variable_effects(model)
 
-  model$variable_effects <- variable_effects$effects
-  model$variable_effects_on_LV <- variable_effects$effects_on_LV
-  model$variable_effects_on_LV_per_block <- variable_effects$effects_on_LV_per_block
+  model$variable_effects <- variable_effects
 
   #TODO: return S3 class of model with nice summary function (including option for detailed printing)
   return(model)
