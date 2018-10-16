@@ -1,12 +1,13 @@
+#' Plot the variances explained through the path
 #' @import ggplot2
 #' @import GGally
 #' @import sna
-#' @importFrom network as.network
+#' @import network
 #' @export
 plot_variances <- function(model,
                            mode="circle"){
 
-  net <- as.network(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
+  net <- as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
                     ignore.eval = FALSE,
                     names.eval = "weights",
                     directed = TRUE,
@@ -21,15 +22,16 @@ plot_variances <- function(model,
          mode=mode)
 }
 
+#' Plot the inner model
 #' @import ggplot2
 #' @import GGally
 #' @import sna
-#' @importFrom network as.network
+#' @import network
 #' @export
 plot_inner_model <- function(model,
                            mode="circle"){
 
-  net <- as.network(as.data.frame(model$connection_matrix),
+  net <- as.network.matrix(as.data.frame(model$connection_matrix),
                     directed = TRUE,
                     matrix_type = "incidence")
 
@@ -40,3 +42,28 @@ plot_inner_model <- function(model,
          size = 30,
          mode=mode)
 }
+
+plot_variable_effects <- function(model){
+
+
+
+
+
+
+  ggplot(data = model,
+
+              aes(x = name, y = abs(weight), fill = block)) +
+
+    geom_bar(stat = 'identity', position = 'dodge') +
+
+    # add title
+
+    # ggtitle(paste("Barchart of", attr(model, "method"), attr(model, "what"), attr(model, "data"))) +
+
+    # rotate x-axis names
+
+    theme(axis.text.x = element_text(angle = 90)) +
+
+    ylab("Absolute Effect")
+}
+
