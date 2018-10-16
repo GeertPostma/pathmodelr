@@ -24,8 +24,9 @@ PCA_initializer <- function(node, rank=NULL){
   LVs <- PCA_object$x
   n_LVs <- rank
   X_loadings <- PCA_object$rotation
+  variance_explained <- (PCA_object$sdev^2) / sum(PCA_object$sdev^2)
 
-  node$add_estimate(n_LVs, LVs, X_loadings)
+  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained)
 }
 
 #' Initialise a node using its full data matrix
@@ -44,6 +45,8 @@ full_initializer <- function(node){ #Simple Full estimation (generally used for 
   LVs <- node$preprocessed_X
   n_LVs <- dim(node$preprocessed_X)[2]
   X_loadings <- diag(dim(node$preprocessed_X)[2])
+  stdevs <- apply(LVs, 2, sd)
+  variance_explained <- (stdevs^2) / sum(stdevs^2)
 
-  node$add_estimate(n_LVs, LVs, X_loadings)
+  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained)
 }

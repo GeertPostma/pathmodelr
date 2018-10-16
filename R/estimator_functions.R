@@ -117,14 +117,14 @@ PCA_estimator <- function(node, rank=NULL){
     rank = dim(node$preprocessed_X)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
   }
 
-
   PCA_object <- prcomp(node$preprocessed_X, scale. = FALSE, center = FALSE, rank = rank)
 
   LVs <- PCA_object$x
   n_LVs <- rank
   X_loadings <- PCA_object$rotation
+  variance_explained <- (PCA_object$sdev^2) / sum(PCA_object$sdev^2)
 
-  node$add_estimate(n_LVs, LVs, X_loadings)
+  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained)
 }
 
 #' Estimate a node using its full data matrix

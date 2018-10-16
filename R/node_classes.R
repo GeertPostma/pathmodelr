@@ -16,6 +16,7 @@ Node <- R6Class("Node",
     X_loadings               = NULL,
     preprocessed_X           = NULL,
     error                    = NA_real_, #SSE between iterations
+    variance_explained       = NA_real_,
 
     previous_nodes           = NULL,
     next_nodes               = NULL,
@@ -70,10 +71,11 @@ Node <- R6Class("Node",
       }
     },
 
-    add_estimate = function(n_LVs, LVs, X_loadings){
-      self$n_LVs        <- n_LVs
-      self$LVs          <- LVs
-      self$X_loadings   <- X_loadings
+    add_estimate = function(n_LVs, LVs, X_loadings, variance_explained=NULL){
+      self$n_LVs              <- n_LVs
+      self$LVs                <- LVs
+      self$X_loadings         <- X_loadings
+      self$variance_explained <- variance_explained
 
       if(!is.null(self$previous_LVs)){
         self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
@@ -263,8 +265,6 @@ PLSNode <- R6Class("PLSNode",
   public = list(
     #Fields
     Y_loadings         = NULL,
-    variance_explained = NA_real_,
-
 
     #Methods
     add_estimate = function(n_LVs, LVs, X_loadings, Y_loadings=NULL, variance_explained=NULL){
