@@ -17,8 +17,8 @@ plot_variances <- function(model,
          label = TRUE,
          edge.label = "weights",
          arrow.size = 10,
-         arrow.gap = 0.06,
-         size = 30,
+         arrow.gap = 0.04,
+         size = 20,
          mode=mode)
 }
 
@@ -38,8 +38,8 @@ plot_inner_model <- function(model,
   ggnet2(net,
          label = TRUE,
          arrow.size = 10,
-         arrow.gap = 0.06,
-         size = 30,
+         arrow.gap = 0.04,
+         size = 20,
          mode=mode)
 }
 
