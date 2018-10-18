@@ -81,7 +81,7 @@ process_PLS <- function(data,
   #Calculate all path effects, direct effects, and indirect effects
   model$path_effects <- get_all_path_effects(model)
 
-  model$path_variances_explained <- calculate_PLS_variances_explained(model)
+  model$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "partial_variance")
 
   model$variable_effects <- calculate_variable_effects(model)
 

@@ -5,10 +5,20 @@
 \title{Gets the variances explained from predictor LVs through direct effects, to
 target LVs}
 \usage{
-calculate_PLS_variances_explained(model)
+calculate_PLS_variances_explained(model, scaling = "partial_variance")
 }
 \arguments{
 \item{model}{A path_model model estimated using the process_pls wrapper.}
+
+\item{scaling}{A string indicating the options for the scaling of the
+variance explained. The options are: "numerical", which indicates the
+numerical variance explained from one block to another according to: var =
+1 - SS(Y - LV * Qt) / SS(Y) "partial_variance", where in 1 - SS(Y - LV \*
+Qt) / SS(Y); {Y - LV \* Qt} and {Y} are rescaled over their columns by how
+much variance of the manifest variable variance the LVs in a block explain
+each. "variance", where in 1 - SS(Y - LV \* Qt) / SS(Y); {Y - LV \* Qt} is
+rescaled over its columns by how much variance of the manifest variable
+variance the LVs in a block explain each.}
 }
 \value{
 a matrix, the same shape as the connection matrix, where the non zero
