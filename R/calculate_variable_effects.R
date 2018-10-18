@@ -1,19 +1,20 @@
+#' @export
 calculate_variable_effects <- function(model, scaling_method=NULL){
 
   variable_effects_on_LV_per_block <- list()
   variable_effects_on_LV <- list()
   variable_effects <- list()
 
-  for(i in seq_along(model$effects$total)){
+  for(i in seq_along(model$path_effects$total)){
 
-    current_node_name <- names(model$effects$total)[[i]]
+    current_node_name <- names(model$path_effects$total)[[i]]
 
     variable_effects_on_LV_per_block[[current_node_name]] <- list()
 
-    for(j in seq_along(model$effects$total[[i]])){
-      previous_node_name <- names(model$effects$total[[i]])[[j]]
+    for(j in seq_along(model$path_effects$total[[i]])){
+      previous_node_name <- names(model$path_effects$total[[i]])[[j]]
 
-      variable_effects_on_LV_per_block[[current_node_name]][[previous_node_name]] <- model$nodes[[previous_node_name]]$X_loadings %*% model$effects$total[[i]][[j]]
+      variable_effects_on_LV_per_block[[current_node_name]][[previous_node_name]] <- model$nodes[[previous_node_name]]$X_loadings %*% model$path_effects$total[[i]][[j]]
 
     }
 
