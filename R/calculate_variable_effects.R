@@ -1,5 +1,5 @@
 #' @export
-calculate_variable_effects <- function(model, scaling_method=NULL){
+calculate_inner_effects <- function(model, scaling_method=NULL){
 
   variable_effects_on_LV_per_block <- list()
   variable_effects_on_LV <- list()
