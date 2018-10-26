@@ -49,7 +49,7 @@ plot_inner_model <- function(model,
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr inner_join
 #' @export
-plot_variable_effects <- function(model, what_node=NULL, negative_values="absolute"){
+plot_inner_effects <- function(model, what_node=NULL, negative_values="absolute"){
 
   #what_node="Product"
 
@@ -59,7 +59,7 @@ plot_variable_effects <- function(model, what_node=NULL, negative_values="absolu
 
   plots <- list()
   for(plot_node in what_node){
-    effects <- model$variable_effects$effects[[plot_node]]
+    effects <- model$inner_effects$effects[[plot_node]]
 
     var_names <- names(effects)
 
