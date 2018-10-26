@@ -17,8 +17,7 @@ Imports:
 	reshape2,
 	R6,
 	network,
-	GGally,
-	sna
+	ggnetwork
 RoxygenNote: 6.1.0.9000
 Suggests: 
     testthat

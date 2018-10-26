@@ -1,11 +1,10 @@
 #' Plot the variances explained through the path
 #' @import ggplot2
-#' @import GGally
-#' @import sna
+#' @import ggnetwork
 #' @import network
 #' @export
 plot_variances <- function(model,
-                           mode="circle"){
+                           layout=layout){
 
   net <- as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
                     ignore.eval = FALSE,
@@ -13,34 +12,35 @@ plot_variances <- function(model,
                     directed = TRUE,
                     matrix_type = "incidence")
 
-  ggnet2(net,
-         label = TRUE,
-         edge.label = "weights",
-         arrow.size = 10,
-         arrow.gap = 0.04,
-         size = 20,
-         mode=mode)
+  ggnet <- ggnetwork(net, arrow.gap = 0.04, layout="circle")
+
+  ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
+    geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
+    geom_edgetext(aes(label = weights), color = "black", fill = "white") +
+    geom_nodes(color = "grey", size = 20) +
+    geom_nodetext(aes(label=vertex.names)) +
+    theme_blank()
 }
 
 #' Plot the inner model
 #' @import ggplot2
-#' @import GGally
-#' @import sna
+#' @import ggnetwork
 #' @import network
 #' @export
 plot_inner_model <- function(model,
-                           mode="circle"){
+                           layout="circle"){
 
-  net <- as.network.matrix(as.data.frame(model$connection_matrix),
+  net <- as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
                     directed = TRUE,
                     matrix_type = "incidence")
 
-  ggnet2(net,
-         label = TRUE,
-         arrow.size = 10,
-         arrow.gap = 0.04,
-         size = 20,
-         mode=mode)
+  ggnet <- ggnetwork(net, arrow.gap = 0.04, layout=layout)
+
+  ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
+    geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
+    geom_nodes(color = "grey", size = 20) +
+    geom_nodetext(aes(label=vertex.names)) +
+    theme_blank()
 }
 
 #Default: show all end nodes, give name
@@ -49,7 +49,7 @@ plot_inner_model <- function(model,
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr inner_join
 #' @export
-plot_variable_effects <- function(model, what_node=NULL){
+plot_variable_effects <- function(model, what_node=NULL, negative_values="absolute"){
 
   #what_node="Product"
 
@@ -58,8 +58,8 @@ plot_variable_effects <- function(model, what_node=NULL){
   }
 
   plots <- list()
-  for(study_node in what_node){
-    effects <- model$variable_effects$effects[[study_node]]
+  for(plot_node in what_node){
+    effects <- model$variable_effects$effects[[plot_node]]
 
     var_names <- names(effects)
 
@@ -72,23 +72,42 @@ plot_variable_effects <- function(model, what_node=NULL){
 
     plot_df <- inner_join(plot_df, vars_in_block, by = "name")
 
-    plots[[study_node]] <- ggplot(data = plot_df,
+    if(tolower(negative_values) == "absolute"){
+      plots[[plot_node]] <- ggplot(data = plot_df,
 
-      aes(x = reorder(name, 1:length(name)), y = abs(effects), fill = block)) +
+        aes(x = reorder(name, 1:length(name)), y = abs(effects), fill = block)) +
 
-      geom_bar(stat = 'identity', position = 'dodge') +
+        geom_bar(stat = 'identity', position = 'dodge') +
 
-      theme(axis.text.x = element_text(angle = 270)) +
+        theme(axis.text.x = element_text(angle = 270)) +
 
-      ylab("Absolute Effect") +
+        ylab("Absolute Effect") +
 
-      xlab("Variable name") +
+        xlab("Variable name") +
 
-      ggtitle(study_node)
+        ggtitle(plot_node)
+    }
+    else if(tolower(negative_values)){
+      if(to_lower(negative_values) == "negative"){
+        plots[[plot_node]] <- ggplot(data = plot_df,
 
+          aes(x = reorder(name, 1:length(name)), y = effects, fill = block)) +
 
+          geom_bar(stat = 'identity', position = 'dodge') +
+
+          theme(axis.text.x = element_text(angle = 270)) +
+
+          ylab("Effect") +
+
+          xlab("Variable name") +
+
+          ggtitle(plot_node)
+      }
+    }
+    else{
+      stop("An incorrect value was supplied for the negative_values argument.")
+    }
   }
   return(plots)
-
 }
 
