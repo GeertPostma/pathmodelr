@@ -83,3 +83,24 @@ mean_center <- function(input_data, settings=list("column_means"=NULL)){
 
   return(list("preprocessed_data"=centered_data,"settings"=settings))
 }
+
+
+#' @export
+normalize <- function(input_data, settings=list("column_means"=NULL, "column_scaling_factor"=NULL)){
+  column_means <- settings$column_means
+  column_scaling_factor <- settings$column_scaling_factor
+
+  mc_list <- mean_center(input_data, list("column_means"=column_means))
+  centered_data <- mc_list$preprocessed_data
+  column_means <- mc_list$settings$column_means
+
+  if(is.null(column_scaling_factor)){
+    column_scaling_factor <- apply(centered_data, 2, function(x) sqrt(sum(x^2)))
+  }
+
+  normalized_data <- centered_data / rep(1, nrow(centered_data)) %*% t(column_scaling_factor)
+
+  settings <- list("column_means"=column_means, "column_scaling_factor"=column_scaling_factor)
+
+  return(list("preprocessed_data"=normalized_data,"settings"=settings))
+}
