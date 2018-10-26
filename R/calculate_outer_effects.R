@@ -1,5 +1,5 @@
 #' @export
-get_outer_effects <- function(model){
+calculate_outer_effects <- function(model){
   outer_effects_on_LV <- list()
   outer_effects <- list()
 
