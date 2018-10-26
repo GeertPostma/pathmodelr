@@ -4,7 +4,7 @@
 \alias{plot_variances}
 \title{Plot the variances explained through the path}
 \usage{
-plot_variances(model, mode = "circle")
+plot_variances(model, layout = layout)
 }
 \description{
 Plot the variances explained through the path

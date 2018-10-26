@@ -24,7 +24,8 @@ Suggests:
 Collate: 
     'calculate_PLS_variances_explained.R'
     'calculate_SSE_for_matrices.R'
-    'calculate_variable_effects.R'
+    'calculate_inner_effects.R'
+    'calculate_outer_effects.R'
     'check_arguments.R'
     'check_dag.R'
     'combine_and_mask.R'
