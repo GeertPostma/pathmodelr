@@ -20,16 +20,18 @@
 #'   errors for each fold and each number of LVs. The rows indicate the fold,
 #'   the columns indicate the max number of LVs.
 #' @importFrom caret createFolds
+#' @import parallel
 #' @export
-cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE){
+cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=1){
 
   train_errors <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
   test_errors  <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
 
   test_indices <- createFolds(1:nrow(node$X_data), k = k_folds) #indices of test set
 
-  for(i in 1:k_folds){
-    combined_and_masked <- combine_and_mask(node, test_indices[[i]])
+  # Internal help function for cross validation for node_PLS
+  get_error <- function(test_indices){
+    combined_and_masked <- combine_and_mask(node, test_indices)
     X_train <- as.matrix(combined_and_masked$X_train)
     X_test  <- as.matrix(combined_and_masked$X_test)
 
@@ -41,14 +43,38 @@ cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=
     SIMPLS_result <- SIMPLS(X_train, Y_train, max_n_comp=max_n_LVs, minimal=TRUE, covariance_mask=covariance_mask)
     B <- SIMPLS_result$coefficients
 
+    train_errors <- matrix(0, nrow=1, ncol=max_n_LVs)
+    test_errors  <- matrix(0, nrow=1, ncol=max_n_LVs)
+
     for(j in 1:max_n_LVs){
       Y_train_pred <- X_train %*% B[, , j]
       Y_test_pred  <- X_test %*% B[, , j]
 
-      train_errors[i,j] <- error_function(Y_train, Y_train_pred)
-      test_errors[i,j] <- error_function(Y_test, Y_test_pred)
+      train_errors[1,j] <- error_function(Y_train, Y_train_pred)
+      test_errors[1,j] <- error_function(Y_test, Y_test_pred)
     }
+
+    return(list("train_errors"=train_errors, "test_errors"=test_errors))
+
+  }
+
+  #parallelise when multiple cores should be used.
+  if(n_cores > 1){
+    cl <- makeCluster(n_cores)
+    errors <- parLapply(cl, test_indices, get_error)
+    stopCluster(cl)
+  }
+  else{
+    errors <- lapply(test_indices, get_error)
+  }
+
+
+  for(i in 1:k_folds){
+    train_errors[i,] <- errors[[i]]$train_errors
+    test_errors[i,] <- errors[[i]]$test_errors
   }
 
   return(list("train_errors"=train_errors, "test_errors"=test_errors))
 }
+
+

@@ -113,6 +113,8 @@
 #'   inherit the Node class. This option should only be set when the estimators
 #'   argument is provided and other Node types are needed, or when custom
 #'   path_modeling methods require new Node inheriting types.
+#' @param parallelise
+#' @param n_cores
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @export
 #' @import listenv
@@ -135,7 +137,9 @@ path_model <- function(data, connection_matrix, variables_in_block,
                        unique_node_postprocessing = FALSE,
                        post_processor             = NULL,
                        convergence_threshold      = 0.0001,
-                       node_class_types           = NULL
+                       node_class_types           = NULL,
+                       parallelise                = FALSE,
+                       n_cores                    = NULL
                      ){
 
   ##CHECK INPUT
@@ -216,7 +220,9 @@ path_model <- function(data, connection_matrix, variables_in_block,
 
   ##Make estimator list:
   if(is.null(estimators)){
-    estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator)
+    p <- parallelise
+    n <- n_cores
+    estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=p, n_cores=n)
   }
 
   ##Make listenv of node class types based on estimators:

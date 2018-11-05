@@ -6,7 +6,8 @@
 handles}
 \usage{
 get_estimator_list(node_connection_types, start_node_estimator,
-  middle_node_estimator, end_node_estimator)
+  middle_node_estimator, end_node_estimator, parallelise = FALSE,
+  n_cores = NULL)
 }
 \arguments{
 \item{node_connection_types}{A list of strings indicating the type of the node}

@@ -13,17 +13,23 @@
 #'   argument and is able to estimate an End type node
 #' @return A list of function handles to an estimator function which takes a
 #'   node as an argument.
-get_estimator_list <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator){
+get_estimator_list <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=FALSE, n_cores=NULL){
 
   #Convert input strings to corresponding functions
   if(typeof(start_node_estimator) == "character"){
-    start_node_estimator <- estimator_string_to_function(start_node_estimator)
+    p <- parallelise
+    n <- n_cores
+    start_node_estimator <- estimator_string_to_function(start_node_estimator, parallelise=p, n_cores=n)
   }
   if(typeof(middle_node_estimator) == "character"){
-    middle_node_estimator <- estimator_string_to_function(middle_node_estimator)
+    p <- parallelise
+    n <- n_cores
+    middle_node_estimator <- estimator_string_to_function(middle_node_estimator, parallelise=p, n_cores=n)
   }
   if(typeof(end_node_estimator) == "character"){
-    end_node_estimator <- estimator_string_to_function(end_node_estimator)
+    p <- parallelise
+    n <- n_cores
+    end_node_estimator <- estimator_string_to_function(end_node_estimator, parallelise=p, n_cores=n)
   }
 
   estimators <- list()
