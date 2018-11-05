@@ -22,17 +22,16 @@
 #' @importFrom caret createFolds
 #' @import parallel
 #' @export
-cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=3){
+cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=1){
 
   train_errors <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
   test_errors  <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
 
   test_indices <- createFolds(1:nrow(node$X_data), k = k_folds) #indices of test set
 
-  cl <- makeCluster(n_cores)
-
-  errors <- parLapply(cl, 1:k_folds, function(i){
-    combined_and_masked <- combine_and_mask(node, test_indices[[i]])
+  # Internal help function for cross validation for node_PLS
+  get_error <- function(test_indices){
+    combined_and_masked <- combine_and_mask(node, test_indices)
     X_train <- as.matrix(combined_and_masked$X_train)
     X_test  <- as.matrix(combined_and_masked$X_test)
 
@@ -56,9 +55,19 @@ cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=
     }
 
     return(list("train_errors"=train_errors, "test_errors"=test_errors))
-  })
 
-  stopCluster(cl)
+  }
+
+  #parallelise when multiple cores should be used.
+  if(n_cores > 1){
+    cl <- makeCluster(n_cores)
+    errors <- parLapply(cl, test_indices, get_error)
+    stopCluster(cl)
+  }
+  else{
+    errors <- lapply(test_indices, get_error)
+  }
+
 
   for(i in 1:k_folds){
     train_errors[i,] <- errors[[i]]$train_errors
@@ -68,4 +77,4 @@ cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=
   return(list("train_errors"=train_errors, "test_errors"=test_errors))
 }
 
-c
+
