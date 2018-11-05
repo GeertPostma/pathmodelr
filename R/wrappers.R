@@ -55,28 +55,33 @@
 process_PLS <- function(data,
                         connection_matrix,
                         variables_in_block,
-                        block_names=NULL,
-                        loggers=listenv(IterationReporter$new(), DurationLogger$new(report=TRUE)),
-                        max_iterations=20,
-                        global_preprocessors=list(),
-                        local_preprocessors=list(standardize),
-                        postprocessor=NULL,
-                        convergence_threshold=0.0001){
+                        block_names           = NULL,
+                        loggers               = listenv(IterationReporter$new(), DurationLogger$new(report=TRUE)),
+                        max_iterations        = 20,
+                        global_preprocessors  = list(),
+                        local_preprocessors   = list(standardize),
+                        postprocessor         = NULL,
+                        convergence_threshold = 0.0001,
+                        parallelise           = FALSE,
+                        n_cores               = NULL){
 
   #Calculate standard PLS path model
+  p <- parallelise
+  n <- n_cores
   model <- path_model(data,
                       connection_matrix,
                       variables_in_block,
                       block_names,
-                      start_node_estimator="PLS",
-                      middle_node_estimator="PLS",
-                      end_node_estimator="PCA",
-                      loggers=loggers,
-                      max_iterations=max_iterations,
-                      global_preprocessors=global_preprocessors,
-                      local_preprocessors=local_preprocessors,
-                      convergence_threshold=convergence_threshold
-                      )
+                      start_node_estimator  = "PLS",
+                      middle_node_estimator = "PLS",
+                      end_node_estimator    = "PCA",
+                      loggers               = loggers,
+                      max_iterations        = max_iterations,
+                      global_preprocessors  = global_preprocessors,
+                      local_preprocessors   = local_preprocessors,
+                      convergence_threshold = convergence_threshold,
+                      parallelise           = p,
+                      n_cores               = n)
 
   #Calculate all path effects, direct effects, and indirect effects
   model$path_effects <- get_all_path_effects(model)
