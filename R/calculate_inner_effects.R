@@ -25,9 +25,9 @@ calculate_inner_effects <- function(model, scaling_method=NULL){
       if(is.null(scaling_method)){
         variable_effects[[current_node_name]] <- rowSums(variable_effects_on_LV[[current_node_name]])
       }
-      else if(to_lower(scaling_method) == "variance"){
+      else if(tolower(scaling_method) == "variance"){
         if(!is.null(model$nodes[[current_node_name]]$variance_explained)){
-          variable_effects[[current_node_name]] <- sum(variable_effects_on_LV[[current_node_name]] * model$nodes[[current_node_name]]$variance_explained)
+          variable_effects[[current_node_name]] <- rowSums(variable_effects_on_LV[[current_node_name]] * model$nodes[[current_node_name]]$variance_explained)
         }
         else{
           stop("variance_explained is not an attribute of this node type")

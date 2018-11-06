@@ -91,7 +91,7 @@ process_PLS <- function(data,
 
   model$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "partial_variance")
 
-  model$inner_effects <- calculate_inner_effects(model)
+  model$inner_effects <- calculate_inner_effects(model, scaling="variance")
 
   model$outer_effects <- calculate_outer_effects(model)
 
