@@ -15,7 +15,7 @@ path_model(data, connection_matrix, variables_in_block,
   local_preprocessors = list(standardize),
   unique_node_postprocessing = FALSE, post_processor = NULL,
   convergence_threshold = 1e-04, node_class_types = NULL,
-  parallelise = FALSE, n_cores = NULL)
+  parallelise = FALSE, n_cores = NULL, n_LVs = NULL)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the

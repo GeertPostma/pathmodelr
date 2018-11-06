@@ -8,8 +8,9 @@ process_PLS(data, connection_matrix, variables_in_block,
   block_names = NULL, loggers = listenv(IterationReporter$new(),
   DurationLogger$new(report = TRUE)), max_iterations = 20,
   global_preprocessors = list(),
-  local_preprocessors = list(standardize), postprocessor = NULL,
-  convergence_threshold = 1e-04, parallelise = FALSE, n_cores = NULL)
+  local_preprocessors = list(standardize, normalize),
+  postprocessor = NULL, convergence_threshold = 1e-04,
+  parallelise = FALSE, n_cores = NULL, n_LVs = NULL)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the

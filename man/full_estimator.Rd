@@ -4,7 +4,7 @@
 \alias{full_estimator}
 \title{Estimate a node using its full data matrix}
 \usage{
-full_estimator(node)
+full_estimator(node, n_LVs = NULL)
 }
 \arguments{
 \item{node}{An object of the R6Class Node which is initialised.}
