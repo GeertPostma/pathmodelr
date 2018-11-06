@@ -1,5 +1,4 @@
 #' Plot the variances explained through the path
-#' @import ggplot2
 #' @import ggnetwork
 #' @import network
 #' @export
@@ -23,7 +22,6 @@ plot_variances <- function(model,
 }
 
 #' Plot the inner model
-#' @import ggplot2
 #' @import ggnetwork
 #' @import network
 #' @export
