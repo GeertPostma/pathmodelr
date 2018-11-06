@@ -7,7 +7,7 @@
 path_model(data, connection_matrix, variables_in_block,
   block_names = NULL, estimators = NULL,
   start_node_estimator = "PLS", middle_node_estimator = "PLS",
-  end_node_estimator = "PCA", initializers = NULL,
+  end_node_estimator = "Full", initializers = NULL,
   start_node_initializer = "Full", middle_node_initializer = "Full",
   end_node_initializer = "Full", max_iterations = 100,
   loggers = NULL, unique_node_preprocessing = FALSE,
