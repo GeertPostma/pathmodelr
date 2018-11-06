@@ -30,6 +30,7 @@ get_nodes_by_level <- function(node){
     temp <- n_same
     n_same <- length(unique_same_level_nodes)
   }
+  names(unique_same_level_nodes) <- lapply(unique_same_level_nodes, function(node) node$node_name)
 
   all_next_level_nodes <- listenv()
   for(i in seq_along(unique_same_level_nodes)){
@@ -40,6 +41,7 @@ get_nodes_by_level <- function(node){
   }
   unique_next_level_nodes <- get_unique_nodes(all_next_level_nodes)
 
+  names(unique_next_level_nodes) <- lapply(unique_next_level_nodes, function(node) node$node_name)
 
   return(listenv("unique_same_level_nodes" = unique_same_level_nodes, "unique_next_level_nodes" = unique_next_level_nodes))
 }
