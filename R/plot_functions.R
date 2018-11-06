@@ -85,22 +85,20 @@ plot_inner_effects <- function(model, what_node=NULL, negative_values="absolute"
 
         ggtitle(plot_node)
     }
-    else if(tolower(negative_values)){
-      if(to_lower(negative_values) == "negative"){
-        plots[[plot_node]] <- ggplot(data = plot_df,
+    else if(tolower(negative_values) == "negative"){
+      plots[[plot_node]] <- ggplot(data = plot_df,
 
-          aes(x = reorder(name, 1:length(name)), y = effects, fill = block)) +
+        aes(x = reorder(name, 1:length(name)), y = effects, fill = block)) +
 
-          geom_bar(stat = 'identity', position = 'dodge') +
+        geom_bar(stat = 'identity', position = 'dodge') +
 
-          theme(axis.text.x = element_text(angle = 270)) +
+        theme(axis.text.x = element_text(angle = 270)) +
 
-          ylab("Effect") +
+        ylab("Effect") +
 
-          xlab("Variable name") +
+        xlab("Variable name") +
 
-          ggtitle(plot_node)
-      }
+        ggtitle(plot_node)
     }
     else{
       stop("An incorrect value was supplied for the negative_values argument.")
@@ -140,7 +138,7 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
     if(tolower(negative_values) == "absolute"){
       plots <- ggplot(data = plot_df,
 
-                      aes(x = reorder(name, 1:length(name)), y = abs(effects), fill = block)) +
+        aes(x = reorder(name, 1:length(name)), y = abs(effects), fill = block)) +
 
         geom_bar(stat = 'identity', position = 'dodge') +
 
@@ -150,20 +148,19 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
 
         xlab("Variable name")
     }
-    else if(tolower(negative_values)){
-      if(to_lower(negative_values) == "negative"){
-        plots[[plot_node]] <- ggplot(data = plot_df,
+    else if(tolower(negative_values) == "negative"){
+      plots[[plot_node]] <- ggplot(data = plot_df,
 
-                                     aes(x = reorder(name, 1:length(name)), y = effects, fill = block)) +
+        aes(x = reorder(name, 1:length(name)), y = effects, fill = block)) +
 
-          geom_bar(stat = 'identity', position = 'dodge') +
+        geom_bar(stat = 'identity', position = 'dodge') +
 
-          theme(axis.text.x = element_text(angle = 270)) +
+        theme(axis.text.x = element_text(angle = 270)) +
 
-          ylab("Effect") +
+        ylab("Effect") +
 
-          xlab("Variable name")
-      }
+        xlab("Variable name")
+
     }
     else{
       stop("An incorrect value was supplied for the negative_values argument.")
@@ -177,7 +174,7 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
       if(tolower(negative_values) == "absolute"){
         plots[[plot_node]] <- ggplot(data = plot_df,
 
-                                     aes(x = reorder(name, 1:length(name)), y = abs(effects), fill = block)) +
+          aes(x = reorder(name, 1:length(name)), y = abs(effects), fill = block)) +
 
           geom_bar(stat = 'identity', position = 'dodge') +
 
@@ -189,8 +186,7 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
 
           ggtitle(plot_node)
       }
-      else if(tolower(negative_values)){
-        if(to_lower(negative_values) == "negative"){
+      else if(tolower(negative_values) == "negative"){
           plots[[plot_node]] <- ggplot(data = plot_df,
 
                                        aes(x = reorder(name, 1:length(name)), y = effects, fill = block)) +
@@ -204,7 +200,6 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
             xlab("Variable name") +
 
             ggtitle(plot_node)
-        }
       }
       else{
         stop("An incorrect value was supplied for the negative_values argument.")
