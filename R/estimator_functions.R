@@ -93,7 +93,8 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL){
     for(k in 1:n_LVs){
       node_P <- P[node_cols, , drop=FALSE]
 
-      variance_explained[k] <- diag(t(node_P[,k, drop=FALSE]) %*% node_P[,k, drop=FALSE]) / (dim(X)[1]-1)
+      #Scaling assumes variables are standardized and/or normalized.
+      variance_explained[k] <- diag(t(node_P[,k, drop=FALSE]) %*% node_P[,k, drop=FALSE]) / (dim(X)[1]-1) / mean(apply(X[,node_cols], 2, var))
     }
     #correct for total variance in block
     variance_explained <- variance_explained / length(node_cols)
