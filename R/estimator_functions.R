@@ -30,7 +30,7 @@
 #'   at least once. The node needs to be connected to at least one target node
 #'   for the Y matrices to exist.
 #' @export
-PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL){
+PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL){
 
   #Combine the data from the nodes and mask the covariance matrix accordingly
   combined_and_masked <- combine_and_mask(node)
@@ -41,30 +41,34 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL){
   cols_per_Y_node <- combined_and_masked$cols_per_Y_node
   same_level_nodes <- combined_and_masked$same_level_nodes
 
-  #determine max_n_LVs: after first selection, only allow shrinking
-  max_n_LVs <- ifelse(node$iteration > 1, dim(node$previous_LVs)[2], dim(X)[2])
+  #Use cross-validation to determine n_LVs if it is not explicitly set.
+  if(is.null(n_LVs)){
+    #determine max_n_LVs: after first selection, only allow shrinking
+    max_n_LVs <- ifelse(node$iteration > 1, dim(node$previous_LVs)[2], dim(X)[2])
 
-  if(parallelise){
-    if(!is.null(n_cores)){
-      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=n_cores)$test_errors
+    if(parallelise){
+      if(!is.null(n_cores)){
+        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=n_cores)$test_errors
+      }
+      else{
+        stop("parallelise is set to TRUE, but n_cores was not set.")
+      }
     }
     else{
-      stop("parallelise is set to TRUE, but n_cores was not set.")
+      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE)$test_errors
     }
+
+    #n_LV selection: take lowest complexity model within 1 std of the lowest error
+    avg_test_error <- colSums(test_errors)
+    std_test_error <- apply(test_errors, 2, sd)
+
+    min_error_index <- which.min(avg_test_error)
+
+    ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
+
+    n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
+
   }
-  else{
-    test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE)$test_errors
-  }
-
-  #n_LV selection: take lowest complexity model within 1 std of the lowest error
-  avg_test_error <- colSums(test_errors)
-  std_test_error <- apply(test_errors, 2, sd)
-
-  min_error_index <- which.min(avg_test_error)
-
-  ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
-
-  n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
 
   #final result step:
   SIMPLS_result <- SIMPLS(X,Y, max_n_comp=n_LVs, minimal=FALSE, covariance_mask=covariance_mask)
@@ -117,20 +121,19 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL){
 #' updated.
 #'
 #' @param node An object of the R6Class Node which is initialised.
-#' @param rank An integer indicating the rank, or maximum number of LVs/PCs. If left as \code{NULL}, the rank is automatically estimated.
+#' @param n_LVs An integer indicating the rank, or maximum number of LVs/PCs. If left as \code{NULL}, the rank is automatically estimated.
 #' @export
 #' @import stats
-PCA_estimator <- function(node, rank=NULL){
+PCA_estimator <- function(node, n_LVs=NULL){
 
 
-  if(is.null(rank)){
-    rank = dim(node$preprocessed_X)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
+  if(is.null(n_LVs)){
+    n_LVs = dim(node$preprocessed_X)[2] #TODO: Change to meaningful number based on Heuristic, bootstrapping, or cross validation
   }
 
-  PCA_object <- prcomp(node$preprocessed_X, scale. = FALSE, center = FALSE, rank = rank)
+  PCA_object <- prcomp(node$preprocessed_X, scale. = FALSE, center = FALSE, rank = n_LVs)
 
   LVs <- PCA_object$x
-  n_LVs <- rank
   X_loadings <- PCA_object$rotation
   variance_explained <- (PCA_object$sdev^2) / sum(PCA_object$sdev^2)
 
@@ -148,11 +151,12 @@ PCA_estimator <- function(node, rank=NULL){
 #' @param node An object of the R6Class Node which is initialised.
 #'
 #' @export
-full_estimator <- function(node){
+full_estimator <- function(node, n_LVs=NULL){
 
   LVs <- node$X_data
   n_LVs <- dim(node$preprocessed_X)[2]
   X_loadings <- diag(dim(node$preprocessed_X)[2])
+  variance_explained <- apply(node$preprocessed_X, 2, var)/sum(apply(node$preprocessed_X, 2, var))
 
-  node$add_estimate(n_LVs, LVs, X_loadings)
+  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained)
 }

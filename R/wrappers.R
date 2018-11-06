@@ -63,25 +63,28 @@ process_PLS <- function(data,
                         postprocessor         = NULL,
                         convergence_threshold = 0.0001,
                         parallelise           = FALSE,
-                        n_cores               = NULL){
+                        n_cores               = NULL,
+                        n_LVs                 = NULL){
 
   #Calculate standard PLS path model
   p <- parallelise
   n <- n_cores
+  l <- n_LVs
   model <- path_model(data,
                       connection_matrix,
                       variables_in_block,
                       block_names,
                       start_node_estimator  = "PLS",
                       middle_node_estimator = "PLS",
-                      end_node_estimator    = "PCA",
+                      end_node_estimator    = "Full",
                       loggers               = loggers,
                       max_iterations        = max_iterations,
                       global_preprocessors  = global_preprocessors,
                       local_preprocessors   = local_preprocessors,
                       convergence_threshold = convergence_threshold,
                       parallelise           = p,
-                      n_cores               = n)
+                      n_cores               = n,
+                      n_LVs                 = n_LVs)
 
   #Calculate all path effects, direct effects, and indirect effects
   model$path_effects <- get_all_path_effects(model)

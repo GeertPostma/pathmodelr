@@ -115,6 +115,7 @@
 #'   path_modeling methods require new Node inheriting types.
 #' @param parallelise
 #' @param n_cores
+#' @param n_LVs
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @export
 #' @import listenv
@@ -139,7 +140,8 @@ path_model <- function(data, connection_matrix, variables_in_block,
                        convergence_threshold      = 0.0001,
                        node_class_types           = NULL,
                        parallelise                = FALSE,
-                       n_cores                    = NULL
+                       n_cores                    = NULL,
+                       n_LVs                      = NULL
                      ){
 
   ##CHECK INPUT
@@ -222,7 +224,8 @@ path_model <- function(data, connection_matrix, variables_in_block,
   if(is.null(estimators)){
     p <- parallelise
     n <- n_cores
-    estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=p, n_cores=n)
+    l <- n_LVs
+    estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=p, n_cores=n, n_LVs=l)
   }
 
   ##Make listenv of node class types based on estimators:

@@ -13,7 +13,7 @@
 #'   argument and is able to estimate an End type node
 #' @return A list of function handles to an estimator function which takes a
 #'   node as an argument.
-get_estimator_list <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=FALSE, n_cores=NULL){
+get_estimator_list <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=FALSE, n_cores=NULL, n_LVs=NULL){
 
   #Convert input strings to corresponding functions
   if(typeof(start_node_estimator) == "character"){
@@ -24,6 +24,7 @@ get_estimator_list <- function(node_connection_types, start_node_estimator, midd
   if(typeof(middle_node_estimator) == "character"){
     p <- parallelise
     n <- n_cores
+    l <- n_LVs
     middle_node_estimator <- estimator_string_to_function(middle_node_estimator, parallelise=p, n_cores=n)
   }
   if(typeof(end_node_estimator) == "character"){
@@ -36,13 +37,32 @@ get_estimator_list <- function(node_connection_types, start_node_estimator, midd
 
   for(i in 1:length(node_connection_types)){
     if(node_connection_types[[i]] == "Middle"){
-      estimators[[i]] <- middle_node_estimator
+      if(!is.null(n_LVs)){
+        l <- n_LVs[[i]]
+        estimators[[i]] <- function(node) middle_node_estimator(node, n_LVs=l)
+      }
+      else{
+        estimators[[i]] <- middle_node_estimator
+      }
+
     }
     else if(node_connection_types[[i]] == "Start"){
-      estimators[[i]] <- start_node_estimator
+      if(!is.null(n_LVs)){
+        l <- n_LVs[[i]]
+        estimators[[i]] <- function(node) start_node_estimator(node, n_LVs=l)
+      }
+      else{
+        estimators[[i]] <- start_node_estimator
+      }
     }
     else if(node_connection_types[[i]] == "End"){
-      estimators[[i]] <- end_node_estimator
+      if(!is.null(n_LVs)){
+        l <- n_LVs[[i]]
+        estimators[[i]] <- function(node) end_node_estimator(node, n_LVs=l)
+      }
+      else{
+        estimators[[i]] <- end_node_estimator
+      }
     }
     else{
       stop("Node type unrecognised.")
