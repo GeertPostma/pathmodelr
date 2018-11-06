@@ -64,38 +64,81 @@ process_PLS <- function(data,
                         convergence_threshold = 0.0001,
                         parallelise           = FALSE,
                         n_cores               = NULL,
-                        n_LVs                 = NULL){
+                        n_LVs                 = NULL,
+                        bootstrap             = FALSE,
+                        bootstrap_iter        = 100,
+                        bootstrap_ci          = 0.95){
 
   #Calculate standard PLS path model
-  p <- parallelise
-  n <- n_cores
-  l <- n_LVs
-  model <- path_model(data,
-                      connection_matrix,
-                      variables_in_block,
-                      block_names,
-                      start_node_estimator  = "PLS",
-                      middle_node_estimator = "PLS",
-                      end_node_estimator    = "Full",
-                      loggers               = loggers,
-                      max_iterations        = max_iterations,
-                      global_preprocessors  = global_preprocessors,
-                      local_preprocessors   = local_preprocessors,
-                      convergence_threshold = convergence_threshold,
-                      parallelise           = p,
-                      n_cores               = n,
-                      n_LVs                 = n_LVs)
 
-  #Calculate all path effects, direct effects, and indirect effects
-  model$path_effects <- get_all_path_effects(model)
 
-  model$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "partial_variance")
+  #Calculate single PLS path model
+  if(bootstrap){
+    #Use monte carlo style bootstrapping
+    for(i in 1:bootstrap_iter){
 
-  model$inner_effects <- calculate_inner_effects(model, scaling="variance")
+      bootstrapped_data <- data[sample.int(dim(data)[1], replace=TRUE), ]
 
-  model$outer_effects <- calculate_outer_effects(model)
+      p <- parallelise
+      n <- n_cores
+      l <- n_LVs
+      model <- path_model(data,
+                          connection_matrix,
+                          variables_in_block,
+                          block_names,
+                          start_node_estimator  = "PLS",
+                          middle_node_estimator = "PLS",
+                          end_node_estimator    = "Full",
+                          loggers               = loggers,
+                          max_iterations        = max_iterations,
+                          global_preprocessors  = global_preprocessors,
+                          local_preprocessors   = local_preprocessors,
+                          convergence_threshold = convergence_threshold,
+                          parallelise           = p,
+                          n_cores               = n,
+                          n_LVs                 = n_LVs)
 
-  #TODO: return S3 class of model with nice summary function (including option for detailed printing)
+      #Calculate all path effects, direct effects, and indirect effects
+      model$path_effects <- get_all_path_effects(model)
+
+      model$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "partial_variance")
+
+      model$inner_effects <- calculate_inner_effects(model, scaling="variance")
+
+      model$outer_effects <- calculate_outer_effects(model)
+    }
+  }
+  else{
+    p <- parallelise
+    n <- n_cores
+    l <- n_LVs
+    model <- path_model(data,
+                        connection_matrix,
+                        variables_in_block,
+                        block_names,
+                        start_node_estimator  = "PLS",
+                        middle_node_estimator = "PLS",
+                        end_node_estimator    = "Full",
+                        loggers               = loggers,
+                        max_iterations        = max_iterations,
+                        global_preprocessors  = global_preprocessors,
+                        local_preprocessors   = local_preprocessors,
+                        convergence_threshold = convergence_threshold,
+                        parallelise           = p,
+                        n_cores               = n,
+                        n_LVs                 = n_LVs)
+
+    #Calculate all path effects, direct effects, and indirect effects
+    model$path_effects <- get_all_path_effects(model)
+
+    model$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "partial_variance")
+
+    model$inner_effects <- calculate_inner_effects(model, "variance")
+
+    model$outer_effects <- calculate_outer_effects(model)
+  }
+
+
   return(model)
 }
 
