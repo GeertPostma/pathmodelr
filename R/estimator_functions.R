@@ -153,7 +153,7 @@ PCA_estimator <- function(node, n_LVs=NULL){
 #' @export
 full_estimator <- function(node, n_LVs=NULL){
 
-  LVs <- node$X_data
+  LVs <- node$preprocessed_X
   n_LVs <- dim(node$preprocessed_X)[2]
   X_loadings <- diag(dim(node$preprocessed_X)[2])
   variance_explained <- apply(node$preprocessed_X, 2, var)/sum(apply(node$preprocessed_X, 2, var))
