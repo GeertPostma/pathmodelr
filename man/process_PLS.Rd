@@ -10,7 +10,8 @@ process_PLS(data, connection_matrix, variables_in_block,
   global_preprocessors = list(),
   local_preprocessors = list(standardize, normalize),
   postprocessor = NULL, convergence_threshold = 1e-04,
-  parallelise = FALSE, n_cores = NULL, n_LVs = NULL)
+  parallelise = FALSE, n_cores = NULL, n_LVs = NULL,
+  bootstrap = FALSE, bootstrap_iter = 100, bootstrap_ci = 0.95)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the
