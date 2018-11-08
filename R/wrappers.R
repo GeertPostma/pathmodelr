@@ -78,69 +78,81 @@ process_PLS <- function(data,
       bootstrapped_data <- data[sample.int(dim(data)[1], replace=TRUE), ]
 
       l <- n_LVs
-      model <- path_model(data,
+      tempmodel <- path_model(data,
                           connection_matrix,
                           variables_in_block,
                           block_names,
                           start_node_estimator  = "PLS",
                           middle_node_estimator = "PLS",
                           end_node_estimator    = "Full",
-                          #loggers               = loggers,
                           max_iterations        = max_iterations,
                           global_preprocessors  = global_preprocessors,
                           local_preprocessors   = local_preprocessors,
                           convergence_threshold = convergence_threshold,
                           n_LVs                 = n_LVs)
 
+      tempmodel$path_effects <- get_all_path_effects(tempmodel)
+
       #Calculate all path effects, direct effects, and indirect effects
       inner_bootstrap_results <- list()
 
       #inner_bootstrap_results$path_effects <- get_all_path_effects(model)
 
-      inner_bootstrap_results$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "partial_variance")
-      inner_bootstrap_results$inner_effects <- calculate_inner_effects(model, scaling="variance")$effects
-      inner_bootstrap_results$outer_effects <- calculate_outer_effects(model)$outer_effects
+      inner_bootstrap_results$path_variances_explained <- calculate_PLS_variances_explained(tempmodel, scaling = "partial_variance")
+      inner_bootstrap_results$inner_effects <- calculate_inner_effects(tempmodel, scaling="variance")$effects
+      inner_bootstrap_results$outer_effects <- calculate_outer_effects(tempmodel)$outer_effects
 
       return(inner_bootstrap_results)
     }
 
-    cl <- makeCluster(n_cores)
+    #cl <- makeCluster(n_cores)
 
-    bootstrap_result_matrices <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
+    #bootstrap_result_matrices <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
-    stopCluster(cl)
+    bootstrap_results <- lapply(1:bootstrap_iter, bootstrap_process_PLS)
 
-    bootstrapped_path_variances <- simplify2array(lapply(bootstrap_result_matrices, function(bs_res) bs_res$path_variances_explained))
-    #bootstrapped_inner_effects <- simplify2array(lapply(bootstrap_result_matrices, function(bs_res) bs_res$inner_effects))
+    #stopCluster(cl)
+
+    bootstrapped_path_variances <- simplify2array(lapply(bootstrap_results, function(bs_res) bs_res$path_variances_explained))
+    #bootstrapped_inner_effects <- lapply(bootstrap_result_matrices, function(bs_res) bs_res$inner_effects)
+    inner_effects <- lapply(bootstrap_results, function(bs_res) bs_res$inner_effects)
+
+    bootstrapped_inner_effects <- list()
+    e <- inner_effects[[1]]
+    for(name in names(e)){
+      bootstrapped_inner_effects[[name]] <- simplify2array(lapply(inner_effects, function(inner_effect) inner_effect[[name]]))
+    }
+
+
    #bootstrapped_outer_effects <- simplify2array(lapply(bootstrap_result_matrices, function(bs_res) bs_res$outer_effects))
 
     mean_bootstrapped_path_variances <- apply(bootstrapped_path_variances, c(1,2), mean)
-    #mean_bootstrapped_inner_effects <- apply(bootstrapped_inner_effects, c(1,2), mean)
+    mean_bootstrapped_inner_effects <- lapply(bootstrapped_inner_effects, function(effect) ifelse(!class(effect)=="list", rowMeans(effect), list()[-1]))
     #mean_bootstrapped_outer_effects <- apply(bootstrapped_outer_effects, c(1,2), mean)
 
     median_bootstrapped_path_variances <- apply(bootstrapped_path_variances, c(1,2), median)
     #median_bootstrapped_inner_effects <- apply(bootstrapped_inner_effects, c(1,2), median)
     #median_bootstrapped_outer_effects <- apply(bootstrapped_outer_effects, c(1,2), median)
 
-    ci_bootstrapped_path_variances <- get_ci(bootstrapped_path_variances, bootstrap_iter, bootstrap_ci)
+    ci_bootstrapped_path_variances <- get_path_ci(bootstrapped_path_variances, bootstrap_iter, bootstrap_ci)
     #ci_bootstrapped_inner_effects <- get_ci(bootstrapped_inner_effects, bootstrap_iter, bootstrap_ci)
     #ci_bootstrapped_outer_effects <- get_ci(bootstrapped_outer_effects, bootstrap_iter, bootstrap_ci)
 
 
-    bootstrap_results <-
-      list(
-        "path_variances" = list(
-          "mean"   = mean_bootstrapped_path_variances,
-          "median" = median_bootstrapped_path_variances,
-          "ci"     = ci_bootstrapped_path_variances),
-        "inner_effects" = list(
-          "mean"   = mean_bootstrapped_inner_effects,
-          "median" = median_bootstrapped_inner_effects,
-          "ci"     = ci_bootstrapped_inner_effects),
-        "outer_effects" = list(
-          "mean"   = mean_bootstrapped_outer_effects,
-          "median" = median_bootstrapped_outer_effects,
-          "ci"     = ci_bootstrapped_outer_effects))
+    # bootstrap_results <-
+    #   list(
+    #     "path_variances" = list(
+    #       "mean"   = mean_bootstrapped_path_variances,
+    #       "median" = median_bootstrapped_path_variances,
+    #       "ci"     = ci_bootstrapped_path_variances),
+    #     "inner_effects" = list(
+    #       "mean"   = mean_bootstrapped_inner_effects,
+    #       "median" = median_bootstrapped_inner_effects,
+    #       "ci"     = ci_bootstrapped_inner_effects),
+    #     "outer_effects" = list(
+    #       "mean"   = mean_bootstrapped_outer_effects,
+    #       "median" = median_bootstrapped_outer_effects,
+    #       "ci"     = ci_bootstrapped_outer_effects))
 
     #calculate original model
     l <- n_LVs
