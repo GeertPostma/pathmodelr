@@ -38,8 +38,8 @@ calculate_inner_effects <- function(model, scaling_method=NULL){
       }
     }
     else{
-      variable_effects_on_LV[[current_node_name]] <- list()
-      variable_effects[[current_node_name]] <- list()
+      variable_effects_on_LV[[current_node_name]] <- NULL
+      variable_effects[[current_node_name]] <- NULL
     }
 
   }
