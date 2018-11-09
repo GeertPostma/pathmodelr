@@ -78,7 +78,7 @@ process_PLS <- function(data,
       bootstrapped_data <- data[sample.int(dim(data)[1], replace=TRUE), ]
 
       l <- n_LVs
-      tempmodel <- path_model(data,
+      tempmodel <- path_model(bootstrapped_data,
                           connection_matrix,
                           variables_in_block,
                           block_names,
@@ -105,13 +105,13 @@ process_PLS <- function(data,
       return(inner_bootstrap_results)
     }
 
-    #cl <- makeCluster(n_cores)
+    cl <- makeCluster(n_cores)
 
-    #bootstrap_result_matrices <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
+    bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
-    bootstrap_results <- lapply(1:bootstrap_iter, bootstrap_process_PLS)
+    #bootstrap_results <- lapply(1:bootstrap_iter, bootstrap_process_PLS)
 
-    #stopCluster(cl)
+    stopCluster(cl)
 
     bootstrapped_path_variances <- simplify2array(lapply(bootstrap_results, function(bs_res) bs_res$path_variances_explained))
     inner_effects <- lapply(bootstrap_results, function(bs_res) bs_res$inner_effects)
