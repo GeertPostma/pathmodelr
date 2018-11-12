@@ -30,10 +30,10 @@
 #'   at least once. The node needs to be connected to at least one target node
 #'   for the Y matrices to exist.
 #' @export
-PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL){
+PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, scale_blocks=FALSE){
 
   #Combine the data from the nodes and mask the covariance matrix accordingly
-  combined_and_masked <- combine_and_mask(node)
+  combined_and_masked <- combine_and_mask(node, scale_blocks=scale_blocks)
   X <- combined_and_masked$X
   Y <- combined_and_masked$Y
   covariance_mask <- combined_and_masked$covariance_mask

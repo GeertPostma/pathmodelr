@@ -52,7 +52,7 @@
 #'
 #' @export
 #'
-combine_and_mask <- function(node, test_indices=NULL){
+combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE){
 
   layered_nodes <- get_nodes_by_level(node)
 
@@ -112,12 +112,12 @@ combine_and_mask <- function(node, test_indices=NULL){
     X_names <- c()
 
     for(i in seq_along(same_level_nodes)){
-      X[,cols_per_X_node[[i]]] <- as.matrix(same_level_nodes[[i]]$preprocessed_X)
+      X[,cols_per_X_node[[i]]] <- as.matrix(same_level_nodes[[i]]$preprocessed_X)/length(cols_per_X_node[[i]])
       X_names[cols_per_X_node[[i]]] <- colnames(same_level_nodes[[i]]$preprocessed_X)
     }
 
     for(i in seq_along(next_level_nodes)){
-      Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$previous_LVs)
+      Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$previous_LVs)/length(cols_per_Y_node[[i]])
     }
 
     colnames(X) <- X_names
@@ -143,15 +143,15 @@ combine_and_mask <- function(node, test_indices=NULL){
     for(i in seq_along(same_level_nodes)){
       preprocessed_X_sets <- same_level_nodes[[i]]$preprocess_train_test(test_indices)
 
-      X_train[,cols_per_X_node[[i]]] <- as.matrix(preprocessed_X_sets$train_data)
-      X_test[,cols_per_X_node[[i]]]  <- as.matrix(preprocessed_X_sets$test_data)
+      X_train[,cols_per_X_node[[i]]] <- as.matrix(preprocessed_X_sets$train_data)/length(cols_per_X_node[[i]])
+      X_test[,cols_per_X_node[[i]]]  <- as.matrix(preprocessed_X_sets$test_data)/length(cols_per_X_node[[i]])
     }
 
     for(i in seq_along(next_level_nodes)){
       Y <- next_level_nodes[[i]]$previous_LVs
 
-      Y_train[,cols_per_Y_node[[i]]] <- as.matrix(Y[-test_indices,])
-      Y_test[,cols_per_Y_node[[i]]]  <- as.matrix(Y[test_indices,])
+      Y_train[,cols_per_Y_node[[i]]] <- as.matrix(Y[-test_indices,])/length(cols_per_Y_node[[i]])
+      Y_test[,cols_per_Y_node[[i]]]  <- as.matrix(Y[test_indices,])/length(cols_per_Y_node[[i]])
     }
 
     return(list("X_train"=X_train,
