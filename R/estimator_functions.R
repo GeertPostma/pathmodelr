@@ -30,7 +30,7 @@
 #'   at least once. The node needs to be connected to at least one target node
 #'   for the Y matrices to exist.
 #' @export
-PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, scale_blocks=FALSE){
+PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, scale_blocks=TRUE){
 
   #Combine the data from the nodes and mask the covariance matrix accordingly
   combined_and_masked <- combine_and_mask(node, scale_blocks=scale_blocks)
@@ -48,14 +48,14 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, sca
 
     if(parallelise){
       if(!is.null(n_cores)){
-        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=n_cores)$test_errors
+        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=n_cores, scale_blocks=scale_blocks)$test_errors
       }
       else{
         stop("parallelise is set to TRUE, but n_cores was not set.")
       }
     }
     else{
-      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE)$test_errors
+      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, scale_blocks=scale_blocks)$test_errors
     }
 
     #n_LV selection: take lowest complexity model within 1 std of the lowest error
