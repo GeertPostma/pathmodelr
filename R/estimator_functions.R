@@ -30,7 +30,7 @@
 #'   at least once. The node needs to be connected to at least one target node
 #'   for the Y matrices to exist.
 #' @export
-PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, scale_blocks=TRUE){
+PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, scale_blocks=TRUE, variance_scale=TRUE){
 
   #Combine the data from the nodes and mask the covariance matrix accordingly
   combined_and_masked <- combine_and_mask(node, scale_blocks=scale_blocks)
@@ -48,14 +48,14 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, sca
 
     if(parallelise){
       if(!is.null(n_cores)){
-        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=n_cores, scale_blocks=scale_blocks)$test_errors
+        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=n_cores, scale_blocks=scale_blocks, variance_scale=variance_scale)$test_errors
       }
       else{
         stop("parallelise is set to TRUE, but n_cores was not set.")
       }
     }
     else{
-      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, scale_blocks=scale_blocks)$test_errors
+      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, scale_blocks=scale_blocks, variance_scale=variance_scale)$test_errors
     }
 
     #n_LV selection: take lowest complexity model within 1 std of the lowest error
@@ -138,7 +138,7 @@ PCA_estimator <- function(node, n_LVs=NULL){
   X_loadings <- PCA_object$rotation
   variance_explained <- (PCA_object$sdev^2) / sum(PCA_object$sdev^2)
 
-  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained)
+  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained=variance_explained)
 }
 
 #' Estimate a node using its full data matrix
@@ -159,5 +159,5 @@ full_estimator <- function(node, n_LVs=NULL){
   X_loadings <- diag(dim(node$preprocessed_X)[2])
   variance_explained <- apply(node$preprocessed_X, 2, var)/sum(apply(node$preprocessed_X, 2, var))
 
-  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained)
+  node$add_estimate(n_LVs, LVs, X_loadings, variance_explained=variance_explained)
 }
