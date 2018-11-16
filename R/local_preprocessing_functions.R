@@ -53,7 +53,7 @@ standardize <- function(input_data, settings=list("column_means"=NULL, "column_s
     column_stds <- apply(centered_data, 2, sd)
   }
 
-  scaled_data <- centered_data / rep(1, nrow(centered_data)) %*% t(column_stds)
+  scaled_data <- centered_data %*% diag(1/column_stds, nrow=length(column_stds))
 
   settings <- list("column_means"=column_means, "column_stds"=column_stds)
 
@@ -98,7 +98,7 @@ normalize <- function(input_data, settings=list("column_means"=NULL, "column_sca
     column_scaling_factor <- apply(centered_data, 2, function(x) sqrt(sum(x^2)))
   }
 
-  normalized_data <- centered_data / rep(1, nrow(centered_data)) %*% t(column_scaling_factor)
+  normalized_data <- centered_data %*% diag(1/column_scaling_factor, nrow=length(column_scaling_factor))
 
   settings <- list("column_means"=column_means, "column_scaling_factor"=column_scaling_factor)
 
