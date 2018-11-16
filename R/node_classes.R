@@ -305,11 +305,11 @@ PLSNode <- R6Class("PLSNode",
 
           self$prepare_next_estimation()
 
-          LVs_scaled=self$previous_LVs/self$post_processing_settings
-          X_loadings_scaled=self$X_loadings/self$post_processing_settings
+          LVs_scaled=self$previous_LVs %*% diag(1/self$post_processing_settings)
+          X_loadings_scaled=self$X_loadings %*% diag(1/self$post_processing_settings)
           Y_loadings_unscaled <- self$Y_loadings
 
-          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled)
+          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
 
           self$is_post_processed <- TRUE
 
@@ -322,7 +322,7 @@ PLSNode <- R6Class("PLSNode",
             }
 
             #Divide Y_loading columns by scaling of self, divide Y_loading rows by scaling of next_node
-            scaled_Y_loadings[[next_node$node_name]] <- t(t(Y_loadings_unscaled[[next_node$node_name]] / self$post_processing_settings) / next_node$post_processing_settings)
+            scaled_Y_loadings[[next_node$node_name]] <- t(t(Y_loadings_unscaled[[next_node$node_name]] %*% diag(1/self$post_processing_settings, nrow=length(self$post_processing_settings))) %*% diag(1/next_node$post_processing_settings, nrow=length(next_node$post_processing_settings)))
           }
           #self$prepare_next_estimation is not called again to keep the original LVs in the object
           self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, Y_loadings=scaled_Y_loadings, variance_explained = self$variance_explained)
