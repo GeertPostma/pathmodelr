@@ -9,7 +9,7 @@ process_PLS(data, connection_matrix, variables_in_block,
   DurationLogger$new(report = TRUE)), max_iterations = 20,
   global_preprocessors = list(),
   local_preprocessors = list(standardize, normalize),
-  postprocessor = NULL, convergence_threshold = 1e-04,
+  post_processor = NULL, convergence_threshold = 1e-04,
   parallelise = FALSE, n_cores = NULL, n_LVs = NULL,
   bootstrap = FALSE, bootstrap_iter = 100, bootstrap_ci = 0.95)
 }
