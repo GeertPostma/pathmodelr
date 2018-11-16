@@ -33,7 +33,7 @@
 PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, scale_blocks=TRUE, variance_scale=TRUE){
 
   #Combine the data from the nodes and mask the covariance matrix accordingly
-  combined_and_masked <- combine_and_mask(node, scale_blocks=scale_blocks)
+  combined_and_masked <- combine_and_mask(node, scale_blocks=scale_blocks, variance_scale=variance_scale)
   X <- combined_and_masked$X
   Y <- combined_and_masked$Y
   covariance_mask <- combined_and_masked$covariance_mask
