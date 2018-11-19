@@ -188,7 +188,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   #make blocked data
   blocked_data <- list()
 
-  for(i in 1:n_blocks){ #index block_names and variables_in_block
+  for(i in 1:n_blocks){ #index block_names and variables_in_block (also convert back to matrix)
 
     blocked_data[[i]] <- data.matrix(select(data, variables_in_block[[i]]))
   }
