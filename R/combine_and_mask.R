@@ -134,10 +134,7 @@ combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE, varian
         scale_vec <- rep(1, length(cols_per_Y_node[[i]]))
       }
       if(variance_scale){
-        SS_old <- sum((as.matrix(next_level_nodes[[i]]$previous_LVs) %*% diag(1/scale_vec,nrow=length(scale_vec)))^2)
-        scale_vec <- scale_vec / sqrt(next_level_nodes[[i]]$variance_explained) * sqrt(sum(next_level_nodes[[i]]$variance_explained))
-        SS_new <- sum((as.matrix(next_level_nodes[[i]]$previous_LVs) %*% diag(1/scale_vec,nrow=length(scale_vec)))^2)
-        scale_vec <- scale_vec / sqrt(SS_old/SS_new)
+        scale_vec <- scale_vec / sqrt(next_level_nodes[[i]]$variance_explained) * sqrt(sum(next_level_nodes[[i]]$variance_explained)) / sqrt(length(scale_vec))
       }
 
       Y[,cols_per_Y_node[[i]]] <- as.matrix(next_level_nodes[[i]]$previous_LVs) %*% diag(1/scale_vec,nrow=length(scale_vec))
