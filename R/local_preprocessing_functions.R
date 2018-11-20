@@ -2,24 +2,21 @@
 #'
 #' @param input_data A matrix containing data. The rows indicate the samples,
 #'   the columns indicate the variables.
-#' @param settings A list with a single named element "block_std". When
-#'   block_std is set, the supplied value is used for scaling, otherwise it is
-#'   calculated.
+#' @param settings A list with a single named element "block_variance". When
+#'   block_variance is set, the supplied value is used for scaling, otherwise a value of 1 is used.
 #' @return A named list with "preprocessed_data": the scaled input_data matrix,
 #'   and "settings", which is equal to the settings input parameter when set,
 #'   and otherwise contains the calculated and used block_std.
 #' @export
 #' @importFrom stats sd
-block_scale <- function(input_data, settings=list("block_std"=NULL)){
-  block_std <- settings$block_std
+block_scale <- function(input_data, settings=list("block_variance"=1)){
+  block_variance <- settings$block_variance
 
-  if(is.null(block_std)){
-    block_std <- sd(input_data)
-  }
+  scale_vec <- rep(sqrt(block_variance)/sqrt(dim(input_data)[2]), dim(input_data)[2])
 
-  block_scaled_data <- input_data / matrix(block_std, nrow=nrow(input_data), ncol=ncol(input_data))
+  block_scaled_data <- input_data %*% diag(scale_vec,nrow=length(scale_vec))
 
-  settings <- list("block_std"=block_std)
+  settings <- list("block_variance"=block_variance)
 
   return(list("preprocessed_data"=block_scaled_data, "settings"=settings))
 }

@@ -110,47 +110,54 @@ combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE, varian
     Y <- matrix(0, nrow=n_samples, ncol=total_Y_cols)
 
     X_names <- c()
-
+    X_scale_vecs <- list()
     for(i in seq_along(same_level_nodes)){
 
-      if(scale_blocks){
-        scale_vec <- rep(sqrt(length(cols_per_X_node[[i]])), length(cols_per_X_node[[i]]))
-      }
-      else{
-        scale_vec <- rep(1, length(cols_per_X_node[[i]]))
+      X_scale_vec <- rep(1, length(same_level_nodes[[i]]$variance_explained))
+
+      if(variance_scale){
+        SSi <- colSums(same_level_nodes[[i]]$previous_LVs^2)
+        X_scale_vec <- X_scale_vec * sqrt(X_scale_vec * SSi / same_level_nodes[[i]]$variance_explained)
       }
 
-      X[,cols_per_X_node[[i]]] <- same_level_nodes[[i]]$preprocessed_X %*% diag(1/scale_vec,nrow=length(scale_vec))
+      if(scale_blocks){
+        X_scale_vec <- X_scale_vec * sqrt(sum((same_level_nodes[[i]]$previous_LVs %*% diag(1/X_scale_vec,nrow=length(X_scale_vec)))^2))
+      }
+
+      X[,cols_per_X_node[[i]]] <- same_level_nodes[[i]]$preprocessed_X
 
       X_names[cols_per_X_node[[i]]] <- colnames(same_level_nodes[[i]]$preprocessed_X)
     }
 
+    Y_scale_vecs <- list()
     for(i in seq_along(next_level_nodes)){
 
-      scale_vec <- rep(1, length(cols_per_Y_node[[i]]))
+      Y_scale_vec <- rep(1, length(cols_per_Y_node[[i]]))
 
       if(variance_scale){
-        SSi <- colSums(as.matrix(next_level_nodes[[i]]$previous_LVs)^2)
-        scale_vec <- scale_vec * sqrt(scale_vec * SSi / next_level_nodes[[i]]$variance_explained)
+        SSi <- colSums(next_level_nodes[[i]]$previous_LVs^2)
+        Y_scale_vec <- Y_scale_vec * sqrt(Y_scale_vec * SSi / next_level_nodes[[i]]$variance_explained)
       }
 
       if(scale_blocks){
-        scale_vec <- scale_vec * sqrt(sum((next_level_nodes[[i]]$previous_LVs %*% diag(1/scale_vec,nrow=length(scale_vec)))^2))
+        Y_scale_vec <- Y_scale_vec * sqrt(sum((next_level_nodes[[i]]$previous_LVs %*% diag(1/Y_scale_vec,nrow=length(Y_scale_vec)))^2))
       }
 
-
-      Y[,cols_per_Y_node[[i]]] <- next_level_nodes[[i]]$previous_LVs %*% diag(1/scale_vec,nrow=length(scale_vec))
+      Y[,cols_per_Y_node[[i]]] <- next_level_nodes[[i]]$previous_LVs %*% diag(1/Y_scale_vec,nrow=length(Y_scale_vec))
+      Y_scale_vecs[[next_level_nodes[[i]]$node_name]] <- Y_scale_vec
     }
 
     colnames(X) <- X_names
 
-    return(list("X"=X,
-                "Y"=Y,
-                "covariance_mask"=covariance_mask,
-                "cols_per_X_node"=cols_per_X_node,
-                "cols_per_Y_node"=cols_per_Y_node,
-                "same_level_nodes"=same_level_nodes,
-                "next_level_nodes"=next_level_nodes))
+    return(list("X"                = X,
+                "Y"                = Y,
+                "covariance_mask"  = covariance_mask,
+                "cols_per_X_node"  = cols_per_X_node,
+                "cols_per_Y_node"  = cols_per_Y_node,
+                "same_level_nodes" = same_level_nodes,
+                "next_level_nodes" = next_level_nodes,
+                "X_scale_vecs"     = X_scale_vecs,
+                "Y_scale_vecs"     = Y_scale_vecs))
 
   }
   else{
@@ -165,14 +172,8 @@ combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE, varian
     for(i in seq_along(same_level_nodes)){
       preprocessed_X_sets <- same_level_nodes[[i]]$preprocess_train_test(test_indices)
 
-      if(scale_blocks){
-        scale_vec <- rep(sqrt(length(cols_per_X_node[[i]])), length(cols_per_X_node[[i]]))
-      }
-      else{
-        scale_vec <- rep(1, length(cols_per_X_node[[i]]))
-      }
-      X_train[,cols_per_X_node[[i]]] <- preprocessed_X_sets$train_data %*% diag(1/scale_vec,nrow=length(scale_vec))
-      X_test[,cols_per_X_node[[i]]]  <- preprocessed_X_sets$test_data %*% diag(1/scale_vec,nrow=length(scale_vec))
+      X_train[,cols_per_X_node[[i]]] <- preprocessed_X_sets$train_data
+      X_test[,cols_per_X_node[[i]]]  <- preprocessed_X_sets$test_data
 
     }
 
