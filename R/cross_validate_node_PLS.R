@@ -22,7 +22,7 @@
 #' @importFrom caret createFolds
 #' @import parallel
 #' @export
-cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=1, scale_blocks=FALSE, variance_scale=FALSE, minimal=TRUE){
+cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=1, block_scale=FALSE, variance_scale=FALSE, minimal=TRUE){
 
   if(!minimal){
     train_errors <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
@@ -34,7 +34,7 @@ cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=
 
   # Internal help function for cross validation for node_PLS
   get_errors <- function(test_indices){
-    combined_and_masked <- combine_and_mask(node, test_indices, scale_blocks=scale_blocks, variance_scale=variance_scale)
+    combined_and_masked <- combine_and_mask(node, test_indices, block_scale=block_scale, variance_scale=variance_scale)
     X_train <- as.matrix(combined_and_masked$X_train)
     X_test  <- as.matrix(combined_and_masked$X_test)
 
@@ -61,7 +61,7 @@ cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=
   }
 
   get_error <- function(test_indices){
-    combined_and_masked <- combine_and_mask(node, test_indices, scale_blocks=scale_blocks, variance_scale=variance_scale)
+    combined_and_masked <- combine_and_mask(node, test_indices, block_scale=block_scale, variance_scale=variance_scale)
     X_train <- as.matrix(combined_and_masked$X_train)
     X_test  <- as.matrix(combined_and_masked$X_test)
 

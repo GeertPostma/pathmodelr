@@ -47,6 +47,7 @@ Collate:
     'get_nodes_by_level.R'
     'get_previous_node_indices.R'
     'get_same_level_connected_nodes.R'
+    'get_scale_vec.R'
     'get_unique_nodes.R'
     'initializer_functions.R'
     'initializer_string_to_function.R'

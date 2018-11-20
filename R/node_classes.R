@@ -284,6 +284,12 @@ PLSNode <- R6Class("PLSNode",
       self$is_estimated <- TRUE
     },
 
+    update_loadings_and_LVs = function(LVs, X_loadings, Y_loadings=NULL){
+      self$LVs        <- LVs
+      self$X_loadings <- X_loadings
+      self$Y_loadings <- Y_loadings
+    },
+
     get_outgoing_path = function(node){
 
       for(i in seq_along(self$next_nodes)){

@@ -30,10 +30,10 @@
 #'   at least once. The node needs to be connected to at least one target node
 #'   for the Y matrices to exist.
 #' @export
-PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, scale_blocks=TRUE, variance_scale=TRUE){
+PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, error_function=MSE){
 
   #Combine the data from the nodes and mask the covariance matrix accordingly
-  combined_and_masked <- combine_and_mask(node, scale_blocks=scale_blocks, variance_scale=variance_scale)
+  combined_and_masked <- combine_and_mask(node, block_scale=block_scale, variance_scale=variance_scale)
   X <- combined_and_masked$X
   Y <- combined_and_masked$Y
   covariance_mask <- combined_and_masked$covariance_mask
@@ -48,14 +48,14 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, sca
 
     if(parallelise){
       if(!is.null(n_cores)){
-        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=n_cores, scale_blocks=scale_blocks, variance_scale=variance_scale)$test_errors
+        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, n_cores=n_cores, block_scale=block_scale, variance_scale=variance_scale)$test_errors
       }
       else{
         stop("parallelise is set to TRUE, but n_cores was not set.")
       }
     }
     else{
-      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=MSE, scale_blocks=scale_blocks, variance_scale=variance_scale)$test_errors
+      test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, block_scale=block_scale, variance_scale=variance_scale)$test_errors
     }
 
     #n_LV selection: take lowest complexity model within 1 std of the lowest error
@@ -85,22 +85,20 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, sca
     node_weights <- X_weights[node_cols, , drop = FALSE]
     node_LVs <- update_node$preprocessed_X %*% node_weights
 
-    node_Y_loadings <- list()
-
     #Calculate variance explained per node
     variance_explained <- vector(mode="numeric", length=n_LVs)
 
     for(k in 1:n_LVs){
       node_P <- P[node_cols, , drop=FALSE]
 
-      #Scaling assumes variables are standardized and/or normalized.
-      variance_explained[k] <- diag(t(node_P[,k, drop=FALSE]) %*% node_P[,k, drop=FALSE]) / (dim(X)[1]-1) / mean(apply(X[,node_cols], 2, var))
+      #Scaling assumes variables are standardized and/or normalized and block scaled.
+      variance_explained[k] <- diag(t(node_P[,k, drop=FALSE]) %*% node_P[,k, drop=FALSE]) / (dim(X)[1]-1) #/ mean(apply(X[,node_cols], 2, var))
     }
     #correct for total variance in block
-    variance_explained <- variance_explained / length(node_cols)
+    #variance_explained <- variance_explained / length(node_cols)
 
+    node_Y_loadings <- list()
     for(j in seq_along(update_node$next_nodes)){
-
       next_node_name <- update_node$next_nodes[[j]]$node_name
 
       node_Y_loadings[[next_node_name]] <- Y_loadings[cols_per_Y_node[[next_node_name]], , drop = FALSE]
@@ -108,7 +106,34 @@ PLS_estimator <- function(node, parallelise=FALSE, n_cores=NULL, n_LVs=NULL, sca
 
     update_node$add_estimate(n_LVs, node_LVs, node_weights, Y_loadings=node_Y_loadings, variance_explained=variance_explained)
   }
+  #Rescale loadings and weights according to the same scheme as in combine_and_mask
+  for(i in seq_along(same_level_nodes)){
+    update_node <- same_level_nodes[[i]]
 
+    S_vec <- get_scale_vec(update_node, block_scale=block_scale, variance_scale=variance_scale, rescale=TRUE)
+    S <- diag(1/S_vec, nrow=length(S_vec))
+    R <- update_node$X_loadings
+
+    R_mod <- R %*% S
+
+    node_Y_loadings <- list()
+    old_Y_loadings <- update_node$Y_loadings
+    for(j in seq_along(update_node$next_nodes)){
+      next_level_node <- update_node$next_nodes[[j]]
+#
+#       M_vec <- get_scale_vec(next_level_node, block_scale=block_scale, variance_scale=variance_scale, rescale=TRUE)
+#       M <- diag(1/M_vec, nrow=length(M_vec))
+
+      #From the node we acquire (QtM)t
+      Qt_M <- t(old_Y_loadings[[next_level_node$node_name]])
+
+      Qt_scaled<- solve(S) %*% Qt_M
+
+      node_Y_loadings[[next_level_node$node_name]] <- t(Qt_scaled)
+    }
+
+    update_node$update_loadings_and_LVs(update_node$preprocessed_X %*% R_mod, R_mod, node_Y_loadings)
+  }
 }
 
 #' Estimate a node using PCA

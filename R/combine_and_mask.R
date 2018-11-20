@@ -52,7 +52,7 @@
 #'
 #' @export
 #'
-combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE, variance_scale=FALSE){
+combine_and_mask <- function(node, test_indices=NULL, block_scale=FALSE, variance_scale=FALSE){
 
   layered_nodes <- get_nodes_by_level(node)
 
@@ -110,41 +110,18 @@ combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE, varian
     Y <- matrix(0, nrow=n_samples, ncol=total_Y_cols)
 
     X_names <- c()
-    X_scale_vecs <- list()
     for(i in seq_along(same_level_nodes)){
-
-      X_scale_vec <- rep(1, length(same_level_nodes[[i]]$variance_explained))
-
-      if(variance_scale){
-        SSi <- colSums(same_level_nodes[[i]]$previous_LVs^2)
-        X_scale_vec <- X_scale_vec * sqrt(X_scale_vec * SSi / same_level_nodes[[i]]$variance_explained)
-      }
-
-      if(scale_blocks){
-        X_scale_vec <- X_scale_vec * sqrt(sum((same_level_nodes[[i]]$previous_LVs %*% diag(1/X_scale_vec,nrow=length(X_scale_vec)))^2))
-      }
 
       X[,cols_per_X_node[[i]]] <- same_level_nodes[[i]]$preprocessed_X
 
       X_names[cols_per_X_node[[i]]] <- colnames(same_level_nodes[[i]]$preprocessed_X)
     }
 
-    Y_scale_vecs <- list()
     for(i in seq_along(next_level_nodes)){
 
-      Y_scale_vec <- rep(1, length(cols_per_Y_node[[i]]))
-
-      if(variance_scale){
-        SSi <- colSums(next_level_nodes[[i]]$previous_LVs^2)
-        Y_scale_vec <- Y_scale_vec * sqrt(Y_scale_vec * SSi / next_level_nodes[[i]]$variance_explained)
-      }
-
-      if(scale_blocks){
-        Y_scale_vec <- Y_scale_vec * sqrt(sum((next_level_nodes[[i]]$previous_LVs %*% diag(1/Y_scale_vec,nrow=length(Y_scale_vec)))^2))
-      }
+      Y_scale_vec <- get_scale_vec(next_level_nodes[[i]], block_scale=block_scale, variance_scale=variance_scale)
 
       Y[,cols_per_Y_node[[i]]] <- next_level_nodes[[i]]$previous_LVs %*% diag(1/Y_scale_vec,nrow=length(Y_scale_vec))
-      Y_scale_vecs[[next_level_nodes[[i]]$node_name]] <- Y_scale_vec
     }
 
     colnames(X) <- X_names
@@ -155,9 +132,7 @@ combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE, varian
                 "cols_per_X_node"  = cols_per_X_node,
                 "cols_per_Y_node"  = cols_per_Y_node,
                 "same_level_nodes" = same_level_nodes,
-                "next_level_nodes" = next_level_nodes,
-                "X_scale_vecs"     = X_scale_vecs,
-                "Y_scale_vecs"     = Y_scale_vecs))
+                "next_level_nodes" = next_level_nodes))
 
   }
   else{
@@ -178,24 +153,13 @@ combine_and_mask <- function(node, test_indices=NULL, scale_blocks=FALSE, varian
     }
 
     for(i in seq_along(next_level_nodes)){
-      Y <- next_level_nodes[[i]]$previous_LVs
-      Y_train_temp <- Y[-test_indices, , drop=FALSE]
-      Y_test_temp  <- Y[test_indices, , drop=FALSE]
 
-      scale_vec_train <- rep(1, length(cols_per_Y_node[[i]]))
-      scale_vec_test  <- rep(1, length(cols_per_Y_node[[i]]))
+      scale_vecs <- get_train_test_scale_vec(next_level_nodes[[i]], test_indices, block_scale=block_scale, variance_scale=variance_scale)
 
-      if(variance_scale){
-        SSi_train <- colSums(Y_train_temp^2)
-        SSi_test  <- colSums(Y_test_temp^2)
-        scale_vec_train <- scale_vec_train * sqrt(scale_vec_train * SSi_train / next_level_nodes[[i]]$variance_explained)
-        scale_vec_test  <- scale_vec_test  * sqrt(scale_vec_test  * SSi_test  / next_level_nodes[[i]]$variance_explained)
-      }
-
-      if(scale_blocks){
-        scale_vec_train <- scale_vec_train * sqrt(sum((Y_train_temp %*% diag(1/scale_vec_train,nrow=length(scale_vec_train)))^2))
-        scale_vec_test  <- scale_vec_test  * sqrt(sum((Y_test_temp  %*% diag(1/scale_vec_test ,nrow=length(scale_vec_test )))^2))
-      }
+      scale_vec_train <- scale_vecs$scale_vec_train
+      scale_vec_test  <- scale_vecs$scale_vec_test
+      Y_train_temp <- scale_vecs$Y_train_temp
+      Y_test_temp <- scale_vecs$Y_test_temp
 
       Y_train[,cols_per_Y_node[[i]]] <- Y_train_temp  %*% diag(1/scale_vec_train,nrow=length(scale_vec_train))
       Y_test[,cols_per_Y_node[[i]]]  <- Y_test_temp  %*% diag(1/scale_vec_test ,nrow=length(scale_vec_test ))

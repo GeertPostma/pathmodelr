@@ -4,7 +4,8 @@
 \alias{combine_and_mask}
 \title{Combines data from predictor and target nodes and constructs a mask for the covariance matrix accordingly}
 \usage{
-combine_and_mask(node, test_indices = NULL)
+combine_and_mask(node, test_indices = NULL, block_scale = FALSE,
+  variance_scale = FALSE)
 }
 \arguments{
 \item{node}{An object of the R6Class Node which is initialised and estimated at least once. The node needs to be connected to at least one target node for the Y matrices to exist.}

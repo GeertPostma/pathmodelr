@@ -5,7 +5,7 @@
 \title{Estimate a node using PLS regression}
 \usage{
 PLS_estimator(node, parallelise = FALSE, n_cores = NULL,
-  n_LVs = NULL)
+  n_LVs = NULL, block_scale = TRUE, variance_scale = TRUE)
 }
 \arguments{
 \item{node}{An object of the R6Class Node which is initialised and estimated

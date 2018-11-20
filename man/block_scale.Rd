@@ -4,15 +4,14 @@
 \alias{block_scale}
 \title{Scales a block of data to unit variance}
 \usage{
-block_scale(input_data, settings = list(block_std = NULL))
+block_scale(input_data, settings = list(block_variance = 1))
 }
 \arguments{
 \item{input_data}{A matrix containing data. The rows indicate the samples,
 the columns indicate the variables.}
 
-\item{settings}{A list with a single named element "block_std". When
-block_std is set, the supplied value is used for scaling, otherwise it is
-calculated.}
+\item{settings}{A list with a single named element "block_variance". When
+block_variance is set, the supplied value is used for scaling, otherwise a value of 1 is used.}
 }
 \value{
 A named list with "preprocessed_data": the scaled input_data matrix,
