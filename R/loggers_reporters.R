@@ -158,23 +158,43 @@ ConvergenceLogger <- R6Class("ConvergenceLogger",
  )
 )
 
+#' @importFrom reshape2 melt
+#' @import ggplot2
+#' @export
+VarianceLogger <- R6Class("VarianceLogger",
+  public = list(
+   #Fields
+   total_variance_per_node = NULL,
 
-# #Logs the loadings of the nodes per iteration
-# LoadingLogger <- R6Class("LoadingLogger",
-#   public = list(
-#    #Fields
-#    combined_loadings = list(),
-#
-#    #Methods
-#    initialize = function(){},
-#
-#    log_status = function(nodes, iteration){
-#      current_loadings <-
-#    },
-#
-#    show = function(){
-#
-#
-#    }
-#   )
-# )
+   #Methods
+   initialize = function(){},
+
+   log_status = function(nodes, iteration){
+     if(is.null(self$total_variance_per_node)){
+       self$total_variance_per_node <- data.frame(matrix(nrow=0, ncol=length(nodes)))
+     }
+     total_variance <- data.frame(matrix(nrow=1, ncol=length(nodes)+1))
+
+     colnames(total_variance) <- iteration
+     for(i in seq_along(nodes)){
+       node <- nodes[[i]]
+
+       total_variance[,i] <- sum(node$variance_explained)
+       colnames(total_variance)[[i]] <- node$node_name
+     }
+     total_variance[,i+1] <- iteration
+     colnames(total_variance)[[i+1]] <- "iteration"
+     self$total_variance_per_node <- rbind(self$total_variance_per_node,total_variance)
+   },
+
+   show = function(){
+     d <- melt(self$total_variance_per_node, id.vars = "iteration")
+     colnames(d)[colnames(d) == "variable"] <- "Node"
+     colnames(d)[colnames(d) == "value"] <- "total_variance"
+     p <- ggplot(d, aes(x = iteration, y=total_variance, group = Node)) +
+       geom_line(aes(color=Node))
+     p
+
+   }
+  )
+)
