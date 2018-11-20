@@ -99,8 +99,8 @@ process_PLS <- function(data,
 
       #inner_bootstrap_results$path_effects <- get_all_path_effects(model)
 
-      inner_bootstrap_results$path_variances_explained <- calculate_PLS_variances_explained(tempmodel, scaling = "variance")
-      inner_bootstrap_results$inner_effects <- calculate_inner_effects(tempmodel, scaling="variance")$effects
+      inner_bootstrap_results$path_variances_explained <- calculate_PLS_variances_explained(tempmodel)
+      inner_bootstrap_results$inner_effects <- calculate_inner_effects(tempmodel)$effects
       inner_bootstrap_results$outer_effects <- calculate_outer_effects(tempmodel)$outer_effects
 
       return(inner_bootstrap_results)
@@ -185,9 +185,9 @@ process_PLS <- function(data,
     #Calculate all path effects, direct effects, and indirect effects
     model$path_effects <- get_all_path_effects(model)
 
-    model$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "variance")
+    model$path_variances_explained <- calculate_PLS_variances_explained(model)
 
-    model$inner_effects <- calculate_inner_effects(model, "variance")
+    model$inner_effects <- calculate_inner_effects(model)
 
     model$outer_effects <- calculate_outer_effects(model)
 
@@ -219,9 +219,9 @@ process_PLS <- function(data,
     #Calculate all path effects, direct effects, and indirect effects
     model$path_effects <- get_all_path_effects(model)
 
-    model$path_variances_explained <- calculate_PLS_variances_explained(model, scaling = "variance")
+    model$path_variances_explained <- calculate_PLS_variances_explained(model)
 
-    model$inner_effects <- calculate_inner_effects(model, "variance")
+    model$inner_effects <- calculate_inner_effects(model)
 
     model$outer_effects <- calculate_outer_effects(model)
   }
