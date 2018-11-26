@@ -78,6 +78,15 @@ end_node_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, varianc
 
   SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
 
+  LVs <- SIMPLS_result$Y_scores
+  variance_explained <- SIMPLS_result$Y_variance_explained
+  Y_weights <- SIMPLS_result$Y_loadings
+
+  scale_vec <- get_scale_vec(LVs, variance_explained, block_scale=block_scale, variance_scale=variance_scale)
+
+  node$add_estimate(n_LVs, rescale_LVs(LVs, scale_vec), rescale_X_weights(X_weights, scale_vec), variance_explained = variance_explained)
+
+
 }
 
 #' Initialises a node using PCA
