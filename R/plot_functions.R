@@ -49,8 +49,6 @@ plot_inner_model <- function(model,
 #' @export
 plot_inner_effects <- function(model, what_node=NULL, negative_values="absolute"){
 
-  #what_node="Product"
-
   if(is.null(what_node)){
     what_node <- unlist(lapply(model$nodes, function(node) if(node$node_type=="End") node$node_name))
   }
