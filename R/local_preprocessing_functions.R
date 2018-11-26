@@ -12,9 +12,7 @@
 block_scale <- function(input_data, settings=list("block_variance"=1)){
   block_variance <- settings$block_variance
 
-  scale_vec <- rep(sqrt(block_variance)/sqrt(dim(input_data)[2]), dim(input_data)[2])
-
-  block_scaled_data <- input_data %*% diag(scale_vec,nrow=length(scale_vec))
+  block_scaled_data <- input_data / sqrt(sum(input_data^2) * block_variance)
 
   settings <- list("block_variance"=block_variance)
 
