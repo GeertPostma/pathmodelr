@@ -229,14 +229,14 @@ path_model <- function(data, connection_matrix, variables_in_block,
 
   }
 
-  ##Make listenv of node class types based on estimators:
-  if(is.null(node_class_types)){
-    node_class_types <- get_node_class_types(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator)
-  }
-
   ##Make initializer list:
   if(is.null(initializers)){
     initializers <- get_initializer_list(node_connection_types, start_node_initializer, middle_node_initializer, end_node_initializer)
+  }
+
+  ##Make listenv of node class types based on estimators and initializers:
+  if(is.null(node_class_types)){
+    node_class_types <- get_node_class_types(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, start_node_initializer, middle_node_initializer, end_node_initializer)
   }
 
   #make node structure graph

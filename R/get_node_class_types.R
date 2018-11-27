@@ -12,15 +12,24 @@
 #'   argument and is able to estimate an End type node
 #' @return A list of node class types
 #' @import listenv
-get_node_class_types <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator){
+get_node_class_types <- function(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, start_node_initializer, middle_node_initializer, end_node_initializer){
   if(typeof(start_node_estimator) == "character"){
-    start_node_class_type <- estimator_string_to_node_class_type(start_node_estimator)
+    start_node_class_type <- estimator_and_initializer_string_to_node_class_type(start_node_estimator, start_node_initializer)
+  }
+  else{
+    stop("At least one estimator was not supplied as a character vector, please set the node_class_types manually.")
   }
   if(typeof(middle_node_estimator) == "character"){
-    middle_node_class_type <- estimator_string_to_node_class_type(middle_node_estimator)
+    middle_node_class_type <- estimator_and_initializer_string_to_node_class_type(middle_node_estimator, middle_node_initializer)
+  }
+  else{
+    stop("At least one estimator was not supplied as a character vector, please set the node_class_types manually.")
   }
   if(typeof(end_node_estimator) == "character"){
-    end_node_class_type <- estimator_string_to_node_class_type(end_node_estimator)
+    end_node_class_type <- estimator_and_initializer_string_to_node_class_tyep(end_node_estimator, end_node_initializer)
+  }
+  else{
+    stop("At least one estimator was not supplied as a character vector, please set the node_class_types manually.")
   }
 
   node_class_types <- listenv()
