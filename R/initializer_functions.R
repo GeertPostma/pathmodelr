@@ -29,7 +29,7 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
   }
 
   X <- node$preprocessed_X
-  Y <- combine_target_manifest_variables(node)
+  Y <- combine_target_manifest_variables(node)$Y
 
   SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
 
@@ -73,7 +73,7 @@ end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_sca
 
   }
 
-  X <- combine_previous_manifest_variables(node)
+  X <- combine_previous_manifest_variables(node)$X
   Y <- node$preprocessed_X
 
   SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
