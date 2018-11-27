@@ -5,8 +5,7 @@
 \title{Estimate a process PLS model and calculate the effects of variables on blocks.}
 \usage{
 manifest_process_PLS(data, connection_matrix, variables_in_block,
-  block_names = NULL, loggers = listenv(IterationReporter$new(),
-  DurationLogger$new(report = TRUE)), max_iterations = 20,
+  block_names = NULL, max_iterations = 20,
   global_preprocessors = list(),
   local_preprocessors = list(standardize, block_scale),
   post_processor = NULL, convergence_threshold = 1e-04,
@@ -34,11 +33,6 @@ assigned to each block. The ordering of the list should be the same as that
 of the \code{connection_matrix}. When the argument is not set, names are
 extracted from \code{data}, or set to dummy names based on ordering when
 \code{data} contains no names.}
-
-\item{loggers}{A listenv of R6Class based logger and/or reporter objects. All
-loggers or reports must implement a \code{log_status()} method. Implemented
-loggers or reporters are ComponentLogger, IterationReporter, DurationLogger,
-and ConvergenceLogger.}
 
 \item{max_iterations}{An integer indicating the maximum number of iterations
 before execution of LV estimation is halted when the convergence criterion
