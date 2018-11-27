@@ -26,7 +26,7 @@ get_node_class_types <- function(node_connection_types, start_node_estimator, mi
     stop("At least one estimator was not supplied as a character vector, please set the node_class_types manually.")
   }
   if(typeof(end_node_estimator) == "character"){
-    end_node_class_type <- estimator_and_initializer_string_to_node_class_tyep(end_node_estimator, end_node_initializer)
+    end_node_class_type <- estimator_and_initializer_string_to_node_class_type(end_node_estimator, end_node_initializer)
   }
   else{
     stop("At least one estimator was not supplied as a character vector, please set the node_class_types manually.")
