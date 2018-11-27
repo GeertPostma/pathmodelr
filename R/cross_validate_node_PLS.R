@@ -22,7 +22,7 @@
 #' @importFrom caret createFolds
 #' @import parallel
 #' @export
-cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=1, end_node=FALSE, manifest=FALSE){
+cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=MSE, n_cores=1, end_node=FALSE, manifest=FALSE, connection_PLS=FALSE){
 
   train_errors <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
   test_errors  <- matrix(0, nrow=k_folds, ncol=max_n_LVs)
@@ -31,77 +31,89 @@ cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=
 
   # Internal help function for cross validation for node_PLS
   get_errors <- function(test_indices){
+    if(connection_PLS){
+      X <- combine_previous_LVs(node)$X
+      Y <- node$LVs
 
-    if(end_node){
-      preprocessed_Y_sets <- node$preprocess_train_test(test_indices)
-
-      Y_train <- preprocessed_Y_sets$train_data
-      Y_test  <- preprocessed_Y_sets$test_data
-
-      n_X_cols <- 0
-      X_indices <- list()
-      for(i in seq_along(node$previous_nodes)){
-        X_indices[[i]] <- (n_X_cols+1):(n_X_cols + dim(node$previous_nodes[[i]]$preprocessed_X)[2])
-        n_X_cols <- n_X_cols + dim(node$previous_nodes[[i]]$preprocessed_X)[2]
-      }
-      n_samples_train <- nrow(node$X_data[-test_indices, , drop=FALSE])
-      n_samples_test  <- nrow(node$X_data[test_indices, , drop=FALSE])
-
-      X_train <- matrix(0, nrow=n_samples_train, ncol=n_X_cols)
-      X_test  <- matrix(0, nrow=n_samples_test,  ncol=n_X_cols)
-
-      for(i in seq_along(node$previous_nodes)){
-        preprocessed_X_sets <- node$previous_nodes[[i]]$preprocess_train_test(test_indices)
-
-        X_train[,X_indices[[i]]] <- preprocessed_X_sets$train_data
-        X_test[,X_indices[[i]]]  <- preprocessed_X_sets$test_data
-      }
-
+      X_train <- X[-test_indices, , drop=FALSE]
+      X_test  <- X[test_indices, , drop=FALSE]
+      Y_train <- Y[-test_indices, , drop=FALSE]
+      Y_test  <- Y[test_indices, , drop=FALSE]
     }
     else{
-      preprocessed_X_sets <- node$preprocess_train_test(test_indices)
+      if(end_node){
+        preprocessed_Y_sets <- node$preprocess_train_test(test_indices)
 
-      X_train <- preprocessed_X_sets$train_data
-      X_test  <- preprocessed_X_sets$test_data
+        Y_train <- preprocessed_Y_sets$train_data
+        Y_test  <- preprocessed_Y_sets$test_data
 
-      if(manifest){ #manifest+start/middle node
-        n_Y_cols <- 0
-        Y_indices <- list()
-        for(i in seq_along(node$next_nodes)){
-          Y_indices[[i]] <- (n_Y_cols+1):(n_Y_cols + dim(node$next_nodes[[i]]$preprocessed_X)[2])
-          n_Y_cols <- n_Y_cols + dim(node$next_nodes[[i]]$preprocessed_X)[2]
+        n_X_cols <- 0
+        X_indices <- list()
+        for(i in seq_along(node$previous_nodes)){
+          X_indices[[i]] <- (n_X_cols+1):(n_X_cols + dim(node$previous_nodes[[i]]$preprocessed_X)[2])
+          n_X_cols <- n_X_cols + dim(node$previous_nodes[[i]]$preprocessed_X)[2]
         }
-        n_samples_train <- nrow(node$X_data[-test_indices,])
-        n_samples_test  <- nrow(node$X_data[test_indices,])
+        n_samples_train <- nrow(node$X_data[-test_indices, , drop=FALSE])
+        n_samples_test  <- nrow(node$X_data[test_indices, , drop=FALSE])
 
-        Y_train <- matrix(0, nrow=n_samples_train, ncol=n_Y_cols)
-        Y_test  <- matrix(0, nrow=n_samples_test,  ncol=n_Y_cols)
+        X_train <- matrix(0, nrow=n_samples_train, ncol=n_X_cols)
+        X_test  <- matrix(0, nrow=n_samples_test,  ncol=n_X_cols)
 
-        for(i in seq_along(node$next_nodes)){
-          preprocessed_Y_sets <- node$next_nodes[[i]]$preprocess_train_test(test_indices)
+        for(i in seq_along(node$previous_nodes)){
+          preprocessed_X_sets <- node$previous_nodes[[i]]$preprocess_train_test(test_indices)
 
-          Y_train[,Y_indices[[i]]] <- preprocessed_Y_sets$train_data
-          Y_test[,Y_indices[[i]]]  <- preprocessed_Y_sets$test_data
+          X_train[,X_indices[[i]]] <- preprocessed_X_sets$train_data
+          X_test[,X_indices[[i]]]  <- preprocessed_X_sets$test_data
+        }
+
+      }
+      else{
+        preprocessed_X_sets <- node$preprocess_train_test(test_indices)
+
+        X_train <- preprocessed_X_sets$train_data
+        X_test  <- preprocessed_X_sets$test_data
+
+        if(manifest){ #manifest+start/middle node
+          n_Y_cols <- 0
+          Y_indices <- list()
+          for(i in seq_along(node$next_nodes)){
+            Y_indices[[i]] <- (n_Y_cols+1):(n_Y_cols + dim(node$next_nodes[[i]]$preprocessed_X)[2])
+            n_Y_cols <- n_Y_cols + dim(node$next_nodes[[i]]$preprocessed_X)[2]
+          }
+          n_samples_train <- nrow(node$X_data[-test_indices,])
+          n_samples_test  <- nrow(node$X_data[test_indices,])
+
+          Y_train <- matrix(0, nrow=n_samples_train, ncol=n_Y_cols)
+          Y_test  <- matrix(0, nrow=n_samples_test,  ncol=n_Y_cols)
+
+          for(i in seq_along(node$next_nodes)){
+            preprocessed_Y_sets <- node$next_nodes[[i]]$preprocess_train_test(test_indices)
+
+            Y_train[,Y_indices[[i]]] <- preprocessed_Y_sets$train_data
+            Y_test[,Y_indices[[i]]]  <- preprocessed_Y_sets$test_data
+          }
+        }
+        else{ #LV+start/middle node
+          n_Y_cols <- 0
+          Y_indices <- list()
+          for(i in seq_along(node$next_nodes)){
+            Y_indices[[i]] <- (n_Y_cols+1):(n_Y_cols + dim(node$next_nodes[[i]]$LVs)[2])
+            n_Y_cols <- n_Y_cols + dim(node$next_nodes[[i]]$LVs)[2]
+          }
+          n_samples_train <- nrow(node$X_data[-test_indices,])
+          n_samples_test  <- nrow(node$X_data[test_indices,])
+
+          Y_train <- matrix(0, nrow=n_samples_train, ncol=n_Y_cols)
+          Y_test  <- matrix(0, nrow=n_samples_test,  ncol=n_Y_cols)
+
+          for(i in seq_along(node$next_nodes)){
+            Y_train[,Y_indices[[i]]] <- node$next_nodes[[i]]$LVs[-test_indices,]
+            Y_test[,Y_indices[[i]]]  <- node$next_nodes[[i]]$LVs[test_indices,]
+          }
         }
       }
-      else{ #LV+start/middle node
-        n_Y_cols <- 0
-        Y_indices <- list()
-        for(i in seq_along(node$next_nodes)){
-          Y_indices[[i]] <- (n_Y_cols+1):(n_Y_cols + dim(node$next_nodes[[i]]$LVs)[2])
-          n_Y_cols <- n_Y_cols + dim(node$next_nodes[[i]]$LVs)[2]
-        }
-        n_samples_train <- nrow(node$X_data[-test_indices,])
-        n_samples_test  <- nrow(node$X_data[test_indices,])
 
-        Y_train <- matrix(0, nrow=n_samples_train, ncol=n_Y_cols)
-        Y_test  <- matrix(0, nrow=n_samples_test,  ncol=n_Y_cols)
 
-        for(i in seq_along(node$next_nodes)){
-          Y_train[,Y_indices[[i]]] <- node$next_nodes[[i]]$LVs[-test_indices,]
-          Y_test[,Y_indices[[i]]]  <- node$next_nodes[[i]]$LVs[test_indices,]
-        }
-      }
     }
 
     SIMPLS_result <- SIMPLS(X_train, Y_train, max_n_comp=max_n_LVs, minimal=TRUE)

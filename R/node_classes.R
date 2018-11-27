@@ -200,7 +200,7 @@ Node <- R6Class("Node",
     #TODO: Needs thorough testing for non-path-propagating nodes. Do matrix effect multiplications still work?
     get_outgoing_path_to_node = function(node){
 
-      return(0)
+      return(matrix(0, nrow=1, ncol=1))
     },
 
 
@@ -269,7 +269,7 @@ PLSNode <- R6Class("PLSNode",
   inherit = PathNode,
   public = list(
     #Fields
-    path_coefficients = NULL,
+    path_coefficients = list(),
 
     #Methods
     add_estimate = function(n_LVs, LVs, X_loadings, variance_explained=NULL){
@@ -297,13 +297,18 @@ PLSNode <- R6Class("PLSNode",
 
     },
 
+    add_path_coefficients = function(path_coefficients, next_node_name){
+      self$path_coefficients[[length(self$path_coefficients)+1]] <- path_coefficients
+      names(self$path_coefficients)[[length(self$path_coefficients)]] <- next_node_name
+    },
+
     get_outgoing_path_to_node = function(node){
 
       for(i in seq_along(self$next_nodes)){
 
         if(self$next_nodes[[i]]$node_name == node$node_name){
 
-          return(self$path_coefficients)
+          return(self$path_coefficients[[node$node_name]])
         }
       }
     },

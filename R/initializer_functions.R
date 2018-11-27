@@ -1,5 +1,8 @@
 normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE){
 
+  X <- node$preprocessed_X
+  Y <- combine_target_manifest_variables(node)$Y
+
   if(is.null(n_LVs)){
     #determine max_n_LVs: after first selection, only allow shrinking
     max_n_LVs <- ifelse(node$iteration > 1, dim(node$previous_LVs)[2], dim(X)[2])
@@ -28,10 +31,7 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 
   }
 
-  X <- node$preprocessed_X
-  Y <- combine_target_manifest_variables(node)$Y
-
-  SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
+    SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
 
   LVs <- SIMPLS_result$X_scores
   variance_explained <- SIMPLS_result$X_variance_explained
@@ -45,9 +45,12 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 
 end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE){
 
+  X <- combine_previous_manifest_variables(node)$X
+  Y <- node$preprocessed_X
+
   if(is.null(n_LVs)){
     #determine max_n_LVs: after first selection, only allow shrinking
-    max_n_LVs <- ifelse(node$iteration > 1, dim(node$previous_LVs)[2], dim(X)[2])
+    max_n_LVs <- dim(Y)[2]
 
     if(parallelise){
       if(!is.null(n_cores)){
@@ -73,9 +76,6 @@ end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_sca
 
   }
 
-  X <- combine_previous_manifest_variables(node)$X
-  Y <- node$preprocessed_X
-
   SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
 
   LVs <- SIMPLS_result$Y_scores
@@ -85,8 +85,6 @@ end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_sca
   scale_vec <- get_scale_vec(LVs, variance_explained, block_scale=block_scale, variance_scale=variance_scale)
 
   node$add_estimate(n_LVs, rescale_LVs(LVs, scale_vec), rescale_X_weights(Y_weights, scale_vec), variance_explained = variance_explained)
-
-
 }
 
 #' Initialises a node using PCA

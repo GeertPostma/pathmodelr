@@ -1,3 +1,4 @@
+#' @export
 combine_target_LVs <- function(node){
 
   #get dimensions pass:
@@ -20,6 +21,7 @@ combine_target_LVs <- function(node){
 
 }
 
+#' @export
 combine_target_manifest_variables <- function(node){
 
   #get dimensions pass:
@@ -41,7 +43,7 @@ combine_target_manifest_variables <- function(node){
   return(list("Y"=Y, "Y_indices"=Y_indices))
 
 }
-
+#' @export
 combine_previous_LVs <- function(node){
 
   #get dimensions pass:
@@ -63,7 +65,7 @@ combine_previous_LVs <- function(node){
   return(list("X"=X, "X_indices"=X_indices))
 
 }
-
+#' @export
 combine_previous_manifest_variables <- function(node){
 
   #get dimensions pass:

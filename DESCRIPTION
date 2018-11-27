@@ -29,6 +29,7 @@ Collate:
     'check_arguments.R'
     'check_dag.R'
     'combine_functions.R'
+    'connection_functions.R'
     'cross_validate_node_PLS.R'
     'error_functions.R'
     'node_classes.R'
