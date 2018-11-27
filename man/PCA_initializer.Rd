@@ -9,7 +9,7 @@ PCA_initializer(node, rank = NULL)
 \arguments{
 \item{node}{An object of the R6Class Node.}
 
-\item{rank}{An integer indicating the rank, or maximum number of LVs/PCs. If left as \code{NULL}, the rank is automatically estimated.}
+\item{rank}{An integer indicating the rank, or maximum number of LVs/PCs. If left as \code{NULL}, the rank is set to 2.}
 }
 \description{
 Initialises the LVs of the given node using PCA.

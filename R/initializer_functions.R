@@ -43,7 +43,7 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 
 }
 
-end_node_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE){
+end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE){
 
   if(is.null(n_LVs)){
     #determine max_n_LVs: after first selection, only allow shrinking
@@ -84,7 +84,7 @@ end_node_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, varianc
 
   scale_vec <- get_scale_vec(LVs, variance_explained, block_scale=block_scale, variance_scale=variance_scale)
 
-  node$add_estimate(n_LVs, rescale_LVs(LVs, scale_vec), rescale_X_weights(X_weights, scale_vec), variance_explained = variance_explained)
+  node$add_estimate(n_LVs, rescale_LVs(LVs, scale_vec), rescale_X_weights(Y_weights, scale_vec), variance_explained = variance_explained)
 
 
 }

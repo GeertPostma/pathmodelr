@@ -16,4 +16,10 @@ initializer_string_to_function <- function(initializer_name){
   else if(tolower(initializer_name) == "full"){
     return(full_initializer)
   }
+  else if(tolower(initializer_name) == "normalpls"){
+    return(normal_PLS_initializer)
+  }
+  else if(tolower(initializer_name) == "endpls"){
+    return(end_PLS_initializer)
+  }
 }

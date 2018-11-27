@@ -64,7 +64,8 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
                                 initializer         = initializers[[i]],
                                 local_preprocessor  = local_preprocessors[[block_names[[i]]]],
                                 global_preprocessor = global_preprocessors[[block_names[[i]]]],
-                                post_processor      = post_processors[[block_names[[i]]]])
+                                post_processor      = post_processors[[block_names[[i]]]],
+                                is_iterative        = attr(estimators[[i]], "is_iterative"))
 
     node_list[[i]] <- node
   }
@@ -80,6 +81,11 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
     previous_nodes <- node_list[previous_node_indices]
 
     node$add_connected_nodes(next_nodes=next_nodes, previous_nodes=previous_nodes)
+  }
+
+  #Node initialisation pass
+  for(i in 1:length(node_list)){
+    node_list[[i]]$call_initializer()
   }
 
    return(node_list)

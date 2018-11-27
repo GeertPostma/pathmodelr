@@ -9,21 +9,33 @@
 #' @return A function handle to an estimator function which takes a node as an
 #'   argument.
 estimator_string_to_function <- function(estimator_name, parallelise=FALSE, n_cores=NULL){
-  if(tolower(estimator_name) == "pls"){
+  if(tolower(estimator_name) == "normalpls"){
     if(parallelise){
       n <- n_cores
-      return(function(node) PLS_estimator(node, parallelise=TRUE, n_cores=n))
+      est <- function(node) normal_PLS_estimator(node, parallelise=TRUE, n_cores=n)
+      attr(est, "is_iterative") <- TRUE
+      return(est)
     }
     else{
       return(PLS_estimator)
     }
 
   }
-  else if(tolower(estimator_name) == "pca"){
-    return(PCA_estimator)
-  }
-  else if(tolower(estimator_name) == "full"){
-    return(full_estimator)
-  }
+  if(tolower(estimator_name) == "endpls"){
+    if(parallelise){
+      n <- n_cores
+      est <- function(node) end_PLS_estimator(node, parallelise=TRUE, n_cores=n)
+      attr(est, "is_iterative") <- TRUE
+      return(est)
+    }
+    else{
+      return(PLS_estimator)
+    }
 
+  }
+  else if(tolower(estimator_name) == "none"){
+    est <- no_estimator
+    attr(est, "is_iterative") <- FALSE
+    return(est)
+  }
 }

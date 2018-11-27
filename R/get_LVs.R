@@ -66,18 +66,20 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
     total_LVs <- 0
     n_LV_converged <- TRUE
     for(ii in seq_along(nodes)){
-      node <- nodes[[ii]]
-      total_error <- total_error + node$error
-      total_LVs <- total_LVs + node$n_LVs
+      if(node$is_iterative){
+        node <- nodes[[ii]]
+        total_error <- total_error + node$error
+        total_LVs <- total_LVs + node$n_LVs
 
-      if(node$n_LVs != node$previous_n_LVs){
-        n_LV_converged <- FALSE
+        if(node$n_LVs != node$previous_n_LVs){
+          n_LV_converged <- FALSE
+        }
       }
     }
     #Increase convergence threshold for n_Lvs
     corrected_convergence_threshold <- convergence_threshold*total_LVs
 
-    if(total_error < corrected_convergence_threshold && n_LV_converged){
+    if(total_error <= corrected_convergence_threshold && n_LV_converged){
       converged <- TRUE
     }
   }

@@ -24,7 +24,6 @@ get_estimator_list <- function(node_connection_types, start_node_estimator, midd
   if(typeof(middle_node_estimator) == "character"){
     p <- parallelise
     n <- n_cores
-    l <- n_LVs
     middle_node_estimator <- estimator_string_to_function(middle_node_estimator, parallelise=p, n_cores=n)
   }
   if(typeof(end_node_estimator) == "character"){

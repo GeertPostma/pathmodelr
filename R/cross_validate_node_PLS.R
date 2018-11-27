@@ -44,8 +44,8 @@ cross_validate_node_PLS <- function(node, max_n_LVs, k_folds=10, error_function=
         X_indices[[i]] <- (n_X_cols+1):(n_X_cols + dim(node$previous_nodes[[i]]$preprocessed_X)[2])
         n_X_cols <- n_X_cols + dim(node$previous_nodes[[i]]$preprocessed_X)[2]
       }
-      n_samples_train <- nrow(node$X_data[-test_indices,])
-      n_samples_test  <- nrow(node$X_data[test_indices,])
+      n_samples_train <- nrow(node$X_data[-test_indices, , drop=FALSE])
+      n_samples_test  <- nrow(node$X_data[test_indices, , drop=FALSE])
 
       X_train <- matrix(0, nrow=n_samples_train, ncol=n_X_cols)
       X_test  <- matrix(0, nrow=n_samples_test,  ncol=n_X_cols)

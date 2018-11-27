@@ -31,7 +31,7 @@ Node <- R6Class("Node",
     post_processing_settings = NULL,
 
     #Methods
-    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor, post_processor){
+    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor, post_processor, is_iterative){
       self$node_name           <- node_name
 
       for(preprocessor in global_preprocessor){
@@ -43,10 +43,15 @@ Node <- R6Class("Node",
       self$local_preprocessor  <- local_preprocessor
       self$global_preprocessor <- global_preprocessor
       self$post_processor      <- post_processor
+      self$is_iterative        <- is_iterative
 
       self$error <- 0
 
       self$preprocess_X()
+
+    },
+
+    call_initializer = function(){
 
       self$initializer(self)
       self$is_initialized <- TRUE

@@ -226,6 +226,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
     n <- n_cores
     l <- n_LVs
     estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=p, n_cores=n, n_LVs=l)
+
   }
 
   ##Make listenv of node class types based on estimators:
