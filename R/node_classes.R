@@ -269,7 +269,7 @@ PLSNode <- R6Class("PLSNode",
   inherit = PathNode,
   public = list(
     #Fields
-    Y_loadings         = NULL,
+    path_coefficients = NULL,
 
     #Methods
     add_estimate = function(n_LVs, LVs, X_loadings, variance_explained=NULL){
@@ -288,10 +288,13 @@ PLSNode <- R6Class("PLSNode",
       self$is_estimated <- TRUE
     },
 
-    update_loadings_and_LVs = function(LVs, X_loadings, Y_loadings=NULL){
-      self$LVs        <- LVs
-      self$X_loadings <- X_loadings
-      self$Y_loadings <- Y_loadings
+    update_coefficients_loadings_and_LVs = function(LVs, X_loadings, path_coefficients=NULL){
+      self$LVs               <- LVs
+      self$X_loadings        <- X_loadings
+      if(!is.null(path_coefficients)){
+        self$path_coefficients <- path_coefficients
+      }
+
     },
 
     get_outgoing_path = function(node){
@@ -300,7 +303,7 @@ PLSNode <- R6Class("PLSNode",
 
         if(self$next_nodes[[i]]$node_name == node$node_name){
 
-          return(t(self$Y_loadings[[i]]))
+          return(self$path_coefficients)
         }
       }
     },
@@ -311,30 +314,32 @@ PLSNode <- R6Class("PLSNode",
 
         if(!is.null(self$post_processor)){
 
-          self$post_processing_settings <- self$post_processor(self)
+          ## Temporarily removed post processing functionality.
 
-          self$prepare_next_estimation()
-
-          LVs_scaled=self$previous_LVs %*% diag(1/self$post_processing_settings)
-          X_loadings_scaled=self$X_loadings %*% diag(1/self$post_processing_settings)
-          Y_loadings_unscaled <- self$Y_loadings
-
-          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
-
-          self$is_post_processed <- TRUE
-
-          scaled_Y_loadings <- list()
-          for(i in seq_along(self$next_nodes)){
-            next_node <- self$next_nodes[[i]]
-
-            if(!next_node$is_post_processed){
-              next_node$post_process()
-            }
-
-            #scale Y_loadings
-            scaled_Y_loadings[[next_node$node_name]] <- t(t(Y_loadings_unscaled[[next_node$node_name]]  %*% diag(self$post_processing_settings, nrow=length(self$post_processing_settings))) %*% diag(1/next_node$post_processing_settings, nrow=length(next_node$post_processing_settings)))          }
-          #self$prepare_next_estimation is not called again to keep the original LVs in the object
-          self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
+          # self$post_processing_settings <- self$post_processor(self)
+          #
+          # self$prepare_next_estimation()
+          #
+          # LVs_scaled=self$previous_LVs %*% diag(1/self$post_processing_settings)
+          # X_loadings_scaled=self$X_loadings %*% diag(1/self$post_processing_settings)
+          # Y_loadings_unscaled <- self$Y_loadings
+          #
+          # self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
+          #
+          # self$is_post_processed <- TRUE
+          #
+          # scaled_Y_loadings <- list()
+          # for(i in seq_along(self$next_nodes)){
+          #   next_node <- self$next_nodes[[i]]
+          #
+          #   if(!next_node$is_post_processed){
+          #     next_node$post_process()
+          #   }
+          #
+          #   #scale Y_loadings
+          #   scaled_Y_loadings[[next_node$node_name]] <- t(t(Y_loadings_unscaled[[next_node$node_name]]  %*% diag(self$post_processing_settings, nrow=length(self$post_processing_settings))) %*% diag(1/next_node$post_processing_settings, nrow=length(next_node$post_processing_settings)))          }
+          # #self$prepare_next_estimation is not called again to keep the original LVs in the object
+          # self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
 
         }
       }
