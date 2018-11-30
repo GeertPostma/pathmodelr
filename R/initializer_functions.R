@@ -31,7 +31,7 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 
   }
 
-    SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
+  SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
 
   LVs <- SIMPLS_result$X_scores
   variance_explained <- SIMPLS_result$X_variance_explained

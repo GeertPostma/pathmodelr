@@ -16,9 +16,9 @@ get_scale_vec <- function(LVs, variance_explained, block_scale=FALSE, variance_s
 }
 
 rescale_X_weights <- function(X_weights, scale_vec){
-  return(X_weights %*% diag(scale_vec))
+  return(X_weights %*% diag(scale_vec, nrow=length(scale_vec)))
 }
 
 rescale_LVs <- function(LVs, scale_vec){
-  return(LVs %*% diag(scale_vec))
+  return(LVs %*% diag(scale_vec, nrow=length(scale_vec)))
 }
