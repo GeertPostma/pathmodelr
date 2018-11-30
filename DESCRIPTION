@@ -25,6 +25,7 @@ Collate:
     'calculate_PLS_variances_explained.R'
     'calculate_SSE_for_matrices.R'
     'calculate_inner_effects.R'
+    'calculate_node_PLS_coefficients.R'
     'calculate_outer_effects.R'
     'check_arguments.R'
     'check_dag.R'

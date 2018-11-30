@@ -460,13 +460,15 @@ manifest_process_PLS <- function(data,
                         n_LVs                   = n_LVs)
 
     #Calculate all path effects, direct effects, and indirect effects
-    #model$path_effects <- get_all_path_effects(model)
+    calculate_node_PLS_coefficients(model)
 
-    #model$path_variances_explained <- calculate_PLS_variances_explained(model)
+    model$path_effects <- get_all_path_effects(model)
 
-    #model$inner_effects <- calculate_inner_effects(model)
+    model$path_variances_explained <- calculate_PLS_variances_explained(model)
 
-    #model$outer_effects <- calculate_outer_effects(model)
+    model$inner_effects <- calculate_inner_effects(model)
+
+    model$outer_effects <- calculate_outer_effects(model)
   }
 
 

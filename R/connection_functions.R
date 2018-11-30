@@ -48,7 +48,7 @@ PLS_regression_connection <- function(node, n_LVs=NULL, parallelise=FALSE, n_cor
     for(i in seq_along(node$previous_nodes)){
       previous_node <- node$previous_nodes[[i]]
 
-      previous_node$add_path_coefficients(B[X_indices[[previous_node$node_name]], drop=FALSE], node$node_name)
+      previous_node$add_path_coefficients(B[X_indices[[previous_node$node_name]], ,drop=FALSE], node$node_name)
     }
   }
 
