@@ -1,43 +1,41 @@
 #' Plot the variances explained through the path
-#' @import ggnetwork
-#' @import network
+#' @import ggplot2
 #' @export
 plot_variances <- function(model,
                            layout=layout){
 
-  net <- as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
+  net <- network::as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
                     ignore.eval = FALSE,
                     names.eval = "weights",
                     directed = TRUE,
                     matrix_type = "incidence")
 
-  ggnet <- ggnetwork(net, arrow.gap = 0.04, layout="circle")
+  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.04, layout="circle")
 
   ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
-    geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
-    geom_edgetext(aes(label = weights), color = "black", fill = "white") +
-    geom_nodes(color = "grey", size = 20) +
-    geom_nodetext(aes(label=vertex.names)) +
+    ggnetwork::geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
+    ggnetwork::geom_edgetext(aes(label = weights), color = "black", fill = "white") +
+    ggnetwork::geom_nodes(color = "grey", size = 20) +
+    ggnetwork::geom_nodetext(aes(label=vertex.names)) +
     theme_blank()
 }
 
 #' Plot the inner model
-#' @import ggnetwork
-#' @import network
+#' @import ggplot2
 #' @export
 plot_inner_model <- function(model,
                            layout="circle"){
 
-  net <- as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
-                    directed = TRUE,
-                    matrix_type = "incidence")
+  net <- network::as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
+                                    directed = TRUE,
+                                    matrix_type = "incidence")
 
-  ggnet <- ggnetwork(net, arrow.gap = 0.04, layout=layout)
+  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.04, layout=layout)
 
   ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
-    geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
-    geom_nodes(color = "grey", size = 20) +
-    geom_nodetext(aes(label=vertex.names)) +
+    ggnetwork::geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
+    ggnetwork::geom_nodes(color = "grey", size = 20) +
+    ggnetwork::geom_nodetext(aes(label=vertex.names)) +
     theme_blank()
 }
 
