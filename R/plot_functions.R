@@ -1,7 +1,7 @@
 #' Plot the variances explained through the path
 #' @import ggplot2
 #' @export
-plot_variances <- function(model,
+plot_inner_model_variances <- function(model,
                            layout=layout){
 
   net <- network::as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
@@ -24,7 +24,7 @@ plot_variances <- function(model,
 #' @import ggplot2
 #' @export
 plot_inner_model <- function(model,
-                           layout="circle"){
+                            layout="circle"){
 
   net <- network::as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
                                     directed = TRUE,
@@ -45,7 +45,7 @@ plot_inner_model <- function(model,
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr inner_join
 #' @export
-plot_inner_effects <- function(model, what_node=NULL, negative_values="absolute"){
+plot_variable_effects <- function(model, what_node=NULL, negative_values="absolute"){
 
   if(is.null(what_node)){
     what_node <- unlist(lapply(model$nodes, function(node) if(node$node_type=="End") node$node_name))
