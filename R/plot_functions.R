@@ -10,7 +10,7 @@ plot_variances <- function(model,
                     directed = TRUE,
                     matrix_type = "incidence")
 
-  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.04, layout="circle")
+  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.05, layout="circle")
 
   ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
     ggnetwork::geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
@@ -30,7 +30,7 @@ plot_inner_model <- function(model,
                                     directed = TRUE,
                                     matrix_type = "incidence")
 
-  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.04, layout=layout)
+  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.05, layout=layout)
 
   ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
     ggnetwork::geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
