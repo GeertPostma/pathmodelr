@@ -331,6 +331,8 @@ manifest_process_PLS <- function(data,
                               convergence_threshold   = convergence_threshold,
                               n_LVs                   = n_LVs)
 
+      calculate_node_PLS_coefficients(tempmodel)
+
       tempmodel$path_effects <- get_all_path_effects(tempmodel)
 
       #Calculate all path effects, direct effects, and indirect effects
@@ -345,13 +347,16 @@ manifest_process_PLS <- function(data,
       return(inner_bootstrap_results)
     }
 
-    cl <- makeCluster(n_cores)
+    if(parallelise){
+      cl <- makeCluster(n_cores)
 
-    bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
+      bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
-    #bootstrap_results <- lapply(1:bootstrap_iter, bootstrap_process_PLS)
-
-    stopCluster(cl)
+      stopCluster(cl)
+    }
+    else{
+      bootstrap_results <- lapply(1:bootstrap_iter, bootstrap_process_PLS)
+    }
 
     bootstrapped_path_variances <- simplify2array(lapply(bootstrap_results, function(bs_res) bs_res$path_variances_explained))
     inner_effects <- lapply(bootstrap_results, function(bs_res) bs_res$inner_effects)
@@ -424,6 +429,9 @@ manifest_process_PLS <- function(data,
                         n_LVs                   = n_LVs)
 
     #Calculate all path effects, direct effects, and indirect effects
+    #Backwards regression pass
+    calculate_node_PLS_coefficients(model)
+
     model$path_effects <- get_all_path_effects(model)
 
     model$path_variances_explained <- calculate_PLS_variances_explained(model)
