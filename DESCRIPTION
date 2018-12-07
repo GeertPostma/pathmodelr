@@ -57,5 +57,6 @@ Collate:
     'post_processing_functions.R'
     'regression_functions.R'
     'rescaling_functions.R'
+    'sign_stable_svd.R'
     'verify_dag.R'
     'wrappers.R'

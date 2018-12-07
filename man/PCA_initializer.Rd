@@ -22,4 +22,7 @@ automatically determined.
 
 The function has no explicit return value, instead the R6Class node object is
 updated.
+
+The PCA initializer suffers from the sign indeterminacy. This is an issue
+that will be adressed in future releases.
 }

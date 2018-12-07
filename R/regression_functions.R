@@ -3,7 +3,7 @@
 #follows original algorithm described by De Jong (uses same nomenclature) (T and t are replaced by TT and tt to avoid overloading of TRUE and transpose aliases in R)
 #assumes all relevant preprocessing is already done (including mean-centering!)
 #Includes minimal version for when only predictions and loadings are needed
-SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE){
+SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE, sign_stable=FALSE){
 
   V <- R <- matrix(0, nrow=ncol(X), ncol=max_n_comp)
   B <- array(0 , dim=c(ncol(X), ncol(Y), max_n_comp))
@@ -17,7 +17,13 @@ SIMPLS <- function(X,Y, max_n_comp=ncol(X), minimal=FALSE){
   S <- crossprod(X,Y)     #Cross product
 
   for(a in 1:max_n_comp){
-    q <- svd(S)$v[,1]
+    if(sign_stable){
+      q <- sign_stable_svd(S, minimal=TRUE)$v[,1]
+    }
+    else{
+      q <- svd(S)$v[,1]
+    }
+
 
     r <- S %*% q
     tt <- X %*% r

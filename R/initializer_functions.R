@@ -1,4 +1,4 @@
-normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE){
+normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE, bootstrap=FALSE){
 
   X <- node$preprocessed_X
   Y <- combine_target_manifest_variables(node)$Y
@@ -31,7 +31,7 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 
   }
 
-  SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
+  SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs, sign_stable=TRUE)
 
   LVs <- SIMPLS_result$X_scores
   variance_explained <- SIMPLS_result$X_variance_explained
@@ -97,8 +97,13 @@ end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_sca
 #' The function has no explicit return value, instead the R6Class node object is
 #' updated.
 #'
+#' The PCA initializer suffers from the sign indeterminacy. This is an issue
+#' that will be adressed in future releases.
+#'
 #' @param node An object of the R6Class Node.
-#' @param rank An integer indicating the rank, or maximum number of LVs/PCs. If left as \code{NULL}, the rank is set to 2.
+#' @param rank An integer indicating the rank, or maximum number of LVs/PCs. If
+#'   left as \code{NULL}, the rank is equal to the number of variables in that
+#'   block.
 #' @export
 #' @import stats
 PCA_initializer <- function(node, rank=NULL){
