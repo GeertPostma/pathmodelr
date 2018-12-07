@@ -1,4 +1,4 @@
-#' Scales a block of data to unit variance
+#' Scales a block of data to have a certain variance per sample
 #'
 #' @param input_data A matrix containing data. The rows indicate the samples,
 #'   the columns indicate the variables.
@@ -12,7 +12,7 @@
 block_scale <- function(input_data, settings=list("block_variance"=1)){
   block_variance <- settings$block_variance
 
-  block_scaled_data <- input_data / sqrt(sum(input_data^2) * block_variance)
+  block_scaled_data <- input_data / sqrt(mean(input_data^2 * dim(input_data)[2]) * block_variance)
 
   settings <- list("block_variance"=block_variance)
 
