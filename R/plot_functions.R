@@ -45,10 +45,14 @@ plot_inner_model <- function(model,
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr inner_join
 #' @export
-plot_variable_effects <- function(model, what_node=NULL, negative_values="absolute"){
+plot_variable_effects <- function(model, what_node=NULL, negative_values="negative", show_bootstrap=FALSE){
 
   if(is.null(what_node)){
     what_node <- unlist(lapply(model$nodes, function(node) if(node$node_type=="End") node$node_name))
+  }
+
+  if(show_bootstrap && !(tolower(negative_values) == "negative")){
+    stop("Showing of bootstrap results is only possible when showing non-absolute effects.")
   }
 
   plots <- list()
@@ -57,7 +61,16 @@ plot_variable_effects <- function(model, what_node=NULL, negative_values="absolu
 
     var_names <- names(effects)
 
-    plot_df <- data.frame(name=var_names, effects=effects, row.names=NULL, stringsAsFactors=FALSE)
+    if(show_bootstrap){
+      lower_bound_effects <- model$bootstrap_results$inner_effects$ci$lower[[plot_node]]
+      upper_bound_effects <- model$bootstrap_results$inner_effects$ci$upper[[plot_node]]
+
+      plot_df <- data.frame(name=var_names, effects=effects, upper_bound_effects=upper_bound_effects, lower_bound_effects=lower_bound_effects, row.names=NULL, stringsAsFactors=FALSE)
+    }
+    else{
+      plot_df <- data.frame(name=var_names, effects=effects, row.names=NULL, stringsAsFactors=FALSE)
+    }
+
 
     #get all vars in blocks:
     vars_in_block <- bind_rows(lapply(model$nodes, function(node) data.frame(rep(node$node_name, times=length(colnames(node$X_data))), colnames(node$X_data), stringsAsFactors=FALSE)))
@@ -71,7 +84,7 @@ plot_variable_effects <- function(model, what_node=NULL, negative_values="absolu
 
         aes(x = reorder(name, 1:length(name)), y = abs(effects), fill = block)) +
 
-        geom_bar(stat = 'identity', position = 'dodge') +
+        geom_bar(stat = 'identity', position = 'dodge', color="black") +
 
         theme(axis.text.x = element_text(angle = 270)) +
 
@@ -86,7 +99,7 @@ plot_variable_effects <- function(model, what_node=NULL, negative_values="absolu
 
         aes(x = reorder(name, 1:length(name)), y = effects, fill = block)) +
 
-        geom_bar(stat = 'identity', position = 'dodge') +
+        geom_bar(stat = 'identity', position = 'dodge', color="black") +
 
         theme(axis.text.x = element_text(angle = 270)) +
 
@@ -98,6 +111,10 @@ plot_variable_effects <- function(model, what_node=NULL, negative_values="absolu
     }
     else{
       stop("An incorrect value was supplied for the negative_values argument.")
+    }
+
+    if(show_bootstrap){
+      plots[[plot_node]] <- plots[[plot_node]] + geom_errorbar(aes(ymin=lower_bound_effects, ymax=upper_bound_effects), width=0.5)
     }
   }
   return(plots)
