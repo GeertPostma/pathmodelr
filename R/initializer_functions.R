@@ -1,4 +1,4 @@
-normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE, bootstrap=FALSE){
+normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, bootstrap=FALSE){
 
   X <- node$preprocessed_X
   Y <- combine_target_manifest_variables(node)$Y

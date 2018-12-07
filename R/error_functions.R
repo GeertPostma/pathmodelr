@@ -15,3 +15,9 @@ MSE <- function(target, predicted){
   return(mean((target-predicted)^2))
 
 }
+#Does sign flip to allow for minimization
+#' @export
+SSE <- function(target, predicted){
+
+  return(sum((target-predicted)^2))
+}
