@@ -172,6 +172,9 @@ path_model <- function(data, connection_matrix, variables_in_block,
         colnames(connection_matrix) <- rownames(connection_matrix)
         block_names <- rownames(connection_matrix)
       }
+      else{
+        block_names <- rownames(connection_matrix)
+      }
     }
   }
   else{
