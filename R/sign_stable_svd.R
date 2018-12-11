@@ -20,7 +20,7 @@ sign_stable_svd <- function(X, minimal=FALSE){
   if(minimal){
     #Step 1
 
-    s_left_parts <- vector(mode="numeric", length=dim(Y)[2])
+    s_left_parts <- vector(mode="numeric", length=dim(X)[2])
 
     for(j in 1:dim(X)[2]){
 
@@ -32,7 +32,7 @@ sign_stable_svd <- function(X, minimal=FALSE){
     s_left <- sum(s_left_parts)
 
     #Step 2
-    s_right_parts <- vector(mode="numeric", length=dim(Y)[1])
+    s_right_parts <- vector(mode="numeric", length=dim(X)[1])
 
     for(i in 1:dim(X)[1]){
 
