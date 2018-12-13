@@ -2,7 +2,7 @@
 % Please edit documentation in R/local_preprocessing_functions.R
 \name{block_scale}
 \alias{block_scale}
-\title{Scales a block of data to unit variance}
+\title{Scales a block of data to have a certain variance per sample}
 \usage{
 block_scale(input_data, settings = list(block_variance = 1))
 }
@@ -19,5 +19,5 @@ A named list with "preprocessed_data": the scaled input_data matrix,
   and otherwise contains the calculated and used block_std.
 }
 \description{
-Scales a block of data to unit variance
+Scales a block of data to have a certain variance per sample
 }
