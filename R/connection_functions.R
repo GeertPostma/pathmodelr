@@ -18,32 +18,36 @@ PLS_regression_connection <- function(node, n_LVs=NULL, parallelise=FALSE, n_cor
 
       if(parallelise){
         if(!is.null(n_cores)){
-          test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, n_cores=n_cores, connection_PLS=TRUE)$test_errors
+          train_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, n_cores=n_cores, connection_PLS=TRUE)$train_errors
         }
         else{
           stop("parallelise is set to TRUE, but n_cores was not set.")
         }
       }
       else{
-        test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, connection_PLS=TRUE)$test_errors
+        train_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, connection_PLS=TRUE)$train_errors
       }
 
       #n_LV selection: take lowest complexity model within 1 std of the lowest error
-      avg_test_error <- colSums(test_errors)
-      std_test_error <- apply(test_errors, 2, sd)
+      avg_train_error <- colSums(train_errors)
+      #std_train_error <- apply(train_errors, 2, sd)
 
-      min_error_index <- which.min(avg_test_error)
+      min_error_index <- which.min(avg_train_error)
 
-      ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
+      #ref_error <- avg_train_error[min_error_index] + std_train_error[min_error_index]
 
-      n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
-
+      #n_LVs <- which((avg_train_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
+      n_LVs <- min_error_index
+      # <- max_n_LVs
     }
 
     SIMPLS_result <- SIMPLS(X,Y,n_LVs)
 
     B <- SIMPLS_result$coefficients[,,n_LVs, drop=FALSE]
     B <- array(B, dim=c(dim(B)[1], dim(B)[2]))
+
+    #Test line
+    Y_pred <- X %*% B
 
     for(i in seq_along(node$previous_nodes)){
       previous_node <- node$previous_nodes[[i]]
