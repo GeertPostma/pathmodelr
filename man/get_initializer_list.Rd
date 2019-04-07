@@ -5,11 +5,11 @@
 \title{Converts list of strings indicating node types to list of initializer
 function handles}
 \usage{
-get_initializer_list(node_types, start_node_initializer,
+get_initializer_list(node_connection_types, start_node_initializer,
   middle_node_initializer, end_node_initializer)
 }
 \arguments{
-\item{node_types}{A list of strings indicating the type of the node}
+\item{node_connection_types}{A list of strings indicating the type of the node}
 
 \item{start_node_initializer}{A handle to a function which takes a node as an
 argument and is able to initialize a Start type node}

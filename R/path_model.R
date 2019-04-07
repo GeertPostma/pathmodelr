@@ -25,20 +25,17 @@
 #'   R6Class Node object as input, and returning nothing. Instead, this function
 #'   should update the node directly.
 #' @param start_node_estimator An estimator function which estimates a R6Class
-#'   Node object, or a string indicating the estimation method ("normalpls", "endpls", or
-#'   "none") meant for estimation of a start type Node. All estimators must
+#'   Node object, or a string indicating the estimation method ("none") meant for estimation of a start type Node. All estimators must
 #'   implement a common interface, taking only a R6Class Node object as input,
 #'   and returning nothing. Instead, this function should update the node
 #'   directly.
 #' @param middle_node_estimator An estimator function which estimates a R6Class
-#'   Node object, or a string indicating the estimation method ("normalpls", "endpls", or
-#'   "none") meant for estimation of a middle type Node. All estimators must
+#'   Node object, or a string indicating the estimation method ("none") meant for estimation of a middle type Node. All estimators must
 #'   implement a common interface, taking only a R6Class Node object as input,
 #'   and returning nothing. Instead, this function should update the node
 #'   directly.
 #' @param end_node_estimator An estimator function which estimates a R6Class
-#'   Node object, or a string indicating the estimation method ("normalpls", "endpls", or
-#'   "none") meant for estimation of an end type Node. All estimators must
+#'   Node object, or a string indicating the estimation method ("none") meant for estimation of an end type Node. All estimators must
 #'   implement a common interface, taking only a R6Class Node object as input,
 #'   and returning nothing. Instead, this function should update the node
 #'   directly.
@@ -115,7 +112,6 @@
 #'   path_modeling methods require new Node inheriting types.
 #' @param parallelise
 #' @param n_cores
-#' @param n_LVs
 #' @return A listenv of connected, initialized, and estimated nodes
 #' @export
 #' @import listenv
@@ -140,8 +136,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
                        convergence_threshold      = 0.0001,
                        node_class_types           = NULL,
                        parallelise                = FALSE,
-                       n_cores                    = NULL,
-                       n_LVs                      = NULL
+                       n_cores                    = NULL
                      ){
 
   ##CHECK INPUT
@@ -227,8 +222,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   if(is.null(estimators)){
     p <- parallelise
     n <- n_cores
-    l <- n_LVs
-    estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=p, n_cores=n, n_LVs=l)
+    estimators <- get_estimator_list(node_connection_types, start_node_estimator, middle_node_estimator, end_node_estimator, parallelise=p, n_cores=n)
 
   }
 

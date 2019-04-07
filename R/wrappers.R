@@ -60,7 +60,6 @@ process_PLS <- function(data,
                         convergence_threshold = 0.0001,
                         parallelise           = FALSE,
                         n_cores               = NULL,
-                        n_LVs                 = NULL,
                         bootstrap             = FALSE,
                         bootstrap_iter        = 200,
                         bootstrap_ci          = 0.95){
@@ -71,7 +70,6 @@ process_PLS <- function(data,
       bootstrap_process_PLS <- function(i){
       bootstrapped_data <- data[sample.int(dim(data)[1], replace=TRUE), ]
 
-      l <- n_LVs
       tempmodel <- path_model(bootstrapped_data,
                               connection_matrix,
                               variables_in_block,
@@ -86,8 +84,7 @@ process_PLS <- function(data,
                               global_preprocessors    = global_preprocessors,
                               local_preprocessors     = local_preprocessors,
                               post_processor          = post_processor,
-                              convergence_threshold   = convergence_threshold,
-                              n_LVs                   = n_LVs)
+                              convergence_threshold   = convergence_threshold)
 
       calculate_node_PLS_coefficients(tempmodel)
 
@@ -109,7 +106,7 @@ process_PLS <- function(data,
       }
 
       cl <- makeCluster(n_cores)
-      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "post_processor", "convergence_threshold", "n_LVs"), envir=environment())
+      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "post_processor", "convergence_threshold"), envir=environment())
 
       bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
@@ -171,7 +168,6 @@ process_PLS <- function(data,
           "ci"     = ci_bootstrapped_outer_effects))
 
     #calculate original model
-    l <- n_LVs
     model <- path_model(data,
                         connection_matrix,
                         variables_in_block,
@@ -186,8 +182,7 @@ process_PLS <- function(data,
                         global_preprocessors    = global_preprocessors,
                         local_preprocessors     = local_preprocessors,
                         post_processor          = post_processor,
-                        convergence_threshold   = convergence_threshold,
-                        n_LVs                   = n_LVs)
+                        convergence_threshold   = convergence_threshold)
 
     #Calculate all path effects, direct effects, and indirect effects
     #Backwards regression pass
@@ -208,7 +203,6 @@ process_PLS <- function(data,
   else{
     p <- parallelise
     n <- n_cores
-    l <- n_LVs
     model <- path_model(data,
                         connection_matrix,
                         variables_in_block,
@@ -225,8 +219,7 @@ process_PLS <- function(data,
                         post_processor          = post_processor,
                         convergence_threshold   = convergence_threshold,
                         parallelise             = p,
-                        n_cores                 = n,
-                        n_LVs                   = n_LVs)
+                        n_cores                 = n)
 
     #Calculate all path effects, direct effects, and indirect effects
     calculate_node_PLS_coefficients(model)
