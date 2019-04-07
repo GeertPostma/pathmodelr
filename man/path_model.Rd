@@ -6,12 +6,12 @@
 \usage{
 path_model(data, connection_matrix, variables_in_block,
   block_names = NULL, estimators = NULL,
-  start_node_estimator = "PLS", middle_node_estimator = "PLS",
-  end_node_estimator = "Full", initializers = NULL,
-  start_node_initializer = "Full", middle_node_initializer = "Full",
-  end_node_initializer = "Full", max_iterations = 100,
-  loggers = NULL, unique_node_preprocessing = FALSE,
-  global_preprocessors = list(),
+  start_node_estimator = "normalpls",
+  middle_node_estimator = "normalpls", end_node_estimator = "endpls",
+  initializers = NULL, start_node_initializer = "Full",
+  middle_node_initializer = "Full", end_node_initializer = "Full",
+  max_iterations = 100, loggers = NULL,
+  unique_node_preprocessing = FALSE, global_preprocessors = list(),
   local_preprocessors = list(standardize),
   unique_node_postprocessing = FALSE, post_processor = NULL,
   convergence_threshold = 1e-04, node_class_types = NULL,
@@ -48,22 +48,22 @@ R6Class Node object as input, and returning nothing. Instead, this function
 should update the node directly.}
 
 \item{start_node_estimator}{An estimator function which estimates a R6Class
-Node object, or a string indicating the estimation method ("PCA", "PLS", or
-"Full" ) meant for estimation of a start type Node. All estimators must
+Node object, or a string indicating the estimation method ("normalpls", "endpls", or
+"none") meant for estimation of a start type Node. All estimators must
 implement a common interface, taking only a R6Class Node object as input,
 and returning nothing. Instead, this function should update the node
 directly.}
 
 \item{middle_node_estimator}{An estimator function which estimates a R6Class
-Node object, or a string indicating the estimation method ("PCA", "PLS", or
-"Full" ) meant for estimation of a middle type Node. All estimators must
+Node object, or a string indicating the estimation method ("normalpls", "endpls", or
+"none") meant for estimation of a middle type Node. All estimators must
 implement a common interface, taking only a R6Class Node object as input,
 and returning nothing. Instead, this function should update the node
 directly.}
 
 \item{end_node_estimator}{An estimator function which estimates a R6Class
-Node object, or a string indicating the estimation method ("PCA", "PLS", or
-"Full" ) meant for estimation of an end type Node. All estimators must
+Node object, or a string indicating the estimation method ("normalpls", "endpls", or
+"none") meant for estimation of an end type Node. All estimators must
 implement a common interface, taking only a R6Class Node object as input,
 and returning nothing. Instead, this function should update the node
 directly.}
@@ -77,22 +77,22 @@ R6Class Node object as input, and returning nothing. Instead, this function
 should update the node directly.}
 
 \item{start_node_initializer}{An initializer function which estimates a R6Class
-Node object, or a string indicating the estimation method ("PCA", or
-"Full" ) meant for initializing a start type Node. All initializers must
+Node object, or a string indicating the estimation method ("normalpls", "endpls", "pca", or
+"none") meant for initializing a start type Node. All initializers must
 implement a common interface, taking only a R6Class Node object as input,
 and returning nothing. Instead, this function should update the node
 directly.}
 
 \item{middle_node_initializer}{An initializer function which estimates a R6Class
-Node object, or a string indicating the estimation method ("PCA", or
-"Full" ) meant for initializing a middle type Node. All initializers must
+Node object, or a string indicating the estimation method ("normalpls", "endpls", "pca", or
+"none") meant for initializing a middle type Node. All initializers must
 implement a common interface, taking only a R6Class Node object as input,
 and returning nothing. Instead, this function should update the node
 directly.}
 
 \item{end_node_initializer}{An initializer function which estimates a R6Class
-Node object, or a string indicating the estimation method ("PCA", or
-"Full" ) meant for initializing an end type Node. All initializers must
+Node object, or a string indicating the estimation method ("normalpls", "endpls", "pca", or
+"none") meant for initializing an end type Node. All initializers must
 implement a common interface, taking only a R6Class Node object as input,
 and returning nothing. Instead, this function should update the node
 directly.}

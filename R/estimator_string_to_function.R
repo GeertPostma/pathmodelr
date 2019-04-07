@@ -3,7 +3,7 @@
 #' This is an internal function used to convert each implemented estimator name
 #' to its corresponding function/closure.
 #'
-#' Supported options are: PLS, PCA, and Full. The conversion renders the name
+#' Supported options are: normalpls, endpls, and Full. The conversion renders the name
 #' case-insensitive.
 #' @param estimator_name A string indicating the name of the estimator method.
 #' @return A function handle to an estimator function which takes a node as an
