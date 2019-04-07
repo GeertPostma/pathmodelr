@@ -48,6 +48,7 @@
 #'   Errors of two subsequent iterations is used as a default.
 #' @export
 #' @import listenv
+#' @import parallel
 process_PLS <- function(data,
                         connection_matrix,
                         variables_in_block,
@@ -103,7 +104,12 @@ process_PLS <- function(data,
     }
 
     if(parallelise){
+      if(is.null(n_cores)){
+        stop("If parallelisation is set to TRUE, n_cores must be set as well.")
+      }
+
       cl <- makeCluster(n_cores)
+      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "post_processor", "convergence_threshold", "n_LVs"), envir=environment())
 
       bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
