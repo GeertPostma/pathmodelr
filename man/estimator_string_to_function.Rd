@@ -19,6 +19,6 @@ This is an internal function used to convert each implemented estimator name
 to its corresponding function/closure.
 }
 \details{
-Supported options are: normalpls, endpls, and Full. The conversion renders the name
+Supported options are: "none". The conversion renders the name
 case-insensitive.
 }

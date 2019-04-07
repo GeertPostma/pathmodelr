@@ -25,20 +25,17 @@
 #'   R6Class Node object as input, and returning nothing. Instead, this function
 #'   should update the node directly.
 #' @param start_node_estimator An estimator function which estimates a R6Class
-#'   Node object, or a string indicating the estimation method ("normalpls", "endpls", or
-#'   "none") meant for estimation of a start type Node. All estimators must
+#'   Node object, or a string indicating the estimation method ("none") meant for estimation of a start type Node. All estimators must
 #'   implement a common interface, taking only a R6Class Node object as input,
 #'   and returning nothing. Instead, this function should update the node
 #'   directly.
 #' @param middle_node_estimator An estimator function which estimates a R6Class
-#'   Node object, or a string indicating the estimation method ("normalpls", "endpls", or
-#'   "none") meant for estimation of a middle type Node. All estimators must
+#'   Node object, or a string indicating the estimation method ("none") meant for estimation of a middle type Node. All estimators must
 #'   implement a common interface, taking only a R6Class Node object as input,
 #'   and returning nothing. Instead, this function should update the node
 #'   directly.
 #' @param end_node_estimator An estimator function which estimates a R6Class
-#'   Node object, or a string indicating the estimation method ("normalpls", "endpls", or
-#'   "none") meant for estimation of an end type Node. All estimators must
+#'   Node object, or a string indicating the estimation method ("none") meant for estimation of an end type Node. All estimators must
 #'   implement a common interface, taking only a R6Class Node object as input,
 #'   and returning nothing. Instead, this function should update the node
 #'   directly.
