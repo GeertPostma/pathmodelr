@@ -1,10 +1,11 @@
-normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, bootstrap=FALSE){
+#' @export
+normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
   X <- node$preprocessed_X
   Y <- combine_target_manifest_variables(node)$Y
 
   if(is.null(n_LVs)){
-    #determine max_n_LVs: after first selection, only allow shrinking
+    #determine max_n_LVs
     max_n_LVs <- ifelse(node$iteration > 1, dim(node$previous_LVs)[2], dim(X)[2])
 
     if(parallelise){
@@ -19,16 +20,35 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
       test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, manifest=TRUE)$test_errors
     }
 
-    #n_LV selection: take lowest complexity model within 1 std of the lowest error
-    avg_test_error <- colSums(test_errors)
-    std_test_error <- apply(test_errors, 2, sd)
+    #Select n_LVs
+    if(tolower(LV_selection_method)=="minimum_mean"){
+      avg_test_error <- colSums(test_errors)
 
-    min_error_index <- which.min(avg_test_error)
+      n_LVs <- which.min(avg_test_error)
 
-    ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
+    }
+    else if(tolower(LV_selection_method)=="minimum_median"){
+      median_test_error <-apply(test_errors, 2, median)
 
-    n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
+      n_LVs <- which.min(median_test_error)
+    }
+    else if(tolower(LV_selection_method)=="conservative"){
 
+      #Take lowest complexity model within 1 std of the lowest error
+      avg_test_error <- colMeans(test_errors)
+
+      std_test_error <- apply(test_errors, 2, sd)
+
+      min_error_index <- which.min(avg_test_error)
+
+      ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
+
+      n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
+
+    }
+    else{
+      stop("No valid LV selection method was supplied.")
+    }
   }
 
   SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs, sign_stable=TRUE)
@@ -43,7 +63,8 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 
 }
 
-end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=MSE){
+#' @export
+end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
   X <- combine_previous_manifest_variables(node)$X
   Y <- node$preprocessed_X
@@ -64,16 +85,35 @@ end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_sca
       test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, manifest=TRUE, end_node=TRUE)$test_errors
     }
 
-    #n_LV selection: take lowest complexity model within 1 std of the lowest error
-    avg_test_error <- colSums(test_errors)
-    std_test_error <- apply(test_errors, 2, sd)
+    #Select n_LVs
+    if(tolower(LV_selection_method)=="minimum_mean"){
+      avg_test_error <- colSums(test_errors)
 
-    min_error_index <- which.min(avg_test_error)
+      n_LVs <- which.min(avg_test_error)
 
-    ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
+    }
+    else if(tolower(LV_selection_method)=="minimum_median"){
+      median_test_error <-apply(test_errors, 2, median)
 
-    n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
+      n_LVs <- which.min(median_test_error)
+    }
+    else if(tolower(LV_selection_method)=="conservative"){
 
+      #Take lowest complexity model within 1 std of the lowest error
+      avg_test_error <- colMeans(test_errors)
+
+      std_test_error <- apply(test_errors, 2, sd)
+
+      min_error_index <- which.min(avg_test_error)
+
+      ref_error <- avg_test_error[min_error_index] + std_test_error[min_error_index]
+
+      n_LVs <- which((avg_test_error - ref_error) < 0 )[1] #selects lowest #LVs within 1 std of the error of the minimum error value
+
+    }
+    else{
+      stop("No valid LV selection method was supplied.")
+    }
   }
 
   SIMPLS_result <- SIMPLS(X, Y, max_n_comp = n_LVs)
