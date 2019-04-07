@@ -36,37 +36,17 @@ get_estimator_list <- function(node_connection_types, start_node_estimator, midd
 
   for(i in 1:length(node_connection_types)){
     if(node_connection_types[[i]] == "Middle"){
-      if(!is.null(n_LVs)){
-        l <- n_LVs[[i]]
-        estimators[[i]] <- function(node) middle_node_estimator(node, n_LVs=l)
-      }
-      else{
-        estimators[[i]] <- middle_node_estimator
-      }
-
+      estimators[[i]] <- middle_node_estimator
     }
     else if(node_connection_types[[i]] == "Start"){
-      if(!is.null(n_LVs)){
-        l <- n_LVs[[i]]
-        estimators[[i]] <- function(node) start_node_estimator(node, n_LVs=l)
-      }
-      else{
-        estimators[[i]] <- start_node_estimator
-      }
+      estimators[[i]] <- start_node_estimator
     }
     else if(node_connection_types[[i]] == "End"){
-      if(!is.null(n_LVs)){
-        l <- n_LVs[[i]]
-        estimators[[i]] <- function(node) end_node_estimator(node, n_LVs=l)
-      }
-      else{
-        estimators[[i]] <- end_node_estimator
-      }
+      estimators[[i]] <- end_node_estimator
     }
     else{
       stop("Node type unrecognised.")
     }
   }
-
   return(estimators)
 }

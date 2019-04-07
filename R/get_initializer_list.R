@@ -4,7 +4,7 @@
 #' This is an internal function used to make a list of initializers for each
 #' type of node.
 #'
-#' @param node_types A list of strings indicating the type of the node
+#' @param node_connection_types A list of strings indicating the type of the node
 #' @param start_node_initializer A handle to a function which takes a node as an
 #'   argument and is able to initialize a Start type node
 #' @param middle_node_initializer A handle to a function which takes a node as an
@@ -13,7 +13,7 @@
 #'   argument and is able to initialize an End type node
 #' @return A list of function handles to an initializers function which takes a
 #'   node as an argument.
-get_initializer_list <- function(node_types, start_node_initializer, middle_node_initializer, end_node_initializer){
+get_initializer_list <- function(node_connection_types, start_node_initializer, middle_node_initializer, end_node_initializer){
   #Convert input strings to corresponding functions
   if(typeof(start_node_initializer) == "character"){
     start_node_initializer <- initializer_string_to_function(start_node_initializer)
@@ -27,18 +27,18 @@ get_initializer_list <- function(node_types, start_node_initializer, middle_node
 
   initializers <- list()
 
-  for(i in 1:length(node_types)){
-    if(node_types[[i]] == "Middle"){
+  for(i in 1:length(node_connection_types)){
+    if(node_connection_types[[i]] == "Middle"){
       initializers[[i]] <- middle_node_initializer
     }
-    else if(node_types[[i]] == "Start"){
+    else if(node_connection_types[[i]] == "Start"){
       initializers[[i]] <- start_node_initializer
     }
-    else if(node_types[[i]] == "End"){
+    else if(node_connection_types[[i]] == "End"){
       initializers[[i]] <- end_node_initializer
     }
     else{
-      stop("Node type unrecognised.")
+      stop("Node connection type unrecognised.")
     }
   }
 
