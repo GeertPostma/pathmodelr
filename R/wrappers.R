@@ -61,7 +61,7 @@ process_PLS <- function(data,
                         n_cores               = NULL,
                         n_LVs                 = NULL,
                         bootstrap             = FALSE,
-                        bootstrap_iter        = 100,
+                        bootstrap_iter        = 200,
                         bootstrap_ci          = 0.95){
 
   if(bootstrap){
