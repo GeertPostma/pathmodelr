@@ -1,42 +1,17 @@
 #' Plot the variances explained through the path
-#' @import ggplot2
+#' @importFrom plspm innerplot
 #' @export
-plot_inner_model_variances <- function(model,
-                           layout=layout){
+plot_inner_model_variances <- function(model){
 
-  net <- network::as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
-                    ignore.eval = FALSE,
-                    names.eval = "weights",
-                    directed = TRUE,
-                    matrix_type = "incidence")
-
-  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.05, layout="circle")
-
-  ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
-    ggnetwork::geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
-    ggnetwork::geom_edgetext(aes(label = weights), color = "black", fill = "white") +
-    ggnetwork::geom_nodes(color = "grey", size = 20) +
-    ggnetwork::geom_nodetext(aes(label=vertex.names)) +
-    theme_blank()
+  innerplot(as.matrix(model$path_variances_explained), show.values=TRUE)
 }
 
 #' Plot the inner model
 #' @import ggplot2
 #' @export
-plot_inner_model <- function(model,
-                            layout="circle"){
+plot_inner_model <- function(model){
 
-  net <- network::as.network.matrix(as.data.frame(t(round(as.matrix(model$path_variances_explained), digits=3))),
-                                    directed = TRUE,
-                                    matrix_type = "incidence")
-
-  ggnet <- ggnetwork::ggnetwork(net, arrow.gap = 0.05, layout=layout)
-
-  ggplot(ggnet, aes(x = x, y = y, xend = xend, yend = yend)) +
-    ggnetwork::geom_edges(arrow = arrow(length = unit(6, "pt"), type="closed"), color = "grey50") +
-    ggnetwork::geom_nodes(color = "grey", size = 20) +
-    ggnetwork::geom_nodetext(aes(label=vertex.names)) +
-    theme_blank()
+  innerplot(as.matrix(model$path_variances_explained))
 }
 
 #Default: show all end nodes, give name
