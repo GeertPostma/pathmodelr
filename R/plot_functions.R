@@ -86,7 +86,7 @@ plot_variable_effects <- function(model, what_node=NULL, negative_values="negati
 
         geom_bar(stat = 'identity', position = 'dodge', color="black") +
 
-        theme(axis.text.x = element_text(angle = 270)) +
+        theme(axis.text.x = element_text(angle = 60, hjust=1)) +
 
         ylab("Absolute Effect") +
 
@@ -101,7 +101,7 @@ plot_variable_effects <- function(model, what_node=NULL, negative_values="negati
 
         geom_bar(stat = 'identity', position = 'dodge', color="black") +
 
-        theme(axis.text.x = element_text(angle = 270)) +
+        theme(axis.text.x = element_text(angle = 60, hjust=1)) +
 
         ylab("Effect") +
 
@@ -155,7 +155,7 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
 
         geom_bar(stat = 'identity', position = 'dodge') +
 
-        theme(axis.text.x = element_text(angle = 270)) +
+        theme(axis.text.x = element_text(angle = 60, hjust=1)) +
 
         ylab("Absolute Effect") +
 
@@ -168,7 +168,7 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
 
         geom_bar(stat = 'identity', position = 'dodge') +
 
-        theme(axis.text.x = element_text(angle = 270)) +
+        theme(axis.text.x = element_text(angle = 60, hjust=1)) +
 
         ylab("Effect") +
 
@@ -191,7 +191,7 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
 
           geom_bar(stat = 'identity', position = 'dodge') +
 
-          theme(axis.text.x = element_text(angle = 270)) +
+          theme(axis.text.x = element_text(angle = 60, hjust=1)) +
 
           ylab("Absolute Effect") +
 
@@ -206,7 +206,7 @@ plot_outer_effects <- function(model, what_node=NULL, combine=TRUE, negative_val
 
             geom_bar(stat = 'identity', position = 'dodge') +
 
-            theme(axis.text.x = element_text(angle = 270)) +
+            theme(axis.text.x = element_text(angle = 60, hjust=1)) +
 
             ylab("Effect") +
 
