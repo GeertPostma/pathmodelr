@@ -94,6 +94,9 @@ process_PLS <- function(data,
       inner_bootstrap_results <- list()
 
       inner_bootstrap_results$path_variances_explained <- calculate_PLS_variances_explained(tempmodel)
+      temp_effects <- plspm::get_effects(inner_bootstrap_results$path_variances_explained)
+      inner_bootstrap_results$variance_effects <- as.matrix(temp_effects[,2:4])
+      rownames(inner_bootstrap_results$variance_effects) <- as.character(temp_effects$relationships)
       inner_bootstrap_results$inner_effects <- calculate_inner_effects(tempmodel)$effects
       inner_bootstrap_results$outer_effects <- calculate_outer_effects(tempmodel)$outer_effects
 
@@ -117,6 +120,7 @@ process_PLS <- function(data,
     }
 
     bootstrapped_path_variances <- simplify2array(lapply(bootstrap_results, function(bs_res) bs_res$path_variances_explained))
+    bootstrapped_variance_effects <- simplify2array(lapply(bootstrap_results, function(bs_res) bs_res$variance_effects))
     inner_effects <- lapply(bootstrap_results, function(bs_res) bs_res$inner_effects)
     outer_effects <- lapply(bootstrap_results, function(bs_res) bs_res$outer_effects)
 
@@ -140,18 +144,22 @@ process_PLS <- function(data,
 
 
     mean_bootstrapped_path_variances <- apply(bootstrapped_path_variances, c(1,2), mean)
+    mean_bootstrapped_variance_effects <- apply(bootstrapped_variance_effects, c(1,2), mean)
     mean_bootstrapped_inner_effects <- lapply(bootstrapped_inner_effects, rowMeans)
     mean_bootstrapped_outer_effects <- lapply(bootstrapped_outer_effects, rowMeans)
 
     median_bootstrapped_path_variances <- apply(bootstrapped_path_variances, c(1,2), median)
+    median_bootstrapped_variance_effects <- apply(bootstrapped_variance_effects, c(1,2), median)
     median_bootstrapped_inner_effects <- lapply(bootstrapped_inner_effects, function(x) apply(x, 1, median))
     median_bootstrapped_outer_effects <- lapply(bootstrapped_outer_effects, function(x) apply(x, 1, median))
 
     ci_bootstrapped_path_variances <- get_path_ci(bootstrapped_path_variances, bootstrap_iter, bootstrap_ci)
+    ci_bootstrapped_variance_effects <- get_path_ci(bootstrapped_variance_effects, bootstrap_iter, bootstrap_ci)
     ci_bootstrapped_inner_effects <- get_effects_ci(bootstrapped_inner_effects, bootstrap_iter, bootstrap_ci)
     ci_bootstrapped_outer_effects <- get_effects_ci(bootstrapped_outer_effects, bootstrap_iter, bootstrap_ci)
 
     stdev_bootstrapped_path_variances <- apply(bootstrapped_path_variances, c(1,2), sd)
+    stdev_bootstrapped_variance_effects <- apply(bootstrapped_variance_effects, c(1,2), sd)
     stdev_bootstrapped_inner_effects <- lapply(bootstrapped_inner_effects, function(x) apply(x, 1, sd))
     stdev_bootstrapped_outer_effects <- lapply(bootstrapped_outer_effects, function(x) apply(x, 1, sd))
 
@@ -163,6 +171,11 @@ process_PLS <- function(data,
           "median" = median_bootstrapped_path_variances,
           "ci"     = ci_bootstrapped_path_variances,
           "stdev"  = stdev_bootstrapped_path_variances),
+        "variance_effects" = list(
+          "mean"   = mean_bootstrapped_variance_effects,
+          "median" = median_bootstrapped_variance_effects,
+          "ci"     = ci_bootstrapped_variance_effects,
+          "stdev"  = stdev_bootstrapped_variance_effects),
         "inner_effects" = list(
           "mean"   = mean_bootstrapped_inner_effects,
           "median" = median_bootstrapped_inner_effects,
