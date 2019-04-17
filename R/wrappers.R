@@ -151,21 +151,28 @@ process_PLS <- function(data,
     ci_bootstrapped_inner_effects <- get_effects_ci(bootstrapped_inner_effects, bootstrap_iter, bootstrap_ci)
     ci_bootstrapped_outer_effects <- get_effects_ci(bootstrapped_outer_effects, bootstrap_iter, bootstrap_ci)
 
+    stdev_bootstrapped_path_variances <- apply(bootstrapped_path_variances, c(1,2), sd)
+    stdev_bootstrapped_inner_effects <- lapply(bootstrapped_inner_effects, function(x) apply(x, 1, sd))
+    stdev_bootstrapped_outer_effects <- lapply(bootstrapped_outer_effects, function(x) apply(x, 1, sd))
+
 
     bootstrap_results <-
       list(
         "path_variances" = list(
           "mean"   = mean_bootstrapped_path_variances,
           "median" = median_bootstrapped_path_variances,
-          "ci"     = ci_bootstrapped_path_variances),
+          "ci"     = ci_bootstrapped_path_variances,
+          "stdev"  = stdev_bootstrapped_path_variances),
         "inner_effects" = list(
           "mean"   = mean_bootstrapped_inner_effects,
           "median" = median_bootstrapped_inner_effects,
-          "ci"     = ci_bootstrapped_inner_effects),
+          "ci"     = ci_bootstrapped_inner_effects,
+          "stdev"  = stdev_bootstrapped_inner_effects),
         "outer_effects" = list(
           "mean"   = mean_bootstrapped_outer_effects,
           "median" = median_bootstrapped_outer_effects,
-          "ci"     = ci_bootstrapped_outer_effects))
+          "ci"     = ci_bootstrapped_outer_effects,
+          "stdev"  = stdev_bootstrapped_inner_effects))
 
     #calculate original model
     model <- path_model(data,
