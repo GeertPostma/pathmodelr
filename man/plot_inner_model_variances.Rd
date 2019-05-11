@@ -4,7 +4,7 @@
 \alias{plot_inner_model_variances}
 \title{Plot the variances explained through the path}
 \usage{
-plot_inner_model_variances(model, layout = layout)
+plot_inner_model_variances(model)
 }
 \description{
 Plot the variances explained through the path
