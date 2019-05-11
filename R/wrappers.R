@@ -257,3 +257,21 @@ process_PLS <- function(data,
   return(model)
 }
 
+#' @export
+soplspm <- function(data,
+                    connection_matrix,
+                    variables_in_block,
+                    block_names           = NULL,
+                    max_iterations        = 20,
+                    global_preprocessors  = list(),
+                    local_preprocessors   = list(standardize, block_scale)){
+
+
+  #check connectopn matrix
+
+  #to pathmodel function
+
+  #calculate essential statistics
+
+  #Return model
+}
