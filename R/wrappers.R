@@ -272,8 +272,8 @@ soplspm <- function(data,
     stop("The specified connection matrix is not at least a 2-by-2 square lower triangular and/or fully connected. Please respecify")
   }
 
-
   #to pathmodel function
+
 
   #calculate essential statistics
 
