@@ -267,7 +267,11 @@ soplspm <- function(data,
                     local_preprocessors   = list(standardize, block_scale)){
 
 
-  #check connectopn matrix
+  #check connection matrix
+  if(!is_valid_soplspm_matrix(connection_matrix)){
+    stop("The specified connection matrix is not at least a 2-by-2 square lower triangular and/or fully connected. Please respecify")
+  }
+
 
   #to pathmodel function
 
