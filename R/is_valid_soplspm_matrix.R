@@ -1,4 +1,10 @@
+#' @export
 is_valid_soplspm_matrix <- function(connection_matrix){
+
+  #check if matrix
+  if(!is.matrix(connection_matrix)){
+    return(FALSE)
+  }
 
   #check if square of at least 2-by-2
   if(ncol(connection_matrix) != nrow(connection_matrix) || nrow(connection_matrix) < 2 || ncol(connection_matrix) < 2){
