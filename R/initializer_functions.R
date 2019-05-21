@@ -1,8 +1,25 @@
 #' @export
 normal_SOPLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
-  X <- node$preprocessed_X
+  #X <- node$preprocessed_X
   #Y <-
+
+  #When called, must optimize prediction to -this- node, thereby finding sets of LVs for previous nodes.
+  #In the cross-validation procedure, ensure that 0 LVs in previous predictor nodes is possible.
+  #Note that Node abstract structure is not particularly ideal for SO-PLS, as no single set of LVs is estimated for each block.
+  #Edge case is, in contrast to process PLS, not the end node, but the start node, as it is not being predicted.
+
+  #What to save in node structure: mage plot info.
+  # -dataframe of all combinations and corresponding RMSECV,
+
+  #Make mage plot function
+
+  #Rough algorithm:
+  # - for each node:
+  #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
+  #   - Make dataframe for plotting with all to-be-evaluated combinations
+  #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
+  #   - save each result in dataframe. (RMSECV) ( + separate dataframe for exp. variance )
 
 
   #node$add_estimate(...)
