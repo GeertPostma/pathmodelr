@@ -258,13 +258,13 @@ process_PLS <- function(data,
 }
 
 #' @export
-soplspm <- function(data,
+soplspm <- function(input_data,
                     connection_matrix,
                     variables_in_block,
                     block_names           = NULL,
-                    max_iterations        = 20,
                     global_preprocessors  = list(),
-                    local_preprocessors   = list(standardize, block_scale)){
+                    local_preprocessors   = list(standardize, block_scale),
+                    post_processor        = post_processor){
 
 
   #check connection matrix
@@ -273,6 +273,20 @@ soplspm <- function(data,
   }
 
   #to pathmodel function
+  sopls_model <- path_model(input_data,
+                          connection_matrix,
+                          variables_in_block,
+                          block_names,
+                          start_node_initializer  = "normalSOPLS",
+                          middle_node_initializer = "normalSOPLS",
+                          end_node_initializer    = "endSOPLS",
+                          start_node_estimator    = "None",
+                          middle_node_estimator   = "None",
+                          end_node_estimator      = "None",
+                          max_iterations          = 1,
+                          global_preprocessors    = global_preprocessors,
+                          local_preprocessors     = local_preprocessors,
+                          post_processor          = post_processor)
 
 
   #calculate essential statistics
