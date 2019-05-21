@@ -1,4 +1,16 @@
 #' @export
+normal_SOPLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
+
+  X <- node$preprocessed_X
+  #Y <-
+
+
+  #node$add_estimate(...)
+
+}
+
+
+#' @export
 normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
   X <- node$preprocessed_X
