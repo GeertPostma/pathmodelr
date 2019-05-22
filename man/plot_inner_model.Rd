@@ -4,7 +4,7 @@
 \alias{plot_inner_model}
 \title{Plot the inner model}
 \usage{
-plot_inner_model(model, layout = "circle")
+plot_inner_model(model)
 }
 \description{
 Plot the inner model
