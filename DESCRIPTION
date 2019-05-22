@@ -17,7 +17,8 @@ Imports:
 	reshape2,
 	R6,
 	network,
-	ggnetwork
+	ggnetwork,
+	plspm
 RoxygenNote: 6.1.1
 Suggests: 
     testthat
@@ -51,6 +52,7 @@ Collate:
     'get_previous_node_indices.R'
     'initializer_functions.R'
     'initializer_string_to_function.R'
+    'is_valid_soplspm_matrix.R'
     'local_preprocessing_functions.R'
     'loggers_reporters.R'
     'make_nodes.R'
