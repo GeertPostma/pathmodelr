@@ -1,5 +1,5 @@
 #' @export
-normal_SOPLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
+normal_SOPLS_initializer <- function(node, n_LVs=NULL, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
   #X <- node$preprocessed_X
   #Y <-
@@ -21,6 +21,7 @@ normal_SOPLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, varianc
   #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
   #   - save each result in dataframe. (RMSECV) ( + separate dataframe for exp. variance )
 
+  #NOTE: memoization will not work for large matrices due to complexity of algorithm. 2 versions of algorithm should be implemented.
 
   #node$add_estimate(...)
 
