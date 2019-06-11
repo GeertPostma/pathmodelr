@@ -14,6 +14,8 @@ normal_SOPLS_initializer <- function(node, n_LVs=NULL, parallelise=FALSE, n_core
 
   #Make mage plot function
 
+
+  #Use depth first search for memory efficiency!
   #Rough algorithm:
   # - for each node:
   #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
