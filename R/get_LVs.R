@@ -36,7 +36,7 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
     for(ii in seq_along(nodes)){
       node <- nodes[[ii]]
 
-      if(node$is_iterative){
+      if(inherits(node,what="IterativeNode")){
         node$prepare_next_estimation()
       }
     }
@@ -46,7 +46,7 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
       node <- nodes[[ii]]
 
       if(node$is_initialized){
-        if(!node$is_estimated && node$is_iterative){ #Only add estimate if it needs to be updated (this allows for having both iterative and non iterative nodes.)
+        if(!node$is_estimated && inherits(node,what="IterativeNode")){ #Only add estimate if it needs to be updated (this allows for having both iterative and non iterative nodes.)
           node$estimate()
         }
       }
@@ -66,7 +66,7 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
     total_LVs <- 0
     n_LV_converged <- TRUE
     for(ii in seq_along(nodes)){
-      if(node$is_iterative){
+      if(inherits(node,what="IterativeNode")){
         node <- nodes[[ii]]
         total_error <- total_error + node$error
         total_LVs <- total_LVs + node$n_LVs
@@ -82,11 +82,6 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
     if(total_error <= corrected_convergence_threshold && n_LV_converged){
       converged <- TRUE
     }
-  }
-
-  # Post processing loop:
-  for(i in seq_along(nodes)){
-   nodes[[i]]$post_process()
   }
 
   return(listenv("nodes"=nodes, "loggers"=loggers))

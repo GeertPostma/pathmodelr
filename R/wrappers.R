@@ -17,9 +17,6 @@
 #'   of the \code{connection_matrix}. When the argument is not set, names are
 #'   extracted from \code{data}, or set to dummy names based on ordering when
 #'   \code{data} contains no names.
-#' @param max_iterations An integer indicating the maximum number of iterations
-#'   before execution of LV estimation is halted when the convergence criterion
-#'   is not met beforehand.
 #' @param global_preprocessors A list of preprocessing functions when
 #'   unique_node_preprocessing is \code{FALSE}, a list of lists of preprocessing
 #'   functions when unique_node_preprocessing is \code{TRUE}. The ordering of
@@ -40,12 +37,7 @@
 #'   (cross-)validating. User-implemented functions must take a Matrix as input,
 #'   and return the preprocessed matrix. Implemented functions are: (block_scale,
 #'   standardize, and mean_center)
-#' @param convergence_threshold A double indicating the maximum error before the
-#'   iterations are assumed to have converged. It is compared to the difference
-#'   between the latent variables of the current and previous iteration. If this
-#'   difference is less, the algorithm is considered to have converged. A
-#'   convergence threshold of a difference of 0.0001 between the Sum of Squared
-#'   Errors of two subsequent iterations is used as a default.
+
 #' @export
 #' @import listenv
 #' @import parallel
@@ -53,11 +45,8 @@ process_PLS <- function(data,
                         connection_matrix,
                         variables_in_block,
                         block_names           = NULL,
-                        max_iterations        = 20,
                         global_preprocessors  = list(),
                         local_preprocessors   = list(standardize, block_scale),
-                        post_processor        = NULL,
-                        convergence_threshold = 0.0001,
                         parallelise           = FALSE,
                         n_cores               = NULL,
                         bootstrap             = FALSE,
@@ -80,11 +69,8 @@ process_PLS <- function(data,
                               start_node_estimator    = "None",
                               middle_node_estimator   = "None",
                               end_node_estimator      = "None",
-                              max_iterations          = max_iterations,
                               global_preprocessors    = global_preprocessors,
-                              local_preprocessors     = local_preprocessors,
-                              post_processor          = post_processor,
-                              convergence_threshold   = convergence_threshold)
+                              local_preprocessors     = local_preprocessors)
 
       calculate_node_PLS_coefficients(tempmodel)
 
@@ -109,7 +95,7 @@ process_PLS <- function(data,
       }
 
       cl <- makeCluster(n_cores)
-      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "post_processor", "convergence_threshold"), envir=environment())
+      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "convergence_threshold"), envir=environment())
 
       bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
@@ -200,9 +186,7 @@ process_PLS <- function(data,
                         end_node_estimator      = "None",
                         max_iterations          = max_iterations,
                         global_preprocessors    = global_preprocessors,
-                        local_preprocessors     = local_preprocessors,
-                        post_processor          = post_processor,
-                        convergence_threshold   = convergence_threshold)
+                        local_preprocessors     = local_preprocessors)
 
     #Calculate all path effects, direct effects, and indirect effects
     #Backwards regression pass
@@ -233,11 +217,8 @@ process_PLS <- function(data,
                         start_node_estimator    = "None",
                         middle_node_estimator   = "None",
                         end_node_estimator      = "None",
-                        max_iterations          = max_iterations,
                         global_preprocessors    = global_preprocessors,
                         local_preprocessors     = local_preprocessors,
-                        post_processor          = post_processor,
-                        convergence_threshold   = convergence_threshold,
                         parallelise             = p,
                         n_cores                 = n)
 
@@ -263,8 +244,7 @@ soplspm <- function(input_data,
                     variables_in_block,
                     block_names           = NULL,
                     global_preprocessors  = list(),
-                    local_preprocessors   = list(standardize, block_scale),
-                    post_processor        = post_processor){
+                    local_preprocessors   = list(standardize, block_scale)){
 
 
   #check connection matrix
@@ -286,8 +266,7 @@ soplspm <- function(input_data,
                           end_node_estimator      = "None",
                           max_iterations          = 1,
                           global_preprocessors    = global_preprocessors,
-                          local_preprocessors     = local_preprocessors,
-                          post_processor          = post_processor)
+                          local_preprocessors     = local_preprocessors)
 
 
   #calculate essential statistics

@@ -38,7 +38,7 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 
   if(is.null(n_LVs)){
     #determine max_n_LVs
-    max_n_LVs <- ifelse(node$iteration > 1, dim(node$previous_LVs)[2], dim(X)[2])
+    max_n_LVs <- dim(X)[2]
 
     if(parallelise){
       if(!is.null(n_cores)){
