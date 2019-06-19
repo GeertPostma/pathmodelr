@@ -42,13 +42,10 @@
 #'   return the preprocessed matrix.
 #' @param node_class_types A list of node class types. The ordering of the outer
 #'   list should be the same as that of the \code{connection_matrix}.
-#' @param post_processors A list of postprocessing functiona which takes a node
-#'   as an input and returns a scaling setting vector. The ordering of the outer
-#'   list should be the same as that of the \code{connection_matrix}.
 #' @return A listenv of uninitialized and connected nodes.
 #' @include node_classes.R
 #' @import listenv
-make_nodes <- function(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_class_types, post_processors){
+make_nodes <- function(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_class_types){
 
   node_list <- listenv()
 
@@ -63,9 +60,7 @@ make_nodes <- function(blocked_data, connection_matrix, block_names, estimators,
                                 estimator           = estimators[[i]],
                                 initializer         = initializers[[i]],
                                 local_preprocessor  = local_preprocessors[[block_names[[i]]]],
-                                global_preprocessor = global_preprocessors[[block_names[[i]]]],
-                                post_processor      = post_processors[[block_names[[i]]]],
-                                is_iterative        = attr(estimators[[i]], "is_iterative"))
+                                global_preprocessor = global_preprocessors[[block_names[[i]]]])
 
     node_list[[i]] <- node
   }
