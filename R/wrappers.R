@@ -95,7 +95,7 @@ process_PLS <- function(data,
       }
 
       cl <- makeCluster(n_cores)
-      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "post_processor", "convergence_threshold"), envir=environment())
+      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "convergence_threshold"), envir=environment())
 
       bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
@@ -217,11 +217,8 @@ process_PLS <- function(data,
                         start_node_estimator    = "None",
                         middle_node_estimator   = "None",
                         end_node_estimator      = "None",
-                        max_iterations          = max_iterations,
                         global_preprocessors    = global_preprocessors,
                         local_preprocessors     = local_preprocessors,
-                        post_processor          = post_processor,
-                        convergence_threshold   = convergence_threshold,
                         parallelise             = p,
                         n_cores                 = n)
 
@@ -269,8 +266,7 @@ soplspm <- function(input_data,
                           end_node_estimator      = "None",
                           max_iterations          = 1,
                           global_preprocessors    = global_preprocessors,
-                          local_preprocessors     = local_preprocessors,
-                          post_processor          = post_processor)
+                          local_preprocessors     = local_preprocessors)
 
 
   #calculate essential statistics
