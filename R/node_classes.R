@@ -159,9 +159,7 @@ inherit = DataNode,
   public = list(
     #Fields
     n_LVs                    = NA_integer_,
-    previous_n_LVs           = NA_integer_,
     LVs                      = NULL,
-    previous_LVs             = NULL,
     X_loadings               = NULL,
 
     variance_explained       = NA_real_,
@@ -194,13 +192,6 @@ inherit = DataNode,
       rownames(self$X_loadings) <- colnames(self$X_data)
       self$variance_explained   <- variance_explained
 
-      if(!is.null(self$previous_LVs)){
-        self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
-      }
-      else{
-        self$error <- 0
-      }
-
       self$is_estimated <- TRUE
     },
 
@@ -208,21 +199,6 @@ inherit = DataNode,
 
       if(!self$is_estimated){
         self$estimator(self)
-      }
-    },
-
-    prepare_next_estimation = function(){
-
-      if(self$is_iterative){
-        self$previous_LVs <- self$LVs
-        self$LVs <- NULL
-
-        self$previous_n_LVs <- self$n_LVs
-        self$n_LVs <- NA_integer_
-
-        self$iteration <- self$iteration + 1
-
-        self$is_estimated <- FALSE
       }
     }
   )
