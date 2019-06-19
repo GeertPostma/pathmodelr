@@ -89,7 +89,45 @@ DataNode <- R6Class("DataNode",
   )
 )
 
+#' @import R6
+SOPLSNode <- R6CLass("SOPLSNode",
+ inherit = DataNode,
 
+  public = list(
+    #Fields
+
+    #ordering of *_per_predictor list is from first in order to last in order according to previous_nodes, which consequently should be correctly ordered.
+    n_LVs_per_predictor <- list(), #list
+    coefficients_per_predictor <- list(),
+    loadings_per_predictor <- list(),
+    explained_variance_per_predictor <- list(),
+
+    #Methods
+    get_predictor_data <- function(){
+
+      predictor_data <- lapply(self$previous_nodes, function(node) node$preprocessed_X)
+
+      return(predictor_data)
+    },
+
+    get_predictor_train_test <- function(test_indices){
+
+      predictor_train <- list()
+      predictor_test <- list()
+
+      for(i in seq_along(self$previous_nodes)){
+        node <- self$previous_nodes[[i]]
+
+        train_test <- node$preprocess_train_test(test_indices)
+
+        predictor_train[[i]] <- train_test$train_data
+        predictor_test[[i]] <- train_test$test_data
+      }
+
+      return(list("predictor_train"=predictor_train, "predictor_test"=predictor_test))
+    }
+ )
+)
 
 
 
