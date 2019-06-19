@@ -256,13 +256,6 @@ PLSNode <- R6Class("PLSNode",
       rownames(self$X_loadings) <- colnames(self$X_data)
       self$variance_explained   <- variance_explained
 
-      if(!is.null(self$previous_LVs)){
-        self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
-      }
-      else{
-        self$error <- 0
-      }
-
       self$is_estimated <- TRUE
     },
 
