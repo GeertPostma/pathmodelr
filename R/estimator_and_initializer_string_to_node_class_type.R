@@ -29,10 +29,10 @@ estimator_and_initializer_string_to_node_class_type <- function(estimator_name, 
   else if(tolower(initializer_name) == "endpls"){
     return(PLSNode)
   }
-  else if(tolower(initializer_name) == "normalsopls"){
-    return(SOPLSNode)
+  else if(tolower(initializer_name) == "startsopls"){
+    return(DataNode)
   }
-  else if(tolower(initializer_name) == "endsopls"){
+  else if(tolower(initializer_name) == "normalsopls"){
     return(SOPLSNode)
   }
   else {
