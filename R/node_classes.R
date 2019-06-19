@@ -85,70 +85,11 @@ DataNode <- R6Class("DataNode",
         self$preprocessed_X <- preprocessor(self$preprocessed_X)$preprocessed_data
         colnames(self$preprocessed_X) <- colnames(self$X_data)
       }
-    },
-
-    get_paths_to_self = function(){
-
-      path_coefficients_to_self <- list()
-      path_names_to_self <- list()
-
-      for(i in seq_along(self$previous_nodes)){
-        node <- self$previous_nodes[[i]]
-
-
-        paths_to_self <- node$get_paths_through_self_to_node(self)
-        path_coefficients_to_self[[i]] <- paths_to_self$path_coefficients
-        path_names_to_self[[i]] <- paths_to_self$path_names
-
-      }
-
-      path_coefficients_to_self <- unlist(path_coefficients_to_self, recursive=FALSE)
-      path_names_to_self <- unlist(path_names_to_self, recursive=FALSE)
-
-      if(!is.null(path_coefficients_to_self)){
-        names(path_coefficients_to_self) <- lapply(lapply(path_names_to_self, c, self$node_name), paste, collapse=" -> ")
-      }
-
-      return(list("path_names"=path_names_to_self, "path_coefficients"=path_coefficients_to_self))
-    },
-
-    get_node_path_effects = function(){
-
-      individual_effects <- self$get_paths_to_self()
-      direct_effects <- list()
-      indirect_effects <- list()
-      total_effects <- list()
-
-      direct_effects <- individual_effects$path_coefficients[lapply(individual_effects$path_names, length)==1]
-      names(direct_effects) <- individual_effects$path_names[lapply(individual_effects$path_names, length)==1]
-
-      for(preceding_block_name in unique(unlist(individual_effects$path_names))){
-
-        total_effect <- Reduce('+', individual_effects$path_coefficients[lapply(individual_effects$path_names, "[[", 1) == preceding_block_name])
-
-        total_effects[[preceding_block_name]] <- total_effect
-
-        if(is.null(direct_effects[[preceding_block_name]])){
-          indirect_effects[[preceding_block_name]] <- total_effect
-        }
-        else{
-          indirect_effects[[preceding_block_name]] <- total_effect - direct_effects[[preceding_block_name]]
-        }
-
-      }
-
-      return(list("individual_effects"=individual_effects, "direct_effects"=direct_effects, "indirect_effects"=indirect_effects, "total_effects"=total_effects))
-
-    },
-
-
-    #TODO: Needs thorough testing for non-path-propagating nodes. Do matrix effect multiplications still work?
-    get_outgoing_path_to_node = function(node){
-
-      return(matrix(0, nrow=1, ncol=1))
     }
   )
 )
+
+
 
 
 
@@ -207,11 +148,71 @@ inherit = DataNode,
 #' PathNode is a template Node class for nodes which propagate effects, such as
 #' the PLSNode. Path nodes should implement the get_paths_through_self_to_node method
 #' @import R6
-PathNode <- R6Class("PathNode",
+PLSPathNode <- R6Class("PLSPathNode",
   inherit = LVNode,
   public = list(
 
     #Methods
+    get_paths_to_self = function(){
+
+      path_coefficients_to_self <- list()
+      path_names_to_self <- list()
+
+      for(i in seq_along(self$previous_nodes)){
+        node <- self$previous_nodes[[i]]
+
+
+        paths_to_self <- node$get_paths_through_self_to_node(self)
+        path_coefficients_to_self[[i]] <- paths_to_self$path_coefficients
+        path_names_to_self[[i]] <- paths_to_self$path_names
+
+      }
+
+      path_coefficients_to_self <- unlist(path_coefficients_to_self, recursive=FALSE)
+      path_names_to_self <- unlist(path_names_to_self, recursive=FALSE)
+
+      if(!is.null(path_coefficients_to_self)){
+        names(path_coefficients_to_self) <- lapply(lapply(path_names_to_self, c, self$node_name), paste, collapse=" -> ")
+      }
+
+      return(list("path_names"=path_names_to_self, "path_coefficients"=path_coefficients_to_self))
+    },
+
+    get_node_path_effects = function(){
+
+      individual_effects <- self$get_paths_to_self()
+      direct_effects <- list()
+      indirect_effects <- list()
+      total_effects <- list()
+
+      direct_effects <- individual_effects$path_coefficients[lapply(individual_effects$path_names, length)==1]
+      names(direct_effects) <- individual_effects$path_names[lapply(individual_effects$path_names, length)==1]
+
+      for(preceding_block_name in unique(unlist(individual_effects$path_names))){
+
+        total_effect <- Reduce('+', individual_effects$path_coefficients[lapply(individual_effects$path_names, "[[", 1) == preceding_block_name])
+
+        total_effects[[preceding_block_name]] <- total_effect
+
+        if(is.null(direct_effects[[preceding_block_name]])){
+          indirect_effects[[preceding_block_name]] <- total_effect
+        }
+        else{
+          indirect_effects[[preceding_block_name]] <- total_effect - direct_effects[[preceding_block_name]]
+        }
+
+      }
+
+      return(list("individual_effects"=individual_effects, "direct_effects"=direct_effects, "indirect_effects"=indirect_effects, "total_effects"=total_effects))
+
+    },
+
+    #TODO: Needs thorough testing for non-path-propagating nodes. Do matrix effect multiplications still work?
+    get_outgoing_path_to_node = function(node){
+
+      return(matrix(0, nrow=1, ncol=1))
+    },
+
     get_paths_through_self_to_node = function(node){
 
       outgoing_coefficients <- self$get_outgoing_path_to_node(node)
@@ -243,7 +244,7 @@ PathNode <- R6Class("PathNode",
 
 #' @import R6
 PLSNode <- R6Class("PLSNode",
-  inherit = PathNode,
+  inherit = PLSPathNode,
   public = list(
     #Fields
     path_coefficients = list(),
