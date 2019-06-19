@@ -17,7 +17,7 @@ normal_SOPLS_initializer <- function(node, n_LVs=NULL, parallelise=FALSE, n_core
 
   #Use depth first search for memory efficiency!
   #Rough algorithm:
-  # - for each node:
+  # - for each dependent node:
   #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
   #   - Make dataframe for plotting with all to-be-evaluated combinations
   #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
