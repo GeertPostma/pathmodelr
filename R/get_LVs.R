@@ -66,7 +66,7 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
     total_LVs <- 0
     n_LV_converged <- TRUE
     for(ii in seq_along(nodes)){
-      if(node$is_iterative==TRUE){
+      if(inherits(node,what="IterativeNode")){
         node <- nodes[[ii]]
         total_error <- total_error + node$error
         total_LVs <- total_LVs + node$n_LVs
