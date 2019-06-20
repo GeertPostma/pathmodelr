@@ -23,9 +23,9 @@ initializer_string_to_function <- function(initializer_name){
     return(end_PLS_initializer)
   }
   else if(tolower(initializer_name) == "normalsopls"){
-    return(normal_PLS_initializer)
+    return(normal_SOPLS_initializer)
   }
   else if(tolower(initializer_name) == "startsopls"){
-    return(start_PLS_initializer)
+    return(no_initializer)
   }
 }
