@@ -101,6 +101,7 @@ SOPLSNode <- R6CLass("SOPLSNode",
     coefficients_per_predictor <- list(),
     loadings_per_predictor <- list(),
     explained_variance_per_predictor <- list(),
+    CV_error_df <- NA,
 
     #Methods
     get_predictor_data <- function(){
@@ -108,6 +109,10 @@ SOPLSNode <- R6CLass("SOPLSNode",
       predictor_data <- lapply(self$previous_nodes, function(node) node$preprocessed_X)
 
       return(predictor_data)
+    },
+
+    get_Y_data <- function(){
+      return(self$preprocessed_X)
     },
 
     get_predictor_train_test <- function(test_indices){
@@ -129,8 +134,6 @@ SOPLSNode <- R6CLass("SOPLSNode",
  )
 )
 
-
-
 #' @import R6
 LVNode <- R6Class("LVNode",
 inherit = DataNode,
@@ -145,7 +148,6 @@ inherit = DataNode,
 
     estimator                = NULL,
     is_estimated             = FALSE,
-
 
     #Methods
     initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor){
