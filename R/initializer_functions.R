@@ -1,35 +1,49 @@
+#' n_LVs should be a list of n_LVs per block
 #' @export
-normal_SOPLS_initializer <- function(node, n_LVs=NULL, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
+normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
-  #Make DF for CV errors
 
-  #Do cross validation
+  if(is.null(n_LVs_per_block)){
+    max_n_LVs_per_block <- lapply(node$previous_nodes, function(n) n$n_LVs)
+    names(max_n_LVs_per_block) <- lapply(node$previous_nodes, function(n) n$node_name)
 
-  #X's <-
-  #Y <-
+
+    #X's <-
+    #Y <-
+
+    #do cross val
+
+    #Use depth first search for memory efficiency!
+    #Rough algorithm:
+    # - for each dependent node:
+    #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
+    #   - Make dataframe for plotting with all to-be-evaluated combinations
+    #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
+    #   - save each result in dataframe. (RMSECV) ( + separate dataframe for exp. variance )
+
+    #NOTE: memoization will not work for large matrices due to complexity of algorithm. 2 versions of algorithm should be implemented.
+
+    #Make DF for CV errors
+      #What to save in node structure: mage plot info.
+      # -dataframe of all combinations and corresponding RMSECV (or SSECV)
+
+    #n_LVs_per_block <- ...
+  }
+
+
+
 
   #Calculate final model
 
   #When called, must optimize prediction to -this- node, thereby finding sets of LVs for previous nodes.
   #In the cross-validation procedure, ensure that 0 LVs in previous predictor nodes is possible.
-  #Note that Node abstract structure is not particularly ideal for SO-PLS, as no single set of LVs is estimated for each block.
-  #Edge case is, in contrast to process PLS, not the end node, but the start node, as it is not being predicted.
 
-  #What to save in node structure: mage plot info.
-  # -dataframe of all combinations and corresponding RMSECV,
+
+
 
   #Make mage plot function
 
 
-  #Use depth first search for memory efficiency!
-  #Rough algorithm:
-  # - for each dependent node:
-  #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
-  #   - Make dataframe for plotting with all to-be-evaluated combinations
-  #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
-  #   - save each result in dataframe. (RMSECV) ( + separate dataframe for exp. variance )
-
-  #NOTE: memoization will not work for large matrices due to complexity of algorithm. 2 versions of algorithm should be implemented.
 
   #node$add_estimate(...)
 
