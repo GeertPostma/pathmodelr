@@ -1,8 +1,14 @@
 #' @export
 normal_SOPLS_initializer <- function(node, n_LVs=NULL, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
-  #X <- node$preprocessed_X
+  #Make DF for CV errors
+
+  #Do cross validation
+
+  #X's <-
   #Y <-
+
+  #Calculate final model
 
   #When called, must optimize prediction to -this- node, thereby finding sets of LVs for previous nodes.
   #In the cross-validation procedure, ensure that 0 LVs in previous predictor nodes is possible.
@@ -216,3 +222,9 @@ full_initializer <- function(node){ #Simple Full estimation (generally used for 
 
   node$add_estimate(n_LVs, LVs, X_loadings, variance_explained=variance_explained)
 }
+
+#' @export
+no_initializer <- function(node){
+
+}
+
