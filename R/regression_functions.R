@@ -1,5 +1,9 @@
 #Regression functions
 
+SOPLS <- function(X_list, Y, n_LVs_per_block){
+
+}
+
 #follows original algorithm described by De Jong (uses same nomenclature) (T and t are replaced by TT and tt to avoid overloading of TRUE and transpose aliases in R)
 #assumes all relevant preprocessing is already done (including mean-centering!)
 #Includes minimal version for when only predictions and loadings are needed
