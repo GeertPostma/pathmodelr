@@ -253,6 +253,7 @@ soplspm <- function(input_data,
     stop("The specified connection matrix is not at least a 2-by-2 square lower triangular and/or fully connected. Please respecify")
   }
 
+  #TODO: pass specific arguments to path_model function by using a special argument which can be supplied to any node initializer.
   #to pathmodel function
   sopls_model <- path_model(input_data,
                           connection_matrix,
