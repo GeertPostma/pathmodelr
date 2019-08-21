@@ -1,7 +1,12 @@
 #Regression functions
 
+#Follows original algorithm by Romano, Naes, et al. Implementation is naive, and should only be used for single evaluation, not for cross-validation (due to recalculation of intermediates)
 SOPLS <- function(X_list, Y, n_LVs_per_block){
 
+
+  for(i in seq_along(X_list)){
+
+  }
 }
 
 #follows original algorithm described by De Jong (uses same nomenclature) (T and t are replaced by TT and tt to avoid overloading of TRUE and transpose aliases in R)
