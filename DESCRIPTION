@@ -23,6 +23,7 @@ RoxygenNote: 6.1.1
 Suggests: 
     testthat
 Collate: 
+    'SOPLS_orthogonalize.R'
     'calculate_PLS_variances_explained.R'
     'calculate_SSE_for_matrices.R'
     'calculate_inner_effects.R'

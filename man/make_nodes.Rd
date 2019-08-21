@@ -7,7 +7,7 @@ connection_matrix}
 \usage{
 make_nodes(blocked_data, connection_matrix, block_names, estimators,
   initializers, local_preprocessors, global_preprocessors,
-  node_class_types, post_processors)
+  node_class_types)
 }
 \arguments{
 \item{blocked_data}{A list of matrices containing the data that corresponds
@@ -56,10 +56,6 @@ subsampling. User-implemented functions must take a Matrix as input, and
 return the preprocessed matrix.}
 
 \item{node_class_types}{A list of node class types. The ordering of the outer
-list should be the same as that of the \code{connection_matrix}.}
-
-\item{post_processors}{A list of postprocessing functiona which takes a node
-as an input and returns a scaling setting vector. The ordering of the outer
 list should be the same as that of the \code{connection_matrix}.}
 }
 \value{
