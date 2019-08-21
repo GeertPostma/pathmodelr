@@ -17,7 +17,7 @@ DataNode <- R6Class("DataNode",
     global_preprocessor      = NULL,
 
     #Methods
-    initialize = function(node_name, X_data, initializer, local_preprocessor, global_preprocessor){
+    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor){
       self$node_name           <- node_name
 
       for(preprocessor in global_preprocessor){
