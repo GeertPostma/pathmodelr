@@ -7,7 +7,7 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
     max_n_LVs_per_block <- lapply(node$previous_nodes, function(n) n$n_LVs)
     names(max_n_LVs_per_block) <- lapply(node$previous_nodes, function(n) n$node_name)
 
-
+    combination_grid <- expand.grid(lapply(max_n_LVs_per_block, function(e) 0:e))
     #X's <-
     #Y <-
 
@@ -15,7 +15,7 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
 
     #Use depth first search for memory efficiency!
     #Rough algorithm:
-    # - for each dependent node:
+    # - for each dependent node: (so for every call of normal_SOPLS_initializer)
     #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
     #   - Make dataframe for plotting with all to-be-evaluated combinations
     #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
