@@ -17,4 +17,4 @@ colnames(inner_model_spec) <- rownames(inner_model_spec)
 
 outer_model_spec <- list(1:5, 6:8, 9:18, 19:27, 28)
 
-process_pls_model <- soplspm(wine_data, inner_model_spec, outer_model_spec)
+soplsm_model <- soplspm(wine_data, inner_model_spec, outer_model_spec)
