@@ -90,20 +90,20 @@ DataNode <- R6Class("DataNode",
 )
 
 #' @import R6
-SOPLSNode <- R6CLass("SOPLSNode",
+SOPLSNode <- R6Class("SOPLSNode",
  inherit = DataNode,
 
   public = list(
     #Fields
 
     #ordering of *_per_predictor list is from first in order to last in order according to previous_nodes, which consequently should be correctly ordered. Try to have lists named to avoid errors in ordering.
-    n_LVs_per_predictor <- list(),
-    coefficients_per_predictor <- list(),
-    loadings_per_predictor <- list(),
-    explained_variance_per_predictor <- list(),
-    CV_error_df <- NA,
-    LVs_per_predictor <- list(),
-    is_estimated <- FALSE,
+    n_LVs_per_predictor = list(),
+    coefficients_per_predictor = list(),
+    loadings_per_predictor = list(),
+    explained_variance_per_predictor = list(),
+    CV_error_df = NA,
+    LVs_per_predictor = list(),
+    is_estimated = FALSE,
 
     #Methods
     add_estimate = function(LVs_per_predictor, n_LVs_per_predictor, loadings_per_predictor, coefficients_per_predictor, explained_variance_per_predictor){
@@ -116,18 +116,18 @@ SOPLSNode <- R6CLass("SOPLSNode",
       self$is_estimated <- TRUE
     },
 
-    get_predictor_data <- function(){
+    get_predictor_data = function(){
 
       predictor_data <- lapply(self$previous_nodes, function(node) node$preprocessed_X)
 
       return(predictor_data)
     },
 
-    get_Y_data <- function(){
+    get_Y_data = function(){
       return(self$preprocessed_X)
     },
 
-    get_predictor_train_test <- function(test_indices){
+    get_predictor_train_test = function(test_indices){
 
       predictor_train <- list()
       predictor_test <- list()
