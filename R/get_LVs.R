@@ -46,7 +46,7 @@ get_LVs <- function(nodes, max_iterations, loggers, convergence_threshold=0.0001
       node <- nodes[[ii]]
 
       if(node$is_initialized){
-        if(!node$is_estimated && inherits(node,what="IterativeNode")){ #Only add estimate if it needs to be updated (this allows for having both iterative and non iterative nodes.)
+        if(inherits(node,what="IterativeNode") && !node$is_estimated){ #Only add estimate if it needs to be updated (this allows for having both iterative and non iterative nodes.)
           node$estimate()
         }
       }
