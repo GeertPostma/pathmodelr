@@ -19,13 +19,13 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
     #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
     #   - Make dataframe for plotting with all to-be-evaluated combinations
     #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
-    #   - save each result in dataframe. (RMSECV) ( + separate dataframe for exp. variance )
+    #   - save each result in dataframe. (RMSECV/SSECV) ( + separate dataframe for exp. variance )
 
     #NOTE: memoization will not work for large matrices due to complexity of algorithm. 2 versions of algorithm should be implemented.
 
-    #Make DF for CV errors
+    #Make DF/matrix for CV errors
       #What to save in node structure: mage plot info.
-      # -dataframe of all combinations and corresponding RMSECV (or SSECV)
+      # -dataframe/matrix of all combinations and corresponding RMSECV (or SSECV)
 
     #n_LVs_per_block <- ...
   }

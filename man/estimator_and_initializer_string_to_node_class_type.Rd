@@ -11,7 +11,7 @@ estimator_and_initializer_string_to_node_class_type(estimator_name,
 \arguments{
 \item{estimator_name}{A string indicating the name of the estimator method.}
 
-\item{estimator_name}{A string indicating the name of the initializer method.}
+\item{initializer_name}{A string indicating the name of the initializer method.}
 }
 \value{
 A R6Class Node, or a R6Class which inherits from Node.
