@@ -244,7 +244,8 @@ soplspm <- function(input_data,
                     variables_in_block,
                     block_names           = NULL,
                     global_preprocessors  = list(),
-                    local_preprocessors   = list(standardize, block_scale)){
+                    local_preprocessors   = list(standardize, block_scale),
+                    n_LVs = NULL){
 
 
   #check connection matrix
@@ -253,8 +254,40 @@ soplspm <- function(input_data,
     stop("The specified connection matrix is not at least a 2-by-2 square lower triangular and/or fully connected. Please respecify")
   }
 
-  #TODO: pass specific arguments to path_model function by using a special argument which can be supplied to any node initializer.
-  #to pathmodel function
+
+ if(!is.null(n_LVs)){
+
+   #TODO: build in check if n_LV matrix is valid.
+
+   initializers <- listenv()
+   node_class_types <- listenv()
+
+   #Loop over dimensions of n_LV connection matrix
+   for(i in 1:dim(n_LVs)[[2]]){
+
+     if(sum(n_LVs[i,]) > 0){
+       initializers[[i]] <- function(node) normal_SOPLS_initializer(node, n_LVs_per_block=force(n_LVs[i,n_LVs[i,] > 0]))
+       node_class_types[[i]] <- SOPLSNode
+      }
+     else{
+       initializers[[i]] <- no_initializer
+       node_class_types[[i]] <- DataNode
+     }
+
+   }
+
+   sopls_model <- path_model(input_data,
+                             connection_matrix,
+                             variables_in_block,
+                             block_names,
+                             start_node_estimator  = "None",
+                             middle_node_estimator = "None",
+                             end_node_estimator    = "None",
+                             global_preprocessors  = global_preprocessors,
+                             local_preprocessors   = local_preprocessors,
+                             initializers          = initializers,
+                             node_class_types      = node_class_types)
+ }
   sopls_model <- path_model(input_data,
                           connection_matrix,
                           variables_in_block,
