@@ -13,7 +13,26 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
     #X's <-
     #Y <-
 
-    #do cross val
+    for(){ #each cross validation fold
+
+      X_train_blocks <-
+      X_test_blocks <-
+
+      Y_train_blocks <-
+      Y_test_blocks <-
+
+      for(){ #each row in combination_grid
+        for(){ #each (in size) changed X_block
+          #sequentially orthogonalize blocks
+
+        }
+
+        #Calculate regression
+        #save error
+
+      }
+    }
+
 
     #Use depth first search for memory efficiency!
     #Rough algorithm:
