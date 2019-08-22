@@ -45,7 +45,7 @@
 #'   you want different initializers within a level of nodes (Start, Middle,
 #'   End). All initializers must implement a common interface, taking only a
 #'   R6Class Node object as input, and returning nothing. Instead, this function
-#'   should update the node directly.
+#'   should update the node directly. When set explicitly, the node_class_types argument -must- be set.
 #' @param start_node_initializer An initializer function which estimates a R6Class
 #'   Node object, or a string indicating the estimation method ("normalpls", "endpls", "pca", or
 #'   "none") meant for initializing a start type Node. All initializers must
