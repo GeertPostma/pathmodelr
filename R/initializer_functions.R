@@ -4,10 +4,12 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
 
 
   if(is.null(n_LVs_per_block)){
-    max_n_LVs_per_block <- lapply(node$previous_nodes, function(n) n$n_LVs)
+    max_n_LVs_per_block <- lapply(node$previous_nodes, function(n) dim(n$X_data)[2])
     names(max_n_LVs_per_block) <- lapply(node$previous_nodes, function(n) n$node_name)
 
+    #construct all LV combinations and order them
     combination_grid <- expand.grid(lapply(max_n_LVs_per_block, function(e) 0:e))
+    combination_grid <- combination_grid[do.call(order,combination_grid),]
     #X's <-
     #Y <-
 
