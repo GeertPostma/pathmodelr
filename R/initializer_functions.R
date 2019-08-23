@@ -11,7 +11,7 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
     combination_grid <- expand.grid(lapply(max_n_LVs_per_block, function(e) 0:e))
     combination_grid <- combination_grid[do.call(order,combination_grid), ,drop=FALSE]
 
-    k_folds <- 3
+    k_folds <- 10
 
     test_indices <- createFolds(1:nrow(node$X_data), k = k_folds)
 
@@ -37,9 +37,9 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
       T_train_blocks <- rep_len(list(NULL), length(max_n_LVs_per_block))
       T_test_blocks <- rep_len(list(NULL), length(max_n_LVs_per_block))
 
-      #Calculates error for when no paths are used for prediction
-      train_errors[[1]] <- error_function(Y_train, matrix(0, nrow=dim(Y_train)[1], ncol=dim(Y_train)[2]))
-      test_errors[[1]] <- error_function(Y_test, matrix(0, nrow=dim(Y_test)[1], ncol=dim(Y_test)[2]))
+      #Calculates error for when no paths are used for prediction <-----
+      train_errors[1,] <- error_function(Y_train, matrix(0, nrow=dim(Y_train)[1], ncol=dim(Y_train)[2]))
+      test_errors[1,] <- error_function(Y_test, matrix(0, nrow=dim(Y_test)[1], ncol=dim(Y_test)[2]))
 
       #Y is deflated, even though it is not used in every paper description!
       deflated_Y_train_blocks <- list()
@@ -64,8 +64,8 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
             T_test_blocks[[j]] <- X_orth_test_blocks[[j]] %*% PLS_model$X_weights
 
             B <- PLS_model$coefficients[, , combination_grid[[i,j]]]
-            deflated_Y_train_blocks[[j]] <- Y_train - X_train_blocks[[j]] %*% B
-            deflated_Y_test_blocks[[j]] <- Y_test - X_test_blocks[[j]] %*% B
+            deflated_Y_train_blocks[[j]] <- Y_train - X_orth_train_blocks[[j]] %*% B
+            deflated_Y_test_blocks[[j]] <- Y_test - X_orth_test_blocks[[j]] %*% B
           }
           else if(combination_grid[[i,j]]==0){ #if a block connection is skipped due to 0 LVs
             X_orth_train_blocks[[j]] <- X_orth_train_blocks[[j-1]]
@@ -91,7 +91,7 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
 
             B <- PLS_model$coefficients[, , combination_grid[[i,j]]]
             deflated_Y_train_blocks[[j]] <- deflated_Y_train_blocks[[j-1]] - X_orth_train_blocks[[j]] %*% B
-            deflated_Y_test_blocks[[j]] <- deflated_Y_test_blocks[[j-1]] - X__orth_test_blocks[[j]] %*% B
+            deflated_Y_test_blocks[[j]] <- deflated_Y_test_blocks[[j-1]] - X_orth_test_blocks[[j]] %*% B
 
           }
         }
@@ -103,7 +103,7 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
       }
 
     }
-
+    best_model_settings <- combination_grid[which.min(rowMeans(test_errors)),]
     cat(i)
     #Use depth first search for memory efficiency!
     #Rough algorithm:
