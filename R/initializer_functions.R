@@ -102,31 +102,67 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
       }
 
     }
-    best_model_settings <- combination_grid[which.min(rowMeans(test_errors)),]
-    #Use depth first search for memory efficiency!
-    #Rough algorithm:
-    # - for each dependent node: (so for every call of normal_SOPLS_initializer)
-    #   - construct ordered list of X's (note preprocessing when reconstructing them) of preceding nodes- construct ordered list of X's of preceding nodes
-    #   - Make dataframe for plotting with all to-be-evaluated combinations
-    #   - recursive procedure of orthogonalizing each X's with all previous X's according to how many LV's are being evaluated. residuals of Y are fitted after the first regression step.
-    #   - save each result in dataframe. (RMSECV/SSECV) ( + separate dataframe for exp. variance )
-
-    #NOTE: memoization will not work for large matrices due to complexity of algorithm. 2 versions of algorithm should be implemented.
+    n_LVs_per_block <- combination_grid[which.min(rowMeans(test_errors)),]
 
     #Make DF/matrix for CV errors
-      #What to save in node structure: mage plot info.
+      #What to save in node structure: mage plot info. Mage plot should only work for cross-validated models. Mage plot should have option of only plotting best model for total number of components.
       # -dataframe/matrix of all combinations and corresponding RMSECV (or SSECV)
 
-    #n_LVs_per_block <- ...
   }
-
-
-
 
   #Calculate final model
 
+  X_blocks <- lapply(node$previous_nodes, function(n) n$preprocessed_X)
+
+  Y <- node$preprocessed_X
+
+  X_orth_blocks <- rep_len(list(NULL), length(n_LVs_per_block))
+
+  T_blocks <- rep_len(list(NULL), length(n_LVs_per_block))
+
+  #Y is deflated, even though it is not used in every paper description!
+  deflated_Y_blocks <- list()
+
+  first_block_index <- which.min(n_LVs_per_block==0)#keep track of first block which has no LVs
+
+  #ASSIGNMENT of statistics to node structure should account for the first block used index!
+
+
+  for(j in (first_block_index:length(n_LVs_per_block))){ #each (in size) changed X_block
+
+    #If no previous blocks are used for prediction: initialize block fully without orthogonalization
+    if(j==1 && n_LVs_per_block[[j]]!=0){
+      X_orth_blocks[[j]] <- X_blocks[[j]]
+      PLS_model <- SIMPLS(X_orth_blocks[[j]], Y, max_n_comp = n_LVs_per_block[[j]])
+
+      T_blocks[[j]] <- PLS_model$X_scores
+
+      B <- PLS_model$coefficients[, , n_LVs_per_block[[j]]]
+      deflated_Y_blocks[[j]] <- Y - X_orth_blocks[[j]] %*% B
+    }
+    else if(n_LVs_per_block[[j]]==0){ #if a block connection is skipped due to 0 LVs
+      X_orth_blocks[[j]] <- X_orth_blocks[[j-1]]
+
+      T_blocks[[j]] <- T_blocks[[j-1]]
+
+      deflated_Y_blocks[[j]] <- deflated_Y_blocks[[j-1]]
+    }
+    else{
+
+      orth_results <- SOPLS_orthogonalize(X_blocks[[j]], T_blocks[[j-1]])
+      X_orth_blocks[[j]] <- orth_results$X_2_orth
+      PLS_model <- SIMPLS(X_orth_blocks[[j]], deflated_Y_blocks[[j-1]], max_n_comp = n_LVs_per_block[[j]])
+
+      T_blocks[[j]] <- PLS_model$X_scores
+
+      B <- PLS_model$coefficients[, , n_LVs_per_block[[j]]]
+      deflated_Y_blocks[[j]] <- deflated_Y_blocks[[j-1]] - X_orth_blocks[[j]] %*% B
+
+    }
+  }
+  #SAVE EXPLAINED VARIANCES PER PATH!!! See paper by Rosaria Romano for methodology!
+  cat(i)
   #When called, must optimize prediction to -this- node, thereby finding sets of LVs for previous nodes.
-  #In the cross-validation procedure, ensure that 0 LVs in previous predictor nodes is possible.
 
 
 
