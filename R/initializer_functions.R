@@ -80,8 +80,9 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
           else{
             last_used_index <- max(which(list_of_previous_used_blocks==TRUE))
 
-            X_orth_train_blocks[[j]] <- SOPLS_orthogonalize(X_train_blocks[[j]], T_train_blocks[[last_used_index]])
-            X_orth_test_blocks[[j]] <- SOPLS_orthogonalize(X_test_blocks[[j]], T_test_blocks[[last_used_index]]) #Can fail for specific matrices which are singular, this mostly happens in small sample sizes.
+            orth_results <- SOPLS_orthogonalize(X_train_blocks[[j]], T_train_blocks[[last_used_index]])
+            X_orth_train_blocks[[j]] <- orth_results$X_2_orth
+            X_orth_test_blocks[[j]] <- SOPLS_orthogonalize(X_test_blocks[[j]], T_test_blocks[[last_used_index]], orth_results$D)$X_2_orth #Can fail for specific matrices which are singular, this mostly happens in small sample sizes.
 
             PLS_model <- SIMPLS(X_orth_train_blocks[[j]], deflated_Y_train_blocks[[j-1]], max_n_comp = combination_grid[[i,j]])
 
@@ -89,8 +90,8 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
             T_test_blocks[[j]] <- X_orth_test_blocks[[j]] %*% PLS_model$X_weights
 
             B <- PLS_model$coefficients[, , combination_grid[[i,j]]]
-            deflated_Y_train_blocks[[j]] <- deflated_Y_train_blocks[[j-1]] - X_train_blocks[[j]] %*% B
-            deflated_Y_test_blocks[[j]] <- deflated_Y_test_blocks[[j-1]] - X_test_blocks[[j]] %*% B
+            deflated_Y_train_blocks[[j]] <- deflated_Y_train_blocks[[j-1]] - X_orth_train_blocks[[j]] %*% B
+            deflated_Y_test_blocks[[j]] <- deflated_Y_test_blocks[[j-1]] - X__orth_test_blocks[[j]] %*% B
 
           }
         }
