@@ -98,13 +98,11 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
 
         train_errors[i,k] <- error_function(Y_train, Y_train-deflated_Y_train_blocks[[j]])
         test_errors[i,k] <- error_function(Y_test, Y_test-deflated_Y_test_blocks[[j]])
-        #calculate and save error
 
       }
 
     }
     best_model_settings <- combination_grid[which.min(rowMeans(test_errors)),]
-    cat(i)
     #Use depth first search for memory efficiency!
     #Rough algorithm:
     # - for each dependent node: (so for every call of normal_SOPLS_initializer)
