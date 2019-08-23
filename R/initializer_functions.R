@@ -9,31 +9,101 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
 
     #construct all LV combinations and order them
     combination_grid <- expand.grid(lapply(max_n_LVs_per_block, function(e) 0:e))
-    combination_grid <- combination_grid[do.call(order,combination_grid),]
-    #X's <-
-    #Y <-
+    combination_grid <- combination_grid[do.call(order,combination_grid), ,drop=FALSE]
 
-    for(){ #each cross validation fold
+    k_folds <- 3
 
-      X_train_blocks <-
-      X_test_blocks <-
+    test_indices <- createFolds(1:nrow(node$X_data), k = k_folds)
 
-      Y_train_blocks <-
-      Y_test_blocks <-
+    train_errors <- matrix(0, nrow=dim(combination_grid)[1], ncol=k_folds)
+    test_errors <- train_errors
 
-      for(){ #each row in combination_grid
-        for(){ #each (in size) changed X_block
-          #sequentially orthogonalize blocks
+    for(k in seq_along(test_indices)){ #each cross validation fold
 
+      test_index_set <- test_indices[[k]]
+
+      X_blocks <- lapply(node$previous_nodes, function(n) n$preprocess_train_test(test_index_set))
+
+      X_train_blocks <- lapply(X_blocks, function(x) x$train_data)
+      X_test_blocks <- lapply(X_blocks, function(x) x$test_data)
+
+      Y <- node$preprocess_train_test(test_index_set)
+      Y_train <- Y$train_data
+      Y_test <- Y$test_data
+
+      X_orth_train_blocks <- rep_len(list(NULL), length(max_n_LVs_per_block))
+      X_orth_test_blocks <- rep_len(list(NULL), length(max_n_LVs_per_block))
+
+      T_train_blocks <- rep_len(list(NULL), length(max_n_LVs_per_block))
+      T_test_blocks <- rep_len(list(NULL), length(max_n_LVs_per_block))
+
+      #Calculates error for when no paths are used for prediction
+      train_errors[[1]] <- error_function(Y_train, matrix(0, nrow=dim(Y_train)[1], ncol=dim(Y_train)[2]))
+      test_errors[[1]] <- error_function(Y_test, matrix(0, nrow=dim(Y_test)[1], ncol=dim(Y_test)[2]))
+
+      #Y is deflated, even though it is not used in every paper description!
+      deflated_Y_train_blocks <- list()
+      deflated_Y_test_blocks <- list()
+
+      #Account for empty blocks (0 LVs) when orthogonalizing and regressing, they need to be skipped
+      for(i in 2:dim(combination_grid)[1]){ #each row in combination_grid
+
+        changed_blocks <- combination_grid[i,] != combination_grid[i-1,]
+
+        for(j in (1:length(max_n_LVs_per_block))[changed_blocks]){ #each (in size) changed X_block
+
+          list_of_previous_used_blocks <- lapply(X_orth_train_blocks[1:(j-1)], function(x) !is.null(x[[1]]))
+
+          #If no previous blocks are used for prediction: initialize block fully without orthogonalization
+          if(Reduce("+",list_of_previous_used_blocks)==0 || j==1){
+            X_orth_train_blocks[[j]] <- X_train_blocks[[j]]
+            X_orth_test_blocks[[j]] <- X_test_blocks[[j]]
+            PLS_model <- SIMPLS(X_orth_train_blocks[[j]], Y_train, max_n_comp = combination_grid[[i,j]])
+
+            T_train_blocks[[j]] <- PLS_model$X_scores
+            T_test_blocks[[j]] <- X_orth_test_blocks[[j]] %*% PLS_model$X_weights
+
+            B <- PLS_model$coefficients[, , combination_grid[[i,j]]]
+            deflated_Y_train_blocks[[j]] <- Y_train - X_train_blocks[[j]] %*% B
+            deflated_Y_test_blocks[[j]] <- Y_test - X_test_blocks[[j]] %*% B
+          }
+          else if(combination_grid[[i,j]]==0){ #if a block connection is skipped due to 0 LVs
+            X_orth_train_blocks[[j]] <- X_orth_train_blocks[[j-1]]
+            X_orth_test_blocks[[j]] <- X_orth_test_blocks[[j-1]]
+
+            T_train_blocks[[j]] <- T_train_blocks[[j-1]]
+            T_test_blocks[[j]] <- T_test_blocks[[j-1]]
+
+            deflated_Y_train_blocks[[j]] <- deflated_Y_train_blocks[[j-1]]
+            deflated_Y_test_blocks[[j]] <- deflated_Y_test_blocks[[j-1]]
+          }
+          else{
+            last_used_index <- max(which(list_of_previous_used_blocks==TRUE))
+
+            X_orth_train_blocks[[j]] <- SOPLS_orthogonalize(X_train_blocks[[j]], T_train_blocks[[last_used_index]])
+            X_orth_test_blocks[[j]] <- SOPLS_orthogonalize(X_test_blocks[[j]], T_test_blocks[[last_used_index]]) #Can fail for specific matrices which are singular, this mostly happens in small sample sizes.
+
+            PLS_model <- SIMPLS(X_orth_train_blocks[[j]], deflated_Y_train_blocks[[j-1]], max_n_comp = combination_grid[[i,j]])
+
+            T_train_blocks[[j]] <- PLS_model$X_scores
+            T_test_blocks[[j]] <- X_orth_test_blocks[[j]] %*% PLS_model$X_weights
+
+            B <- PLS_model$coefficients[, , combination_grid[[i,j]]]
+            deflated_Y_train_blocks[[j]] <- deflated_Y_train_blocks[[j-1]] - X_train_blocks[[j]] %*% B
+            deflated_Y_test_blocks[[j]] <- deflated_Y_test_blocks[[j-1]] - X_test_blocks[[j]] %*% B
+
+          }
         }
 
-        #Calculate regression
-        #save error
+        train_errors[i,k] <- error_function(Y_train, Y_train-deflated_Y_train_blocks[[j]])
+        test_errors[i,k] <- error_function(Y_test, Y_test-deflated_Y_test_blocks[[j]])
+        #calculate and save error
 
       }
+
     }
 
-
+    cat(i)
     #Use depth first search for memory efficiency!
     #Rough algorithm:
     # - for each dependent node: (so for every call of normal_SOPLS_initializer)
