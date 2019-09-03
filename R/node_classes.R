@@ -123,7 +123,7 @@ Node <- R6Class("Node",
       for(preprocessor in self$global_preprocessor){
 
         train_data <- preprocessor(train_data)
-        test_data <- preprocessor(train_data)
+        test_data <- preprocessor(test_data)
 
       }
 
