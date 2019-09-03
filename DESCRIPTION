@@ -51,6 +51,7 @@ Collate:
     'get_node_class_types.R'
     'get_node_connection_type.R'
     'get_previous_node_indices.R'
+    'global_preprocessing_functions.R'
     'initializer_functions.R'
     'initializer_string_to_function.R'
     'is_valid_soplspm_matrix.R'

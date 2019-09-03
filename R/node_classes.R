@@ -63,6 +63,13 @@ DataNode <- R6Class("DataNode",
       train_data <- as.matrix(self$X_data[-test_indices, ])
       test_data <- as.matrix(self$X_data[test_indices, ])
 
+      for(preprocessor in self$global_preprocessor){
+
+        train_data <- preprocessor(train_data)
+        test_data <- preprocessor(test_data)
+
+      }
+
       for(preprocessor in self$local_preprocessor){
 
         preprocessed_train <- preprocessor(train_data)
@@ -80,11 +87,18 @@ DataNode <- R6Class("DataNode",
 
       self$preprocessed_X <- as.matrix(self$X_data)
 
+      for(preprocessor in self$global_preprocessor){
+
+        self$preprocessed_X <- preprocessor(self$preprocessed_X)
+      }
+
       for(preprocessor in self$local_preprocessor){
 
         self$preprocessed_X <- preprocessor(self$preprocessed_X)$preprocessed_data
-        colnames(self$preprocessed_X) <- colnames(self$X_data)
+
       }
+      colnames(self$preprocessed_X) <- colnames(self$X_data)
+
     }
   )
 )
