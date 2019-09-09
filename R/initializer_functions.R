@@ -102,11 +102,13 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
       }
 
     }
-    n_LVs_per_block <- combination_grid[which.min(rowMeans(test_errors)),]
+    mean_test_errors <- rowMeans(test_errors)
 
-    #Make DF/matrix for CV errors
-      #What to save in node structure: mage plot info. Mage plot should only work for cross-validated models. Mage plot should have option of only plotting best model for total number of components.
-      # -dataframe/matrix of all combinations and corresponding RMSECV (or SSECV)
+    n_LVs_per_block <- combination_grid[which.min(mean_test_errors),]
+
+    total_LVs <- rowSums(combination_grid)
+    #Make DF/matrix for CV errors TODO: save to node
+    CV_error_df <- data.frame(combination_grid, total_LVs, mean_test_errors)
 
   }
 
@@ -121,7 +123,7 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
   T_blocks <- rep_len(list(NULL), length(n_LVs_per_block))
 
   #Y is deflated, even though it is not used in every paper description!
-  deflated_Y_blocks <- list()
+  deflated_Y_blocks <- rep_len(list(NULL), length(n_LVs_per_block))
 
   first_block_index <- which.min(n_LVs_per_block==0)#keep track of first block which has no LVs
 
@@ -131,8 +133,8 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
   for(j in (first_block_index:length(n_LVs_per_block))){ #each (in size) changed X_block
 
     #If no previous blocks are used for prediction: initialize block fully without orthogonalization
-    if(j==1 && n_LVs_per_block[[j]]!=0){
-      X_orth_blocks[[j]] <- X_blocks[[j]]
+    if(j==first_block_index && n_LVs_per_block[[j]]!=0){
+      X_orth_blocks[[j]] <- X_blocks[[1]]
       PLS_model <- SIMPLS(X_orth_blocks[[j]], Y, max_n_comp = n_LVs_per_block[[j]])
 
       T_blocks[[j]] <- PLS_model$X_scores
@@ -160,10 +162,10 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
 
     }
   }
+
+
   #SAVE EXPLAINED VARIANCES PER PATH!!! See paper by Rosaria Romano for methodology!
   cat(i)
-  #When called, must optimize prediction to -this- node, thereby finding sets of LVs for previous nodes.
-
 
 
 
