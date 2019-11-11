@@ -179,15 +179,16 @@ normal_SOPLS_initializer <- function(node, n_LVs_per_block=NULL, parallelise=FAL
 
 
 #' @export
-normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
+normal_PLS_initializer <- function(node, n_LVs=NULL, max_n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
   X <- node$preprocessed_X
   Y <- combine_target_manifest_variables(node)$Y
 
   if(is.null(n_LVs)){
     #determine max_n_LVs
-    max_n_LVs <- dim(X)[2]
-
+    if(is.null(max_n_LVs)){
+      max_n_LVs <- dim(X)[2]
+    }
     if(parallelise){
       if(!is.null(n_cores)){
         test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, n_cores=n_cores, manifest=TRUE)$test_errors
@@ -244,15 +245,16 @@ normal_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_
 }
 
 #' @export
-end_PLS_initializer <- function(node, n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
+end_PLS_initializer <- function(node, n_LVs=NULL, max_n_LVs=NULL, block_scale=TRUE, variance_scale=TRUE, parallelise=FALSE, n_cores=NULL, error_function=SSE, LV_selection_method="minimum_mean"){
 
   X <- combine_previous_manifest_variables(node)$X
   Y <- node$preprocessed_X
 
   if(is.null(n_LVs)){
     #determine max_n_LVs: after first selection, only allow shrinking
-    max_n_LVs <- dim(Y)[2]
-
+    if(is.null(max_n_LVs)){
+      max_n_LVs <- dim(Y)[2]
+    }
     if(parallelise){
       if(!is.null(n_cores)){
         test_errors <- cross_validate_node_PLS(node, max_n_LVs, k_folds=10, error_function=error_function, n_cores=n_cores, manifest=TRUE, end_node=TRUE)$test_errors

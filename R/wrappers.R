@@ -51,26 +51,82 @@ process_PLS <- function(data,
                         n_cores               = NULL,
                         bootstrap             = FALSE,
                         bootstrap_iter        = 200,
-                        bootstrap_ci          = 0.95){
+                        bootstrap_ci          = 0.95,
+                        n_LVs                 = NULL,
+                        max_n_LVs             = NULL){
 
   if(bootstrap){
-    #Use monte carlo style bootstrapping
 
-      bootstrap_process_PLS <- function(i){
+    if(!is.null(max_n_LVs) | !is.null(n_LVs)){
+
+      #TODO: build in check if n_LV matrix is valid.
+
+      initializers <- listenv()
+      node_class_types <- listenv()
+
+
+      if(!is.null(max_n_LVs)){
+        #Loop over max_n_LV vector
+        for(i in 1:length(max_n_LVs)){
+          if(sum(connection_matrix[,i]) > 0){
+            in_function <- function(i) {force(i); function(node) normal_PLS_initializer(node, max_n_LVs=max_n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          else{
+            in_function <- function(i) {force(i); function(node) end_PLS_initializer(node, max_n_LVs=max_n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          node_class_types[[i]] <- PLSNode
+        }
+
+      }
+      else if(!is.null(n_LVs)){
+        #Loop over  n_LV vector
+        for(i in 1:length(n_LVs)){
+          if(sum(connection_matrix[,i]) > 0){
+            in_function <- function(i) {force(i); function(node) normal_PLS_initializer(node, n_LVs=n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          else{
+            in_function <- function(i) {force(i); function(node) end_PLS_initializer(node, n_LVs=n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          node_class_types[[i]] <- PLSNode
+        }
+      }
+    }
+    bootstrap_process_PLS <- function(i){
       bootstrapped_data <- data[sample.int(dim(data)[1], replace=TRUE), ]
 
-      tempmodel <- path_model(bootstrapped_data,
-                              connection_matrix,
-                              variables_in_block,
-                              block_names,
-                              start_node_initializer  = "normalPLS",
-                              middle_node_initializer = "normalPLS",
-                              end_node_initializer    = "endPLS",
-                              start_node_estimator    = "None",
-                              middle_node_estimator   = "None",
-                              end_node_estimator      = "None",
-                              global_preprocessors    = global_preprocessors,
-                              local_preprocessors     = local_preprocessors)
+
+      if(!is.null(max_n_LVs) | !is.null(n_LVs)){
+        tempmodel <- path_model(data,
+                            connection_matrix,
+                            variables_in_block,
+                            block_names,
+                            start_node_estimator    = "None",
+                            middle_node_estimator   = "None",
+                            end_node_estimator      = "None",
+                            global_preprocessors    = global_preprocessors,
+                            local_preprocessors     = local_preprocessors,
+                            initializers            = initializers,
+                            node_class_types        = node_class_types)
+      }
+      else{
+        tempmodel <- path_model(bootstrapped_data,
+                                connection_matrix,
+                                variables_in_block,
+                                block_names,
+                                start_node_initializer  = "normalPLS",
+                                middle_node_initializer = "normalPLS",
+                                end_node_initializer    = "endPLS",
+                                start_node_estimator    = "None",
+                                middle_node_estimator   = "None",
+                                end_node_estimator      = "None",
+                                global_preprocessors    = global_preprocessors,
+                                local_preprocessors     = local_preprocessors)
+      }
+
 
       calculate_node_PLS_coefficients(tempmodel)
 
@@ -95,7 +151,7 @@ process_PLS <- function(data,
       }
 
       cl <- makeCluster(n_cores)
-      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "max_iterations", "global_preprocessors", "local_preprocessors", "convergence_threshold"), envir=environment())
+      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "global_preprocessors", "local_preprocessors", "convergence_threshold"), envir=environment())
 
       bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
@@ -174,19 +230,71 @@ process_PLS <- function(data,
           "stdev"  = stdev_bootstrapped_inner_effects))
 
     #calculate original model
-    model <- path_model(data,
-                        connection_matrix,
-                        variables_in_block,
-                        block_names,
-                        start_node_initializer  = "normalPLS",
-                        middle_node_initializer = "normalPLS",
-                        end_node_initializer    = "endPLS",
-                        start_node_estimator    = "None",
-                        middle_node_estimator   = "None",
-                        end_node_estimator      = "None",
-                        max_iterations          = max_iterations,
-                        global_preprocessors    = global_preprocessors,
-                        local_preprocessors     = local_preprocessors)
+    if(!is.null(max_n_LVs) | !is.null(n_LVs)){
+
+      #TODO: build in check if n_LV matrix is valid.
+
+      initializers <- listenv()
+      node_class_types <- listenv()
+
+
+      if(!is.null(max_n_LVs)){
+        #Loop over max_n_LV vector
+        for(i in 1:length(max_n_LVs)){
+          if(sum(connection_matrix[,i]) > 0){
+            in_function <- function(i) {force(i); function(node) normal_PLS_initializer(node, max_n_LVs=max_n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          else{
+            in_function <- function(i) {force(i); function(node) end_PLS_initializer(node, max_n_LVs=max_n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          node_class_types[[i]] <- PLSNode
+        }
+
+      }
+      else if(!is.null(n_LVs)){
+        #Loop over  n_LV vector
+        for(i in 1:length(n_LVs)){
+          if(sum(connection_matrix[,i]) > 0){
+            in_function <- function(i) {force(i); function(node) normal_PLS_initializer(node, n_LVs=n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          else{
+            in_function <- function(i) {force(i); function(node) end_PLS_initializer(node, n_LVs=n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          node_class_types[[i]] <- PLSNode
+        }
+      }
+
+      model <- path_model(data,
+                          connection_matrix,
+                          variables_in_block,
+                          block_names,
+                          start_node_estimator    = "None",
+                          middle_node_estimator   = "None",
+                          end_node_estimator      = "None",
+                          global_preprocessors    = global_preprocessors,
+                          local_preprocessors     = local_preprocessors,
+                          initializers            = initializers,
+                          node_class_types        = node_class_types)
+
+    }
+    else{
+      model <- path_model(data,
+                          connection_matrix,
+                          variables_in_block,
+                          block_names,
+                          start_node_initializer  = "normalPLS",
+                          middle_node_initializer = "normalPLS",
+                          end_node_initializer    = "endPLS",
+                          start_node_estimator    = "None",
+                          middle_node_estimator   = "None",
+                          end_node_estimator      = "None",
+                          global_preprocessors    = global_preprocessors,
+                          local_preprocessors     = local_preprocessors)
+    }
 
     #Calculate all path effects, direct effects, and indirect effects
     #Backwards regression pass
@@ -205,22 +313,83 @@ process_PLS <- function(data,
   }
 
   else{
+
+
     p <- parallelise
     n <- n_cores
-    model <- path_model(data,
-                        connection_matrix,
-                        variables_in_block,
-                        block_names,
-                        start_node_initializer  = "normalPLS",
-                        middle_node_initializer = "normalPLS",
-                        end_node_initializer    = "endPLS",
-                        start_node_estimator    = "None",
-                        middle_node_estimator   = "None",
-                        end_node_estimator      = "None",
-                        global_preprocessors    = global_preprocessors,
-                        local_preprocessors     = local_preprocessors,
-                        parallelise             = p,
-                        n_cores                 = n)
+
+
+    #TODO: Check if not both n_LVs and max_n_LVs have been set
+
+    if(!is.null(max_n_LVs) | !is.null(n_LVs)){
+
+      #TODO: build in check if n_LV matrix is valid.
+
+      initializers <- list()
+      node_class_types <- listenv()
+
+
+      if(!is.null(max_n_LVs)){
+        #Loop over max_n_LV vector
+        for(i in 1:length(max_n_LVs)){
+          if(sum(connection_matrix[,i]) > 0){
+            in_function <- function(i) {force(i); function(node) normal_PLS_initializer(node, max_n_LVs=max_n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          else{
+            in_function <- function(i) {force(i); function(node) end_PLS_initializer(node, max_n_LVs=max_n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          node_class_types[[i]] <- PLSNode
+        }
+
+      }
+      else if(!is.null(n_LVs)){
+        #Loop over  n_LV vector
+        for(i in 1:length(n_LVs)){
+          if(sum(connection_matrix[,i]) > 0){
+            in_function <- function(i) {force(i); function(node) normal_PLS_initializer(node, n_LVs=n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          else{
+            in_function <- function(i) {force(i); function(node) end_PLS_initializer(node, n_LVs=n_LVs[[i]])}
+            initializers[[i]] <- in_function(i)
+          }
+          node_class_types[[i]] <- PLSNode
+        }
+      }
+
+      model <- path_model(data,
+                          connection_matrix,
+                          variables_in_block,
+                          block_names,
+                          start_node_estimator    = "None",
+                          middle_node_estimator   = "None",
+                          end_node_estimator      = "None",
+                          global_preprocessors    = global_preprocessors,
+                          local_preprocessors     = local_preprocessors,
+                          parallelise             = p,
+                          n_cores                 = n,
+                          initializers            = initializers,
+                          node_class_types        = node_class_types)
+
+    }
+    else{
+      model <- path_model(data,
+                          connection_matrix,
+                          variables_in_block,
+                          block_names,
+                          start_node_initializer  = "normalPLS",
+                          middle_node_initializer = "normalPLS",
+                          end_node_initializer    = "endPLS",
+                          start_node_estimator    = "None",
+                          middle_node_estimator   = "None",
+                          end_node_estimator      = "None",
+                          global_preprocessors    = global_preprocessors,
+                          local_preprocessors     = local_preprocessors,
+                          parallelise             = p,
+                          n_cores                 = n)
+    }
 
     #Calculate all path effects, direct effects, and indirect effects
     calculate_node_PLS_coefficients(model)
@@ -237,6 +406,7 @@ process_PLS <- function(data,
 
   return(model)
 }
+
 
 #' @export
 soplspm <- function(input_data,
@@ -266,6 +436,7 @@ soplspm <- function(input_data,
    for(i in 1:dim(n_LVs)[[2]]){
 
      if(sum(n_LVs[i,]) > 0){
+       #TODO: check if passed function arguments are evaluated properly instead of errors due to lazy evaluation
        initializers[[i]] <- function(node) normal_SOPLS_initializer(node, n_LVs_per_block=force(n_LVs[i,n_LVs[i,] > 0]))
        node_class_types[[i]] <- SOPLSNode
       }
