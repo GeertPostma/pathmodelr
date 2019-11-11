@@ -28,7 +28,10 @@ export(full_initializer)
 export(get_all_path_effects)
 export(is_valid_soplspm_matrix)
 export(mean_center)
+<<<<<<< HEAD
 export(no_initializer)
+=======
+>>>>>>> master
 export(noisify_data)
 export(normal_PLS_initializer)
 export(normal_SOPLS_initializer)
