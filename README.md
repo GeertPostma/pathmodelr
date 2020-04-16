@@ -18,7 +18,7 @@ library(devtools)
 Then the latest pseudo-stable version of the package can be installed directly using the following command:
 
 ```
-devtools::install_github("RoelBouman/pathmodelr", ref="0.1Release")
+devtools::install_github("Blackee/pathmodelr", ref="0.1Release")
 ```
 
-To get a rough grasp of the possibilities and to check if the installation was succesful, it is advisable to download and re-run the Process PLS experiments accompanying the main paper. These can be found at: https://github.com/RoelBouman/processplssimulations/
+To get a rough grasp of the possibilities and to check if the installation was succesful, it is advisable to download and re-run the Process PLS experiments accompanying the main paper. These can be found at: https://github.com/Blackeel/processplssimulations/
