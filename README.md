@@ -21,7 +21,7 @@ install.packages(c('caret', 'dplyr', 'ggplot2', 'listenv', 'reshape2', 'R6', 'ne
 
 After the dependencies are isntalled you can install the package using the following command:
 ```
-install.packages("D:\\Repos\\pathmodelr_0.12.tar.gz", repos= NULL, type="source")
+install.packages("PATH_TO_RELEASE\\pathmodelr_0.12.tar.gz", repos= NULL, type="source")
 ```
 
 
