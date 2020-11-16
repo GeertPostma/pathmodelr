@@ -11,11 +11,11 @@ We provide installation instructions for our pre-built package as well as direct
 ### Installation from pre-built package
 First, download [the latest release from Github](https://github.com/Blackeel/pathmodelr/releases/tag/v0.12) and save it to your disk.
 
-The dependencies will then need to be installed. These dependencies are: 'caret', 'dplyr', 'ggplot2', 'listenv', 'reshape2', 'R6', 'network', 'ggnetwork', 'plspm'
+The dependencies will then need to be installed. These dependencies are: 'caret', 'dplyr', 'ggplot2', 'listenv', 'reshape2', 'R6', 'network', 'ggnetwork', 'diagram'
 
 You can install them by running `install_packages('package_name')` for each package manually, or by using the following command:
 ```
-install.packages(c('caret', 'dplyr', 'ggplot2', 'listenv', 'reshape2', 'R6', 'network', 'ggnetwork', 'plspm'))
+install.packages(c('caret', 'dplyr', 'ggplot2', 'listenv', 'reshape2', 'R6', 'network', 'ggnetwork', 'diagram'))
 ```
 
 
