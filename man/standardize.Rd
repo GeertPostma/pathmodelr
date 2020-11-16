@@ -5,8 +5,10 @@
 \title{Mean-centers each variable in a block of data and then scale each variable to
 unit variance}
 \usage{
-standardize(input_data, settings = list(column_means = NULL, column_stds
-  = NULL))
+standardize(
+  input_data,
+  settings = list(column_means = NULL, column_stds = NULL)
+)
 }
 \arguments{
 \item{input_data}{A matrix containing data. The rows indicate the samples,

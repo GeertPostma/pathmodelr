@@ -4,8 +4,11 @@
 \alias{estimator_string_to_function}
 \title{Converts estimator string names to function handle}
 \usage{
-estimator_string_to_function(estimator_name, parallelise = FALSE,
-  n_cores = NULL)
+estimator_string_to_function(
+  estimator_name,
+  parallelise = FALSE,
+  n_cores = NULL
+)
 }
 \arguments{
 \item{estimator_name}{A string indicating the name of the estimator method.}

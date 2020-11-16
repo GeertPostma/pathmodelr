@@ -136,7 +136,7 @@ process_PLS <- function(data,
       inner_bootstrap_results <- list()
 
       inner_bootstrap_results$path_variances_explained <- calculate_PLS_variances_explained(tempmodel)
-      temp_effects <- plspm::get_effects(inner_bootstrap_results$path_variances_explained)
+      temp_effects <- get_effects(inner_bootstrap_results$path_variances_explained)
       inner_bootstrap_results$variance_effects <- as.matrix(temp_effects[,2:4])
       rownames(inner_bootstrap_results$variance_effects) <- as.character(temp_effects$relationships)
       inner_bootstrap_results$inner_effects <- calculate_inner_effects(tempmodel)$effects

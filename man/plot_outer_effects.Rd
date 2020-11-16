@@ -5,8 +5,12 @@
 \title{If combine is true: plot all outer model weights in a single plot
 Default plots}
 \usage{
-plot_outer_effects(model, what_node = NULL, combine = TRUE,
-  negative_values = "absolute")
+plot_outer_effects(
+  model,
+  what_node = NULL,
+  combine = TRUE,
+  negative_values = "absolute"
+)
 }
 \description{
 If combine is true: plot all outer model weights in a single plot

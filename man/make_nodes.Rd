@@ -5,9 +5,16 @@
 \title{Constructs a listenv of nodes according to the specified model in
 connection_matrix}
 \usage{
-make_nodes(blocked_data, connection_matrix, block_names, estimators,
-  initializers, local_preprocessors, global_preprocessors,
-  node_class_types)
+make_nodes(
+  blocked_data,
+  connection_matrix,
+  block_names,
+  estimators,
+  initializers,
+  local_preprocessors,
+  global_preprocessors,
+  node_class_types
+)
 }
 \arguments{
 \item{blocked_data}{A list of matrices containing the data that corresponds

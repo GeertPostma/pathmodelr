@@ -4,9 +4,14 @@
 \alias{normal_SOPLS_initializer}
 \title{n_LVs should be a list of n_LVs per block}
 \usage{
-normal_SOPLS_initializer(node, n_LVs_per_block = NULL,
-  parallelise = FALSE, n_cores = NULL, error_function = SSE,
-  LV_selection_method = "minimum_mean")
+normal_SOPLS_initializer(
+  node,
+  n_LVs_per_block = NULL,
+  parallelise = FALSE,
+  n_cores = NULL,
+  error_function = SSE,
+  LV_selection_method = "minimum_mean"
+)
 }
 \description{
 n_LVs should be a list of n_LVs per block

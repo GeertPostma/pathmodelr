@@ -4,17 +4,29 @@
 \alias{path_model}
 \title{Performs Latent Variable estimation given data and path model specifications}
 \usage{
-path_model(data, connection_matrix, variables_in_block,
-  block_names = NULL, estimators = NULL,
+path_model(
+  data,
+  connection_matrix,
+  variables_in_block,
+  block_names = NULL,
+  estimators = NULL,
   start_node_estimator = "normalpls",
-  middle_node_estimator = "normalpls", end_node_estimator = "endpls",
-  initializers = NULL, start_node_initializer = "Full",
-  middle_node_initializer = "Full", end_node_initializer = "Full",
-  max_iterations = 100, loggers = NULL,
-  unique_node_preprocessing = FALSE, global_preprocessors = list(),
+  middle_node_estimator = "normalpls",
+  end_node_estimator = "endpls",
+  initializers = NULL,
+  start_node_initializer = "Full",
+  middle_node_initializer = "Full",
+  end_node_initializer = "Full",
+  max_iterations = 100,
+  loggers = NULL,
+  unique_node_preprocessing = FALSE,
+  global_preprocessors = list(),
   local_preprocessors = list(standardize),
-  convergence_threshold = 1e-04, node_class_types = NULL,
-  parallelise = FALSE, n_cores = NULL)
+  convergence_threshold = 1e-04,
+  node_class_types = NULL,
+  parallelise = FALSE,
+  n_cores = NULL
+)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the

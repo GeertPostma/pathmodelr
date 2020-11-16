@@ -4,11 +4,21 @@
 \alias{process_PLS}
 \title{Estimate a process PLS model and calculate the effects of variables on blocks.}
 \usage{
-process_PLS(data, connection_matrix, variables_in_block,
-  block_names = NULL, global_preprocessors = list(),
+process_PLS(
+  data,
+  connection_matrix,
+  variables_in_block,
+  block_names = NULL,
+  global_preprocessors = list(),
   local_preprocessors = list(standardize, block_scale),
-  parallelise = FALSE, n_cores = NULL, bootstrap = FALSE,
-  bootstrap_iter = 200, bootstrap_ci = 0.95)
+  parallelise = FALSE,
+  n_cores = NULL,
+  bootstrap = FALSE,
+  bootstrap_iter = 200,
+  bootstrap_ci = 0.95,
+  n_LVs = NULL,
+  max_n_LVs = NULL
+)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the
