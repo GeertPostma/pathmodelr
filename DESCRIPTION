@@ -1,7 +1,7 @@
 Package: pathmodelr
 Type: Package
 Title: Generalised Path Modeling Package for R
-Version: 0.1.0
+Version: 0.1.2
 Authors@R: person("Roel", "Bouman", email = "roelbouman@gmail.com", role = c("aut", "cre"))
 Maintainer: Roel Bouman <roelbouman@gmail.com>
 Description: pathmodelr is a package implementing a general framework for Path Modeling in R.
@@ -18,11 +18,12 @@ Imports:
 	R6,
 	network,
 	ggnetwork,
-	plspm
-RoxygenNote: 6.1.1
+	diagram
+RoxygenNote: 7.1.1
 Suggests: 
     testthat
 Collate: 
+    'SOPLS_orthogonalize.R'
     'calculate_PLS_variances_explained.R'
     'calculate_SSE_for_matrices.R'
     'calculate_inner_effects.R'
@@ -44,6 +45,7 @@ Collate:
     'get_all_node_connection_types.R'
     'get_all_path_effects.R'
     'get_ci.R'
+    'get_effects.R'
     'get_estimator_list.R'
     'get_initializer_list.R'
     'get_next_node_indices.R'

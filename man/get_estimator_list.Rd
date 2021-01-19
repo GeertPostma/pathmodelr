@@ -5,9 +5,15 @@
 \title{Converts list of strings indicating node types to list of estimator function
 handles}
 \usage{
-get_estimator_list(node_connection_types, start_node_estimator,
-  middle_node_estimator, end_node_estimator, parallelise = FALSE,
-  n_cores = NULL, n_LVs = NULL)
+get_estimator_list(
+  node_connection_types,
+  start_node_estimator,
+  middle_node_estimator,
+  end_node_estimator,
+  parallelise = FALSE,
+  n_cores = NULL,
+  n_LVs = NULL
+)
 }
 \arguments{
 \item{node_connection_types}{A list of strings indicating the type of the node}

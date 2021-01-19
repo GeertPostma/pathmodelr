@@ -1,22 +1,11 @@
 #' @import R6
-Node <- R6Class("Node",
+DataNode <- R6Class("DataNode",
   public = list(
     #Fields
     node_name                = NA_character_,
     X_data                   = NULL,
-    is_initialized           = FALSE,
-    is_estimated             = FALSE,
-    is_iterative             = TRUE,
-    iteration                = 0,
-    is_post_processed        = FALSE,
-    n_LVs                    = NA_integer_,
-    previous_n_LVs           = NA_integer_,
-    LVs                      = NULL,
-    previous_LVs             = NULL,
-    X_loadings               = NULL,
     preprocessed_X           = NULL,
-    error                    = NA_real_, #SSE between iterations
-    variance_explained       = NA_real_,
+    is_initialized           = FALSE,
 
     previous_nodes           = NULL,
     next_nodes               = NULL,
@@ -27,11 +16,8 @@ Node <- R6Class("Node",
     local_preprocessor       = NULL,
     global_preprocessor      = NULL,
 
-    post_processor           = NULL,
-    post_processing_settings = NULL,
-
     #Methods
-    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor, post_processor, is_iterative){
+    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor){
       self$node_name           <- node_name
 
       for(preprocessor in global_preprocessor){
@@ -42,10 +28,6 @@ Node <- R6Class("Node",
       self$initializer         <- initializer
       self$local_preprocessor  <- local_preprocessor
       self$global_preprocessor <- global_preprocessor
-      self$post_processor      <- post_processor
-      self$is_iterative        <- is_iterative
-
-      self$error <- 0
 
       self$preprocess_X()
 
@@ -73,45 +55,6 @@ Node <- R6Class("Node",
       }
       else { #unconnected
         stop("The node is unconnected. This should have been predetected by the input checker")
-      }
-    },
-
-    add_estimate = function(n_LVs, LVs, X_loadings, variance_explained=NULL){
-      self$n_LVs                <- n_LVs
-      self$LVs                  <- LVs
-      self$X_loadings           <- X_loadings
-      rownames(self$X_loadings) <- colnames(self$X_data)
-      self$variance_explained   <- variance_explained
-
-      if(!is.null(self$previous_LVs)){
-        self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
-      }
-      else{
-        self$error <- 0
-      }
-
-      self$is_estimated <- TRUE
-    },
-
-    estimate = function(){
-
-      if(!self$is_estimated){
-        self$estimator(self)
-      }
-    },
-
-    prepare_next_estimation = function(){
-
-      if(self$is_iterative){
-        self$previous_LVs <- self$LVs
-        self$LVs <- NULL
-
-        self$previous_n_LVs <- self$n_LVs
-        self$n_LVs <- NA_integer_
-
-        self$iteration <- self$iteration + 1
-
-        self$is_estimated <- FALSE
       }
     },
 
@@ -155,8 +98,127 @@ Node <- R6Class("Node",
 
       }
       colnames(self$preprocessed_X) <- colnames(self$X_data)
+
+    }
+  )
+)
+
+#' @import R6
+SOPLSNode <- R6Class("SOPLSNode",
+ inherit = DataNode,
+
+  public = list(
+    #Fields
+
+    #ordering of *_per_predictor list is from first in order to last in order according to previous_nodes, which consequently should be correctly ordered. Try to have lists named to avoid errors in ordering.
+    n_LVs_per_predictor = list(),
+    coefficients_per_predictor = list(),
+    loadings_per_predictor = list(),
+    explained_variance_per_predictor = list(),
+    CV_error_df = NA,
+    LVs_per_predictor = list(),
+    is_estimated = FALSE,
+
+    #Methods
+    add_estimate = function(LVs_per_predictor, n_LVs_per_predictor, loadings_per_predictor, coefficients_per_predictor, explained_variance_per_predictor){
+      self$LVs_per_predictor                <- LVs_per_predictor
+      self$n_LVs_per_predictor              <- n_LVs_per_predictor
+      self$loadings_per_predictor           <- loadings_per_predictor
+      self$coefficients_per_predictor       <- coefficients_per_predictor
+      self$explained_variance_per_predictor <- explained_variance_per_predictor
+
+      self$is_estimated <- TRUE
     },
 
+    get_predictor_data = function(){
+
+      predictor_data <- lapply(self$previous_nodes, function(node) node$preprocessed_X)
+
+      return(predictor_data)
+    },
+
+    get_Y_data = function(){
+      return(self$preprocessed_X)
+    },
+
+    get_predictor_train_test = function(test_indices){
+
+      predictor_train <- list()
+      predictor_test <- list()
+
+      for(i in seq_along(self$previous_nodes)){
+        node <- self$previous_nodes[[i]]
+
+        train_test <- node$preprocess_train_test(test_indices)
+
+        predictor_train[[i]] <- train_test$train_data
+        predictor_test[[i]] <- train_test$test_data
+      }
+
+      return(list("predictor_train"=predictor_train, "predictor_test"=predictor_test))
+    }
+ )
+)
+
+#' @import R6
+LVNode <- R6Class("LVNode",
+inherit = DataNode,
+
+  public = list(
+    #Fields
+    n_LVs                    = NA_integer_,
+    LVs                      = NULL,
+    X_loadings               = NULL,
+
+    variance_explained       = NA_real_,
+
+    estimator                = NULL,
+    is_estimated             = FALSE,
+
+    #Methods
+    initialize = function(node_name, X_data, estimator, initializer, local_preprocessor, global_preprocessor){
+      self$node_name           <- node_name
+
+      for(preprocessor in global_preprocessor){
+        X_data <- preprocessor(X_data)
+      }
+      self$X_data              <- X_data
+      self$estimator           <- estimator
+      self$initializer         <- initializer
+      self$local_preprocessor  <- local_preprocessor
+      self$global_preprocessor <- global_preprocessor
+
+      self$preprocess_X()
+
+    },
+
+    add_estimate = function(n_LVs, LVs, X_loadings, variance_explained=NULL){
+      self$n_LVs                <- n_LVs
+      self$LVs                  <- LVs
+      self$X_loadings           <- X_loadings
+      rownames(self$X_loadings) <- colnames(self$X_data)
+      self$variance_explained   <- variance_explained
+
+      self$is_estimated <- TRUE
+    },
+
+    estimate = function(){
+
+      if(!self$is_estimated){
+        self$estimator(self)
+      }
+    }
+  )
+)
+
+#' PathNode is a template Node class for nodes which propagate effects, such as
+#' the PLSNode. Path nodes should implement the get_paths_through_self_to_node method
+#' @import R6
+PLSPathNode <- R6Class("PLSPathNode",
+  inherit = LVNode,
+  public = list(
+
+    #Methods
     get_paths_to_self = function(){
 
       path_coefficients_to_self <- list()
@@ -211,45 +273,12 @@ Node <- R6Class("Node",
 
     },
 
-
     #TODO: Needs thorough testing for non-path-propagating nodes. Do matrix effect multiplications still work?
     get_outgoing_path_to_node = function(node){
 
       return(matrix(0, nrow=1, ncol=1))
     },
 
-
-    post_process = function(){
-
-      if(!self$is_post_processed){
-
-        if(!is.null(self$post_processor)){
-
-          self$post_processing_settings <- self$post_processor(self)
-
-          self$prepare_next_estimation()
-
-          LVs_scaled=self$previous_LVs/self$post_processing_settings
-          X_loadings_scaled=self$X_loadings/self$post_processing_settings
-
-          self$add_estimate(n_LVs=self$previous_n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
-
-          self$is_post_processed <- TRUE
-
-        }
-      }
-    }
-  )
-)
-
-#' PathNode is a template Node class for nodes which propagate effects, such as
-#' the PLSNode. Path nodes should implement the get_paths_through_self_to_node method
-#' @import R6
-PathNode <- R6Class("PathNode",
-  inherit = Node,
-  public = list(
-
-    #Methods
     get_paths_through_self_to_node = function(node){
 
       outgoing_coefficients <- self$get_outgoing_path_to_node(node)
@@ -281,7 +310,7 @@ PathNode <- R6Class("PathNode",
 
 #' @import R6
 PLSNode <- R6Class("PLSNode",
-  inherit = PathNode,
+  inherit = PLSPathNode,
   public = list(
     #Fields
     path_coefficients = list(),
@@ -293,13 +322,6 @@ PLSNode <- R6Class("PLSNode",
       self$X_loadings           <- X_loadings
       rownames(self$X_loadings) <- colnames(self$X_data)
       self$variance_explained   <- variance_explained
-
-      if(!is.null(self$previous_LVs)){
-        self$error <- calculate_SSE_for_matrices(self$LVs, self$previous_LVs)
-      }
-      else{
-        self$error <- 0
-      }
 
       self$is_estimated <- TRUE
     },
@@ -325,43 +347,6 @@ PLSNode <- R6Class("PLSNode",
         if(self$next_nodes[[i]]$node_name == node$node_name){
 
           return(self$path_coefficients[[node$node_name]])
-        }
-      }
-    },
-
-    post_process = function(){
-
-      if(!self$is_post_processed){
-
-        if(!is.null(self$post_processor)){
-
-          ## Temporarily removed post processing functionality.
-
-          # self$post_processing_settings <- self$post_processor(self)
-          #
-          # self$prepare_next_estimation()
-          #
-          # LVs_scaled=self$previous_LVs %*% diag(1/self$post_processing_settings)
-          # X_loadings_scaled=self$X_loadings %*% diag(1/self$post_processing_settings)
-          # Y_loadings_unscaled <- self$Y_loadings
-          #
-          # self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
-          #
-          # self$is_post_processed <- TRUE
-          #
-          # scaled_Y_loadings <- list()
-          # for(i in seq_along(self$next_nodes)){
-          #   next_node <- self$next_nodes[[i]]
-          #
-          #   if(!next_node$is_post_processed){
-          #     next_node$post_process()
-          #   }
-          #
-          #   #scale Y_loadings
-          #   scaled_Y_loadings[[next_node$node_name]] <- t(t(Y_loadings_unscaled[[next_node$node_name]]  %*% diag(self$post_processing_settings, nrow=length(self$post_processing_settings))) %*% diag(1/next_node$post_processing_settings, nrow=length(next_node$post_processing_settings)))          }
-          # #self$prepare_next_estimation is not called again to keep the original LVs in the object
-          # self$add_estimate(n_LVs=self$n_LVs, LVs=LVs_scaled, X_loadings=X_loadings_scaled, variance_explained = self$variance_explained)
-
         }
       }
     }

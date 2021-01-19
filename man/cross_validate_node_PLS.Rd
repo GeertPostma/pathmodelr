@@ -4,9 +4,16 @@
 \alias{cross_validate_node_PLS}
 \title{Cross validates Node based Partial Least Squares Regression}
 \usage{
-cross_validate_node_PLS(node, max_n_LVs, k_folds = 10,
-  error_function = MSE, n_cores = 1, end_node = FALSE,
-  manifest = FALSE, connection_PLS = FALSE)
+cross_validate_node_PLS(
+  node,
+  max_n_LVs,
+  k_folds = 10,
+  error_function = MSE,
+  n_cores = 1,
+  end_node = FALSE,
+  manifest = FALSE,
+  connection_PLS = FALSE
+)
 }
 \arguments{
 \item{node}{An object of the R6Class Node which is initialised and estimated

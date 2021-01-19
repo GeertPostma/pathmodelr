@@ -4,8 +4,13 @@
 \alias{check_arguments}
 \title{Checks the input arguments of the path_model() function}
 \usage{
-check_arguments(data, connection_matrix, variables_in_block, block_names,
-  estimators)
+check_arguments(
+  data,
+  connection_matrix,
+  variables_in_block,
+  block_names,
+  estimators
+)
 }
 \value{
 A list of lists of errors and warnings respectively that indicate

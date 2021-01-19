@@ -4,9 +4,15 @@
 \alias{get_node_class_types}
 \title{Converts list of strings indicating node types to list of Node class types}
 \usage{
-get_node_class_types(node_connection_types, start_node_estimator,
-  middle_node_estimator, end_node_estimator, start_node_initializer,
-  middle_node_initializer, end_node_initializer)
+get_node_class_types(
+  node_connection_types,
+  start_node_estimator,
+  middle_node_estimator,
+  end_node_estimator,
+  start_node_initializer,
+  middle_node_initializer,
+  end_node_initializer
+)
 }
 \arguments{
 \item{node_connection_types}{A list of strings indicating the type of the node}

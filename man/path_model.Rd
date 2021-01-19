@@ -4,18 +4,29 @@
 \alias{path_model}
 \title{Performs Latent Variable estimation given data and path model specifications}
 \usage{
-path_model(data, connection_matrix, variables_in_block,
-  block_names = NULL, estimators = NULL,
+path_model(
+  data,
+  connection_matrix,
+  variables_in_block,
+  block_names = NULL,
+  estimators = NULL,
   start_node_estimator = "normalpls",
-  middle_node_estimator = "normalpls", end_node_estimator = "endpls",
-  initializers = NULL, start_node_initializer = "Full",
-  middle_node_initializer = "Full", end_node_initializer = "Full",
-  max_iterations = 100, loggers = NULL,
-  unique_node_preprocessing = FALSE, global_preprocessors = list(),
+  middle_node_estimator = "normalpls",
+  end_node_estimator = "endpls",
+  initializers = NULL,
+  start_node_initializer = "Full",
+  middle_node_initializer = "Full",
+  end_node_initializer = "Full",
+  max_iterations = 100,
+  loggers = NULL,
+  unique_node_preprocessing = FALSE,
+  global_preprocessors = list(),
   local_preprocessors = list(standardize),
-  unique_node_postprocessing = FALSE, post_processor = NULL,
-  convergence_threshold = 1e-04, node_class_types = NULL,
-  parallelise = FALSE, n_cores = NULL)
+  convergence_threshold = 1e-04,
+  node_class_types = NULL,
+  parallelise = FALSE,
+  n_cores = NULL
+)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the
@@ -71,7 +82,7 @@ the \code{connection_matrix}. It is advised to only use this option when
 you want different initializers within a level of nodes (Start, Middle,
 End). All initializers must implement a common interface, taking only a
 R6Class Node object as input, and returning nothing. Instead, this function
-should update the node directly.}
+should update the node directly. When set explicitly, the node_class_types argument -must- be set.}
 
 \item{start_node_initializer}{An initializer function which estimates a R6Class
 Node object, or a string indicating the estimation method ("normalpls", "endpls", "pca", or
@@ -129,13 +140,6 @@ influenced by subsampling, and therefore can be applied on subsets when
 (cross-)validating. User-implemented functions must take a Matrix as input,
 and return the preprocessed matrix. Implemented functions are: (block_scale,
 standardize, and mean_center)}
-
-\item{unique_node_postprocessing}{A Boolean indicating whether different
-nodes should be postprocesed differently. If \code{TRUE}, postprocessor
-should be a list of postprocessing functions.}
-
-\item{post_processor}{A postprocessing function which takes a node as an input
-and returns a scaling setting vector.}
 
 \item{convergence_threshold}{A double indicating the maximum error before the
 iterations are assumed to have converged. It is compared to the difference

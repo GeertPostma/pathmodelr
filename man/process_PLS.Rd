@@ -4,13 +4,21 @@
 \alias{process_PLS}
 \title{Estimate a process PLS model and calculate the effects of variables on blocks.}
 \usage{
-process_PLS(data, connection_matrix, variables_in_block,
-  block_names = NULL, max_iterations = 20,
+process_PLS(
+  data,
+  connection_matrix,
+  variables_in_block,
+  block_names = NULL,
   global_preprocessors = list(),
   local_preprocessors = list(standardize, block_scale),
-  post_processor = NULL, convergence_threshold = 1e-04,
-  parallelise = FALSE, n_cores = NULL, bootstrap = FALSE,
-  bootstrap_iter = 200, bootstrap_ci = 0.95)
+  parallelise = FALSE,
+  n_cores = NULL,
+  bootstrap = FALSE,
+  bootstrap_iter = 200,
+  bootstrap_ci = 0.95,
+  n_LVs = NULL,
+  max_n_LVs = NULL
+)
 }
 \arguments{
 \item{data}{A dataframe or matrix containing the data belonging to the
@@ -34,10 +42,6 @@ of the \code{connection_matrix}. When the argument is not set, names are
 extracted from \code{data}, or set to dummy names based on ordering when
 \code{data} contains no names.}
 
-\item{max_iterations}{An integer indicating the maximum number of iterations
-before execution of LV estimation is halted when the convergence criterion
-is not met beforehand.}
-
 \item{global_preprocessors}{A list of preprocessing functions when
 unique_node_preprocessing is \code{FALSE}, a list of lists of preprocessing
 functions when unique_node_preprocessing is \code{TRUE}. The ordering of
@@ -59,13 +63,6 @@ influenced by subsampling, and therefore can be applied on subsets when
 (cross-)validating. User-implemented functions must take a Matrix as input,
 and return the preprocessed matrix. Implemented functions are: (block_scale,
 standardize, and mean_center)}
-
-\item{convergence_threshold}{A double indicating the maximum error before the
-iterations are assumed to have converged. It is compared to the difference
-between the latent variables of the current and previous iteration. If this
-difference is less, the algorithm is considered to have converged. A
-convergence threshold of a difference of 0.0001 between the Sum of Squared
-Errors of two subsequent iterations is used as a default.}
 }
 \description{
 Estimate a process PLS model and calculate the effects of variables on blocks.

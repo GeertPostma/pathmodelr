@@ -45,7 +45,7 @@
 #'   you want different initializers within a level of nodes (Start, Middle,
 #'   End). All initializers must implement a common interface, taking only a
 #'   R6Class Node object as input, and returning nothing. Instead, this function
-#'   should update the node directly.
+#'   should update the node directly. When set explicitly, the node_class_types argument -must- be set.
 #' @param start_node_initializer An initializer function which estimates a R6Class
 #'   Node object, or a string indicating the estimation method ("normalpls", "endpls", "pca", or
 #'   "none") meant for initializing a start type Node. All initializers must
@@ -95,11 +95,6 @@
 #'   (cross-)validating. User-implemented functions must take a Matrix as input,
 #'   and return the preprocessed matrix. Implemented functions are: (block_scale,
 #'   standardize, and mean_center)
-#' @param unique_node_postprocessing A Boolean indicating whether different
-#'   nodes should be postprocesed differently. If \code{TRUE}, postprocessor
-#'   should be a list of postprocessing functions.
-#' @param post_processor A postprocessing function which takes a node as an input
-#'   and returns a scaling setting vector.
 #' @param convergence_threshold A double indicating the maximum error before the
 #'   iterations are assumed to have converged. It is compared to the difference
 #'   between the latent variables of the current and previous iteration. If this
@@ -131,8 +126,6 @@ path_model <- function(data, connection_matrix, variables_in_block,
                        unique_node_preprocessing  = FALSE,
                        global_preprocessors       = list(),
                        local_preprocessors        = list(standardize),
-                       unique_node_postprocessing = FALSE,
-                       post_processor             = NULL,
                        convergence_threshold      = 0.0001,
                        node_class_types           = NULL,
                        parallelise                = FALSE,
@@ -209,15 +202,6 @@ path_model <- function(data, connection_matrix, variables_in_block,
     }
   }
 
-  ##Make postprocessor list:
-  if(!unique_node_postprocessing){
-    post_processors <- list()
-
-    for(i in 1:n_blocks){
-      post_processors[[block_names[[i]]]] <- post_processor
-    }
-  }
-
   ##Make estimator list:
   if(is.null(estimators)){
     p <- parallelise
@@ -237,7 +221,7 @@ path_model <- function(data, connection_matrix, variables_in_block,
   }
 
   #make node structure graph
-  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_class_types, post_processors)
+  nodes <- make_nodes(blocked_data, connection_matrix, block_names, estimators, initializers, local_preprocessors, global_preprocessors, node_class_types)
 
   names(nodes) <- block_names
 
