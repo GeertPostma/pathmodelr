@@ -227,7 +227,7 @@ process_PLS <- function(data,
           "mean"   = mean_bootstrapped_outer_effects,
           "median" = median_bootstrapped_outer_effects,
           "ci"     = ci_bootstrapped_outer_effects,
-          "stdev"  = stdev_bootstrapped_inner_effects))
+          "stdev"  = stdev_bootstrapped_outer_effects))
 
     #calculate original model
     if(!is.null(max_n_LVs) | !is.null(n_LVs)){
