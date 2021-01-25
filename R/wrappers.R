@@ -151,7 +151,7 @@ process_PLS <- function(data,
       }
 
       cl <- makeCluster(n_cores)
-      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "global_preprocessors", "local_preprocessors", "convergence_threshold"), envir=environment())
+      clusterExport(cl, c("data", "connection_matrix", "variables_in_block", "block_names", "global_preprocessors", "local_preprocessors"), envir=environment())
 
       bootstrap_results <- parLapply(cl, 1:bootstrap_iter, bootstrap_process_PLS)
 
