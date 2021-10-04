@@ -10,6 +10,7 @@ We provide installation instructions for our pre-built package as well as direct
 
 ### Installation from pre-built package
 First, download [the latest release from Github](https://github.com/GeertPostma/pathmodelr/releases/tag/v0.12) and save it to your disk.
+Alternatively, it can be downloaded from https://data.mendeley.com/datasets/9x9h7fr4kn
 
 The dependencies will then need to be installed. These dependencies are: 'caret', 'dplyr', 'ggplot2', 'listenv', 'reshape2', 'R6', 'network', 'ggnetwork', 'diagram'
 
